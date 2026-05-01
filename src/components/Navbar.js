@@ -13,7 +13,8 @@ export default function Navbar() {
     { href: '/', label: 'Home' },
     { href: '/activities', label: 'Activities' },
     { href: '/night-shows', label: 'Night Shows' },
-    { href: '/request', label: 'Requests' },
+    { href: '/request', label: 'Song request' },
+    { href: '/service', label: 'Service request'},
     { href: '/complaints', label: 'Complaints' },
     { href: '/weather', label: 'Weather Today' },
   ];

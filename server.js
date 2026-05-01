@@ -14,6 +14,7 @@ const weatherRoutes = require('./routes/weather');
 const eventsRoutes = require('./routes/events');
 const announcementsRoutes = require('./routes/announcements');
 const SongRequest = require('./models/SongRequest');
+const ServiceRequest = require('./models/ServiceRequest');
 
 const app = express();
 const server = http.createServer(app);
@@ -39,6 +40,7 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/weather', weatherRoutes);
 app.use('/api/events', eventsRoutes);
 app.use('/api/announcement', announcementsRoutes);
+app.use('/api/service-requests', require('./routes/serviceRoutes'));
 
 // MongoDB Atlas connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://<username>:<password>@<cluster>.mongodb.net/songrequests?retryWrites=true&w=majority';

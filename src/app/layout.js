@@ -4,7 +4,7 @@ import Footer from '../components/Footer';
 import ClientProviders from '../components/ClientProviders';
 
 export const metadata = {
-  title: 'Rosa Beach Community',
+  title: 'Rosa Beach App',
   description: 'Welcome to Rosa Beach Community',
   viewport: {
     width: 'device-width',
