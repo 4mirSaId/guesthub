@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const settingsSchema = new mongoose.Schema({
   partyName: {
     type: String,
-    default: 'Rosa Beach Community'
+    default: 'Hotel Name Community'
   },
   dailyDressThemeName: {
     type: String,

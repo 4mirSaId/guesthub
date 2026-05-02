@@ -1,8 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import io from 'socket.io-client';
+import { getApiBase } from '@/lib/apiBase';
+import { socketClientOptions } from '@/lib/socketClientOptions';
+
+const API_BASE = getApiBase();
 
 export default function AdminPage() {
   const router = useRouter();
@@ -26,6 +30,18 @@ export default function AdminPage() {
   });
   const [settingsSaving, setSettingsSaving] = useState(false);
   const [settingsMessage, setSettingsMessage] = useState('');
+  const [apiUnreachable, setApiUnreachable] = useState(false);
+  const offlineRef = useRef(false);
+  const [serviceRequests, setServiceRequests] = useState([]);
+  const [feedbackItems, setFeedbackItems] = useState([]);
+  const [serviceUpdating, setServiceUpdating] = useState({});
+
+  const feedbackStats = useMemo(() => {
+    const total = feedbackItems.length;
+    if (total === 0) return { total: 0, average: null };
+    const sum = feedbackItems.reduce((acc, f) => acc + (Number(f.rating) || 0), 0);
+    return { total, average: Math.round((sum / total) * 10) / 10 };
+  }, [feedbackItems]);
 
   useEffect(() => {
     let active = true;
@@ -36,17 +52,15 @@ export default function AdminPage() {
       const username = localStorage.getItem('adminUsername');
 
       if (!token || !username) {
-        // Redirect to login
         router.push('/admin/login');
         return;
       }
 
-      // Verify token with backend
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-        const response = await fetch('http://localhost:3001/api/auth/verify', {
+        const response = await fetch(`${API_BASE}/api/auth/verify`, {
           headers: {
             'Authorization': `Bearer ${token}`
           },
@@ -67,8 +81,25 @@ export default function AdminPage() {
           setAdminUsername(username);
         }
       } catch (error) {
-        console.error('Auth verification failed:', error);
-        // If backend is unreachable, redirect to login
+        const isAbort = error?.name === 'AbortError';
+        const isNetwork =
+          isAbort ||
+          error instanceof TypeError ||
+          (typeof error?.message === 'string' && error.message.includes('fetch'));
+
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('Auth verification:', error);
+        }
+
+        if (isNetwork) {
+          offlineRef.current = true;
+          if (active) {
+            setApiUnreachable(true);
+            setLoading(false);
+          }
+          return;
+        }
+
         localStorage.removeItem('adminToken');
         localStorage.removeItem('adminUsername');
         router.push('/admin/login');
@@ -77,10 +108,9 @@ export default function AdminPage() {
 
     checkAuth();
 
-    // Fallback: if still loading after 10 seconds, redirect to login
     const fallbackTimeout = setTimeout(() => {
-      if (active && !authenticated) {
-        console.error('Loading timeout - redirecting to login');
+      if (active && !authenticated && !offlineRef.current) {
+        setLoading(false);
         router.push('/admin/login');
       }
     }, 10000);
@@ -101,23 +131,31 @@ export default function AdminPage() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-        const [requestsRes, complaintsRes, settingsRes, eventsRes] = await Promise.all([
-          fetch('http://localhost:3001/api/requests', {
+        const token = localStorage.getItem('adminToken');
+        const [requestsRes, complaintsRes, settingsRes, eventsRes, servicesRes, feedbackRes] = await Promise.all([
+          fetch(`${API_BASE}/api/requests`, {
             signal: controller.signal,
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
+            headers: { 'Authorization': `Bearer ${token}` }
           }),
-          fetch('http://localhost:3001/api/complaints', {
+          fetch(`${API_BASE}/api/complaints`, {
             signal: controller.signal,
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
+            headers: { 'Authorization': `Bearer ${token}` }
           }),
-          fetch('http://localhost:3001/api/settings', {
+          fetch(`${API_BASE}/api/settings`, {
             signal: controller.signal,
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
+            headers: { 'Authorization': `Bearer ${token}` }
           }),
-          fetch('http://localhost:3001/api/events', {
+          fetch(`${API_BASE}/api/events`, {
             signal: controller.signal,
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
-          })
+            headers: { 'Authorization': `Bearer ${token}` }
+          }),
+          fetch(`${API_BASE}/api/service-requests`, {
+            signal: controller.signal,
+          }),
+          fetch(`${API_BASE}/api/feedback`, {
+            signal: controller.signal,
+            headers: { 'Authorization': `Bearer ${token}` }
+          }),
         ]);
 
         clearTimeout(timeoutId);
@@ -126,16 +164,27 @@ export default function AdminPage() {
           throw new Error('Failed to fetch data');
         }
 
+        if (!feedbackRes.ok && feedbackRes.status === 401) {
+          localStorage.removeItem('adminToken');
+          localStorage.removeItem('adminUsername');
+          router.push('/admin/login');
+          return;
+        }
+
         const requestsData = await requestsRes.json();
         const complaintsData = await complaintsRes.json();
         const settingsData = await settingsRes.json();
         const eventsData = await eventsRes.json();
+        const servicesData = servicesRes.ok ? await servicesRes.json() : [];
+        const feedbackData = feedbackRes.ok ? await feedbackRes.json() : [];
 
         if (active) {
           setRequests(requestsData);
           setComplaints(complaintsData);
           setSettings(settingsData);
           setEvents(eventsData.filter((event, index, self) => self.findIndex(e => e._id === event._id) === index));
+          setServiceRequests(Array.isArray(servicesData) ? servicesData : []);
+          setFeedbackItems(Array.isArray(feedbackData) ? feedbackData : []);
         }
       } catch (error) {
         console.error('Failed to fetch data:', error);
@@ -151,13 +200,13 @@ export default function AdminPage() {
 
     let socket;
     try {
-      socket = io('http://localhost:3001', {
-        timeout: 5000,
-        forceNew: true
+      socket = io(API_BASE, {
+        ...socketClientOptions,
+        forceNew: true,
       });
 
-      socket.on('connect_error', (error) => {
-        console.error('Socket connection failed:', error);
+      socket.on('connect_error', () => {
+        /* Expected when API is not running; avoid console spam */
       });
 
       socket.on('new-request', (newRequest) => {
@@ -229,11 +278,11 @@ export default function AdminPage() {
         socket.disconnect();
       }
     };
-  }, [authenticated]);
+  }, [authenticated, router]);
 
   const updateStatus = async (id, status) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/requests/${id}`, {
+      const response = await fetch(`${API_BASE}/api/requests/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -252,9 +301,30 @@ export default function AdminPage() {
     }
   };
 
+  const updateServiceRequestStatus = async (id, status) => {
+    setServiceUpdating((prev) => ({ ...prev, [id]: true }));
+    try {
+      const response = await fetch(`${API_BASE}/api/service-requests/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+      if (response.ok) {
+        const updated = await response.json();
+        setServiceRequests((prev) =>
+          prev.map((r) => (r._id === id ? updated : r))
+        );
+      }
+    } catch (error) {
+      console.error('Failed to update service request:', error);
+    } finally {
+      setServiceUpdating((prev) => ({ ...prev, [id]: false }));
+    }
+  };
+
   const updateComplaintStatus = async (id, status) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/complaints/${id}`, {
+      const response = await fetch(`${API_BASE}/api/complaints/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -275,7 +345,7 @@ export default function AdminPage() {
 
   const createEvent = async (eventData) => {
     try {
-      const response = await fetch('http://localhost:3001/api/events', {
+      const response = await fetch(`${API_BASE}/api/events`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -306,7 +376,7 @@ export default function AdminPage() {
 
   const updateEvent = async (id, eventData) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/events/${id}`, {
+      const response = await fetch(`${API_BASE}/api/events/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -333,7 +403,7 @@ export default function AdminPage() {
 
   const deleteEvent = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/events/${id}`, {
+      const response = await fetch(`${API_BASE}/api/events/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
@@ -358,7 +428,7 @@ export default function AdminPage() {
     setSettingsMessage('');
 
     try {
-      const response = await fetch('http://localhost:3001/api/settings', {
+      const response = await fetch(`${API_BASE}/api/settings`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -390,12 +460,30 @@ export default function AdminPage() {
     }
   };
 
+  const getServiceStatusClass = (status) => {
+    switch (status) {
+      case 'pending': return 'bg-yellow-600';
+      case 'in-progress': return 'bg-blue-600';
+      case 'done': return 'bg-green-600';
+      default: return 'bg-gray-600';
+    }
+  };
+
+  const getServiceTypeIcon = (type) => {
+    switch (type) {
+      case 'Cleaning': return '🧹';
+      case 'Maintenance': return '🔧';
+      case 'Food & Drink': return '🍽️';
+      default: return '📋';
+    }
+  };
+
   const handleLogout = async () => {
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminUsername');
     
     try {
-      await fetch('http://localhost:3001/api/auth/logout', {
+      await fetch(`${API_BASE}/api/auth/logout`, {
         method: 'POST',
       });
     } catch (error) {
@@ -405,16 +493,38 @@ export default function AdminPage() {
     router.push('/admin/login');
   };
 
+  if (apiUnreachable) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-8 gap-4">
+        <div className="text-xl font-semibold text-center text-white">Cannot connect to the API server</div>
+        <p className="text-slate-400 text-center max-w-md text-sm">
+          Start the backend at{' '}
+          <code className="bg-slate-900 px-1.5 py-0.5 rounded text-slate-100 border border-slate-800">{API_BASE}</code>
+          , or set{' '}
+          <code className="bg-slate-900 px-1.5 py-0.5 rounded text-slate-100 border border-slate-800">NEXT_PUBLIC_API_URL</code> in{' '}
+          <code className="bg-slate-900 px-1.5 py-0.5 rounded text-slate-100 border border-slate-800">.env.local</code>.
+        </p>
+        <button
+          type="button"
+          onClick={() => window.location.reload()}
+          className="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-3 px-8 rounded-xl shadow-lg shadow-emerald-900/30"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
   if (loading || !authenticated) {
     return (
-      <div className="min-h-screen bg-neutral-50 text-gray-800 flex items-center justify-center">
-        <div className="text-xl">Loading...</div>
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center">
+        <div className="text-xl text-slate-400">Loading…</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen text-gray-800 p-8 bg-white">
+    <div className="min-h-screen text-slate-100 p-8 bg-slate-950">
       <div className="max-w-6xl mx-auto">
         {/* Header with Logout */}
         <div className="flex justify-between items-center mb-12">
@@ -422,7 +532,7 @@ export default function AdminPage() {
             <h1 className="text-5xl font-bold text-emerald-500">
               DJ Admin Control Center
             </h1>
-            <p className="text-gray-500 text-lg mt-2">Logged in as: <span className="text-emerald-500 font-semibold">{adminUsername}</span></p>
+            <p className="text-slate-400 text-lg mt-2">Logged in as: <span className="text-emerald-400 font-semibold">{adminUsername}</span></p>
           </div>
           <button
             onClick={handleLogout}
@@ -433,16 +543,16 @@ export default function AdminPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-8 mb-12 border-b border-gray-100 pb-4">
+        <div className="flex flex-wrap gap-3 sm:gap-4 mb-12 border-b border-slate-800 pb-4">
           <button
             onClick={() => setActiveTab('requests')}
             className={`px-8 py-4 font-semibold text-lg rounded-xl transition-all duration-300 ease-in-out ${
               activeTab === 'requests'
                 ? `bg-emerald-500 text-white shadow-md`
-                : 'bg-white text-gray-500 hover:text-gray-800 hover:bg-gray-50'
+                : 'bg-transparent text-slate-300 hover:text-white hover:bg-slate-900/60'
             }`}
             style={{
-              backgroundColor: activeTab === 'requests' ? '#10b981' : 'white',
+              backgroundColor: activeTab === 'requests' ? '#10b981' : 'transparent',
               color: activeTab === 'requests' ? 'white' : 'inherit'
             }}
           >
@@ -453,7 +563,7 @@ export default function AdminPage() {
             className={`px-8 py-4 font-semibold text-lg rounded-xl transition-all duration-300 ease-in-out ${
               activeTab === 'complaints'
                 ? `bg-emerald-500 text-white shadow-md`
-                : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50'
+                : 'text-slate-300 hover:text-white hover:bg-slate-900/60'
             }`}
             style={{
               backgroundColor: activeTab === 'complaints' ? '#10b981' : 'transparent',
@@ -463,11 +573,39 @@ export default function AdminPage() {
             Complaints
           </button>
           <button
+            onClick={() => setActiveTab('services')}
+            className={`px-6 sm:px-8 py-4 font-semibold text-base sm:text-lg rounded-xl transition-all duration-300 ease-in-out ${
+              activeTab === 'services'
+                ? `bg-emerald-500 text-white shadow-md`
+                : 'text-slate-300 hover:text-white hover:bg-slate-900/60'
+            }`}
+            style={{
+              backgroundColor: activeTab === 'services' ? '#10b981' : 'transparent',
+              color: activeTab === 'services' ? 'white' : 'inherit'
+            }}
+          >
+            Service Requests
+          </button>
+          <button
+            onClick={() => setActiveTab('feedback')}
+            className={`px-6 sm:px-8 py-4 font-semibold text-base sm:text-lg rounded-xl transition-all duration-300 ease-in-out ${
+              activeTab === 'feedback'
+                ? `bg-emerald-500 text-white shadow-md`
+                : 'text-slate-300 hover:text-white hover:bg-slate-900/60'
+            }`}
+            style={{
+              backgroundColor: activeTab === 'feedback' ? '#10b981' : 'transparent',
+              color: activeTab === 'feedback' ? 'white' : 'inherit'
+            }}
+          >
+            Feedback
+          </button>
+          <button
             onClick={() => setActiveTab('events')}
             className={`px-8 py-4 font-semibold text-lg rounded-xl transition-all duration-300 ease-in-out ${
               activeTab === 'events'
                 ? `bg-emerald-500 text-white shadow-md`
-                : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50'
+                : 'text-slate-300 hover:text-white hover:bg-slate-900/60'
             }`}
             style={{
               backgroundColor: activeTab === 'events' ? '#10b981' : 'transparent',
@@ -481,7 +619,7 @@ export default function AdminPage() {
             className={`px-8 py-4 font-semibold text-lg rounded-xl transition-all duration-300 ease-in-out ${
               activeTab === 'settings'
                 ? `bg-emerald-500 text-white shadow-md`
-                : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50'
+                : 'text-slate-300 hover:text-white hover:bg-slate-900/60'
             }`}
             style={{
               backgroundColor: activeTab === 'settings' ? '#10b981' : 'transparent',
@@ -495,26 +633,26 @@ export default function AdminPage() {
         {/* Requests Tab */}
         {activeTab === 'requests' && (
           <div>
-            <h2 className="text-4xl font-bold mb-10 text-gray-800">Song Requests</h2>
+            <h2 className="text-4xl font-bold mb-10 text-white">Song Requests</h2>
             <div className="space-y-8">
               {requests.length === 0 ? (
-                <div className="text-center text-gray-500 text-xl py-16">No song requests yet.</div>
+                <div className="text-center text-slate-400 text-xl py-16 rounded-2xl border border-slate-800 bg-slate-900/60">No song requests yet.</div>
               ) : (
                 requests.map((request) => (
                   <div
                     key={request._id}
-                    className="p-8 rounded-2xl shadow-md hover:shadow-xl border border-gray-100 transition-all duration-300 ease-in-out bg-white"
+                    className="p-8 rounded-2xl shadow-xl shadow-black/20 hover:shadow-black/40 border border-slate-800 transition-all duration-300 ease-in-out bg-slate-900"
                     style={{
                       borderColor: request.status === 'pending' ? '#10b981' : 'transparent'
                     }}
                   >
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
-                        <h3 className="text-2xl font-semibold text-gray-800">{request.song}</h3>
+                        <h3 className="text-2xl font-semibold text-white">{request.song}</h3>
                         {request.artist && (
-                          <p className="text-gray-500 text-lg">by {request.artist}</p>
+                          <p className="text-slate-400 text-lg">by {request.artist}</p>
                         )}
-                        <p className="text-sm text-gray-400 mt-2">
+                        <p className="text-sm text-slate-500 mt-2">
                           {new Date(request.createdAt).toLocaleString()}
                         </p>
                       </div>
@@ -562,25 +700,25 @@ export default function AdminPage() {
         {/* Complaints Tab */}
         {activeTab === 'complaints' && (
           <div>
-            <h2 className="text-4xl font-bold mb-10 text-gray-800">Customer Complaints</h2>
+            <h2 className="text-4xl font-bold mb-10 text-white">Customer Complaints</h2>
             <div className="space-y-8">
               {complaints.length === 0 ? (
-                <div className="text-center text-gray-500 text-xl py-16">No complaints submitted yet.</div>
+                <div className="text-center text-slate-400 text-xl py-16 rounded-2xl border border-slate-800 bg-slate-900/60">No complaints submitted yet.</div>
               ) : (
                 complaints.map((complaint) => (
                   <div
                     key={complaint._id}
-                    className="p-8 rounded-2xl shadow-md hover:shadow-xl border border-gray-100 transition-all duration-300 ease-in-out bg-white"
+                    className="p-8 rounded-2xl shadow-xl shadow-black/20 hover:shadow-black/40 border border-slate-800 transition-all duration-300 ease-in-out bg-slate-900"
                     style={{
                       borderColor: complaint.status === 'pending' ? '#10b981' : 'transparent'
                     }}
                   >
                     <div className="flex justify-between items-start gap-6">
                       <div className="flex-1">
-                        <h3 className="text-2xl font-semibold text-gray-800">{complaint.fullName}</h3>
-                        <p className="text-gray-500 text-lg">Room {complaint.roomNumber}</p>
-                        <p className="text-gray-700 text-base mt-4 whitespace-pre-line">{complaint.complaintText}</p>
-                        <p className="text-sm text-gray-400 mt-4">{new Date(complaint.createdAt).toLocaleString()}</p>
+                        <h3 className="text-2xl font-semibold text-white">{complaint.fullName}</h3>
+                        <p className="text-slate-400 text-lg">Room {complaint.roomNumber}</p>
+                        <p className="text-slate-200 text-base mt-4 whitespace-pre-line">{complaint.complaintText}</p>
+                        <p className="text-sm text-slate-500 mt-4">{new Date(complaint.createdAt).toLocaleString()}</p>
                       </div>
                       <div className="flex flex-col items-end gap-4">
                         <span
@@ -607,6 +745,149 @@ export default function AdminPage() {
                     </div>
                   </div>
                 ))
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Service requests tab */}
+        {activeTab === 'services' && (
+          <div>
+            <h2 className="text-4xl font-bold mb-10 text-white">Service Requests</h2>
+            <div className="space-y-8">
+              {serviceRequests.length === 0 ? (
+                <div className="text-center text-slate-400 text-xl py-16 bg-slate-900/60 rounded-2xl border border-slate-800">
+                  No service requests yet.
+                </div>
+              ) : (
+                serviceRequests.map((r) => (
+                  <div
+                    key={r._id}
+                    className="p-8 rounded-2xl shadow-xl shadow-black/20 hover:shadow-black/40 border border-slate-800 transition-all duration-300 ease-in-out bg-slate-900"
+                  >
+                    <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-3">
+                          <span className="text-3xl">{getServiceTypeIcon(r.type)}</span>
+                          <div>
+                            <h3 className="text-2xl font-semibold text-white">Room {r.room}</h3>
+                            <p className="text-slate-400 text-sm font-medium">{r.type}</p>
+                          </div>
+                        </div>
+                        {r.message && (
+                          <p className="text-slate-200 text-base mt-4 p-4 bg-slate-950 rounded-lg border border-slate-800 whitespace-pre-wrap">
+                            {r.message}
+                          </p>
+                        )}
+                        <p className="text-sm text-slate-500 mt-4">
+                          {r.createdAt ? new Date(r.createdAt).toLocaleString() : ''}
+                        </p>
+                      </div>
+                      <div className="flex flex-col items-stretch sm:items-end gap-4 shrink-0">
+                        <span
+                          className={`px-4 py-2 rounded-xl text-sm font-medium shadow-sm text-white capitalize text-center ${getServiceStatusClass(r.status)}`}
+                        >
+                          {r.status}
+                        </span>
+                        <div className="flex flex-wrap gap-3 justify-end">
+                          {r.status !== 'done' && (
+                            <>
+                              {r.status !== 'in-progress' && (
+                                <button
+                                  type="button"
+                                  onClick={() => updateServiceRequestStatus(r._id, 'in-progress')}
+                                  disabled={serviceUpdating[r._id]}
+                                  className="px-6 py-3 rounded-xl text-white font-medium shadow-md bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 transition-all"
+                                >
+                                  {serviceUpdating[r._id] ? 'Updating…' : 'In progress'}
+                                </button>
+                              )}
+                              <button
+                                type="button"
+                                onClick={() => updateServiceRequestStatus(r._id, 'done')}
+                                disabled={serviceUpdating[r._id]}
+                                className="px-6 py-3 rounded-xl text-white font-medium shadow-md bg-green-600 hover:bg-green-700 disabled:bg-gray-400 transition-all"
+                              >
+                                {serviceUpdating[r._id] ? 'Updating…' : 'Mark done'}
+                              </button>
+                            </>
+                          )}
+                          {r.status === 'done' && (
+                            <span className="px-6 py-3 rounded-xl text-white font-medium bg-gray-400 text-center">
+                              Completed
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Feedback tab */}
+        {activeTab === 'feedback' && (
+          <div>
+            <h2 className="text-4xl font-bold mb-6 text-white">Guest feedback</h2>
+            <p className="text-slate-400 mb-10 max-w-2xl">
+              All submissions, including low ratings kept private from the public reviews section.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+              <div className="p-6 rounded-2xl shadow-xl shadow-black/20 border border-slate-800 bg-slate-900">
+                <p className="text-slate-500 text-sm font-medium uppercase tracking-wide">Total feedback</p>
+                <p className="text-3xl font-bold text-white mt-2">{feedbackStats.total}</p>
+              </div>
+              <div className="p-6 rounded-2xl shadow-xl shadow-black/20 border border-slate-800 bg-slate-900">
+                <p className="text-slate-500 text-sm font-medium uppercase tracking-wide">Average rating</p>
+                <p className="text-3xl font-bold text-emerald-400 mt-2">
+                  {feedbackStats.average !== null ? `${feedbackStats.average} / 5` : '—'}
+                </p>
+              </div>
+            </div>
+            <div className="space-y-6">
+              {feedbackItems.length === 0 ? (
+                <div className="text-center text-slate-400 text-xl py-16 bg-slate-900/60 rounded-2xl border border-slate-800">
+                  No feedback yet.
+                </div>
+              ) : (
+                feedbackItems.map((fb) => {
+                  const low = Number(fb.rating) <= 2;
+                  return (
+                    <div
+                      key={fb._id}
+                      className={`p-6 sm:p-8 rounded-2xl shadow-md border transition-all ${
+                        low
+                          ? 'border-red-900/80 bg-red-950/35 shadow-lg shadow-black/20'
+                          : 'border-slate-800 bg-slate-900 shadow-lg shadow-black/20'
+                      }`}
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                          <span className="inline-flex items-center rounded-lg bg-slate-800 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-300">
+                            {fb.type}
+                          </span>
+                          <span className="text-amber-400 text-lg" aria-label={`${fb.rating} of 5 stars`}>
+                            {'★'.repeat(Number(fb.rating) || 0)}
+                            <span className="text-slate-600">{'★'.repeat(5 - (Number(fb.rating) || 0))}</span>
+                          </span>
+                          {!fb.isPublic && (
+                            <span className="text-xs font-medium text-slate-500 border border-slate-700 rounded-lg px-2 py-0.5">
+                              Admin only
+                            </span>
+                          )}
+                        </div>
+                        <time className="text-sm text-slate-500 shrink-0" dateTime={fb.createdAt}>
+                          {fb.createdAt ? new Date(fb.createdAt).toLocaleString() : '—'}
+                        </time>
+                      </div>
+                      <p className={`text-sm sm:text-base whitespace-pre-wrap ${low ? 'text-red-100/95' : 'text-slate-300'}`}>
+                        {fb.comment?.trim() ? fb.comment : <span className="text-slate-600 italic">No comment</span>}
+                      </p>
+                    </div>
+                  );
+                })
               )}
             </div>
           </div>

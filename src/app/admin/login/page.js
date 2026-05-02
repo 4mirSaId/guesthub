@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { getApiBase } from '@/lib/apiBase';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,7 +17,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3001/api/auth/login', {
+      const response = await fetch(`${getApiBase()}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -43,14 +44,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 text-gray-800 flex items-center justify-center p-8">
-      <div className="bg-white p-12 rounded-2xl shadow-lg w-full max-w-md border border-gray-100">
-        <h1 className="text-4xl font-bold mb-4 text-center text-gray-800">DJ Space</h1>
-        <p className="text-center text-gray-500 mb-12 text-lg">Rosa Beach Community Control Center</p>
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-8">
+      <div className="rounded-2xl border border-slate-800 bg-slate-900 p-12 shadow-xl shadow-black/30 w-full max-w-md">
+        <h1 className="text-4xl font-bold mb-4 text-center text-white">DJ Space</h1>
+        <p className="text-center text-slate-400 mb-12 text-lg">Hotel Name Community Control Center</p>
         
         <form onSubmit={handleLogin} className="space-y-8">
           <div>
-            <label htmlFor="username" className="block text-lg font-medium mb-3 text-gray-700">
+            <label htmlFor="username" className="block text-lg font-medium mb-3 text-slate-300">
               Username
             </label>
             <input
@@ -58,14 +59,14 @@ export default function LoginPage() {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-6 py-4 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-800 text-lg transition-all duration-300 ease-in-out shadow-sm"
+              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-6 py-4 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500 text-lg transition-all duration-300 ease-in-out shadow-sm"
               placeholder="Enter username"
               disabled={loading}
             />
           </div>
           
           <div>
-            <label htmlFor="password" className="block text-lg font-medium mb-3 text-gray-700">
+            <label htmlFor="password" className="block text-lg font-medium mb-3 text-slate-300">
               Password
             </label>
             <input
@@ -73,14 +74,14 @@ export default function LoginPage() {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-6 py-4 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-800 text-lg transition-all duration-300 ease-in-out shadow-sm"
+              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-6 py-4 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500 text-lg transition-all duration-300 ease-in-out shadow-sm"
               placeholder="Enter password"
               disabled={loading}
             />
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl text-lg shadow-sm">
+            <div className="rounded-xl border border-red-900/60 bg-red-950/50 px-6 py-4 text-base text-red-200 shadow-sm">
               {error}
             </div>
           )}
@@ -88,16 +89,16 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-emerald-500 hover:bg-emerald-600 disabled:bg-gray-400 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 ease-in-out shadow-md hover:shadow-lg text-lg"
+            className="w-full rounded-xl bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-700 disabled:text-slate-400 text-white font-semibold py-4 px-8 transition-all duration-300 ease-in-out shadow-lg shadow-emerald-900/30 text-lg"
           >
             {loading ? 'Logging in...' : 'Login to Admin Panel'}
           </button>
         </form>
 
-        <div className="mt-12 p-6 bg-stone-100 rounded-xl text-center text-gray-600 shadow-sm">
+        <div className="mt-12 p-6 rounded-xl border border-slate-800 bg-slate-950/60 text-center text-slate-300 shadow-sm">
           <p className="font-semibold mb-3 text-lg">Demo Credentials:</p>
-          <p className="text-emerald-600">Username: <span className="font-medium">admin</span></p>
-          <p className="text-emerald-600">Password: <span className="font-medium">dj2026!secure</span></p>
+          <p className="text-emerald-300">Username: <span className="font-medium text-slate-100">admin</span></p>
+          <p className="text-emerald-300">Password: <span className="font-medium text-slate-100">dj2026!secure</span></p>
         </div>
       </div>
     </div>

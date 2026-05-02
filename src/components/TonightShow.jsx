@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { getApiBase } from '@/lib/apiBase';
 
 const TonightShow = () => {
   const weekA = {
@@ -8,7 +9,7 @@ const TonightShow = () => {
     2: { name: "Karaoke Hits", emoji: "🎤" },
     3: { name: "Tunisian Night", emoji: "🇹🇳" },
     4: { name: "Dance Around the World", emoji: "🌍" },
-    5: { name: "Miss Rosa Beach", emoji: "👑" },
+    5: { name: "Miss Hotel Name", emoji: "👑" },
     6: { name: "Acting Show", emoji: "🎬" },
     0: { name: "White Party", emoji: "⚪" }
   };
@@ -18,7 +19,7 @@ const TonightShow = () => {
     2: { name: "Games and Dance (Rosa Talent)", emoji: "🎮" },
     3: { name: "Tunisian Beats", emoji: "🥁" },
     4: { name: "Comedy Show", emoji: "😂" },
-    5: { name: "Mister Rosa Beach", emoji: "🤴" },
+    5: { name: "Mister Hotel Name", emoji: "🤴" },
     6: { name: "Best of Rosa", emoji: "⭐" },
     0: { name: "Pink Party", emoji: "🩷" }
   };
@@ -31,12 +32,15 @@ const TonightShow = () => {
     // Fetch current week setting
     const fetchSettings = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/settings');
+        const response = await fetch(`${getApiBase()}/api/settings`);
+        if (!response.ok) {
+          setCurrentWeek('A');
+          return;
+        }
         const data = await response.json();
         setCurrentWeek(data.currentWeek || 'A');
-      } catch (error) {
-        console.error('Failed to fetch settings:', error);
-        setCurrentWeek('A'); // fallback
+      } catch {
+        setCurrentWeek('A');
       }
     };
 
@@ -71,10 +75,10 @@ const TonightShow = () => {
   }, [currentWeek]);
 
   return (
-    <div className="bg-white rounded-lg sm:rounded-2xl shadow-md sm:shadow-lg p-6 sm:p-8 w-full max-w-sm mx-auto text-center transition-all duration-500 ease-in-out hover:scale-105">
-      <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 sm:mb-4">Tonight&apos;s Show</h2>
-      <p className="text-base sm:text-lg text-gray-500 mb-2">{currentDay}</p>
-      <p className="text-2xl sm:text-3xl font-bold text-emerald-500 mb-2">
+    <div className="rounded-2xl border border-slate-800 bg-slate-900/80 shadow-xl shadow-black/30 p-6 sm:p-8 w-full max-w-sm mx-auto text-center transition-all duration-500 ease-in-out hover:scale-105">
+      <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">Tonight&apos;s Show</h2>
+      <p className="text-base sm:text-lg text-slate-400 mb-2">{currentDay}</p>
+      <p className="text-2xl sm:text-3xl font-bold text-emerald-400 mb-2">
         {currentShow.emoji} {currentShow.name}
       </p>
     </div>

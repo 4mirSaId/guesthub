@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { getApiBase } from '@/lib/apiBase';
 
 export default function AdminServices() {
   const [requests, setRequests] = useState([]);
@@ -11,7 +12,7 @@ export default function AdminServices() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("http://localhost:3001/api/service-requests");
+        const res = await axios.get(`${getApiBase()}/api/service-requests`);
         setRequests(res.data);
       } catch (error) {
         console.error("Error fetching service requests:", error);
@@ -26,7 +27,7 @@ export default function AdminServices() {
   const updateStatus = async (id, status) => {
     setUpdating(prev => ({ ...prev, [id]: true }));
     try {
-      const res = await axios.patch(`http://localhost:3001/api/service-requests/${id}`, {
+      const res = await axios.patch(`${getApiBase()}/api/service-requests/${id}`, {
         status,
       });
       // Update the specific request in state
@@ -59,21 +60,21 @@ export default function AdminServices() {
   };
 
   return (
-    <div className="min-h-screen text-gray-800 p-8 bg-white">
+    <div className="min-h-screen text-slate-100 p-8 bg-slate-950">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-12">
-          <h1 className="text-5xl font-bold text-emerald-500 mb-2">Service Requests 🛎️</h1>
-          <p className="text-gray-500 text-lg">Manage and respond to guest service requests</p>
+          <h1 className="text-5xl font-bold text-emerald-400 mb-2">Service Requests 🛎️</h1>
+          <p className="text-slate-400 text-lg">Manage and respond to guest service requests</p>
         </div>
 
         {/* Loading State */}
         {loading ? (
-          <div className="text-center py-16 text-gray-500 text-xl">
+          <div className="text-center py-16 text-slate-400 text-xl">
             Loading service requests...
           </div>
         ) : requests.length === 0 ? (
-          <div className="text-center py-16 text-gray-500 text-xl bg-gray-50 rounded-2xl border border-gray-100">
+          <div className="text-center py-16 text-slate-400 text-xl bg-slate-900/60 rounded-2xl border border-slate-800">
             No service requests yet.
           </div>
         ) : (
@@ -81,7 +82,7 @@ export default function AdminServices() {
             {requests.map((r) => (
               <div
                 key={r._id}
-                className="p-8 rounded-2xl shadow-md hover:shadow-xl border border-gray-100 transition-all duration-300 ease-in-out bg-white"
+                className="p-8 rounded-2xl shadow-xl shadow-black/20 hover:shadow-black/40 border border-slate-800 transition-all duration-300 ease-in-out bg-slate-900"
               >
                 <div className="flex justify-between items-start gap-6">
                   <div className="flex-1">
@@ -89,20 +90,20 @@ export default function AdminServices() {
                     <div className="flex items-center gap-3 mb-3">
                       <span className="text-3xl">{getTypeIcon(r.type)}</span>
                       <div>
-                        <h3 className="text-2xl font-semibold text-gray-800">Room {r.room}</h3>
-                        <p className="text-gray-600 text-sm font-medium">{r.type}</p>
+                        <h3 className="text-2xl font-semibold text-white">Room {r.room}</h3>
+                        <p className="text-slate-400 text-sm font-medium">{r.type}</p>
                       </div>
                     </div>
 
                     {/* Message */}
                     {r.message && (
-                      <p className="text-gray-700 text-base mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                      <p className="text-slate-200 text-base mt-4 p-4 bg-slate-950 rounded-lg border border-slate-800 whitespace-pre-wrap">
                         {r.message}
                       </p>
                     )}
 
                     {/* Timestamp */}
-                    <p className="text-sm text-gray-400 mt-4">
+                    <p className="text-sm text-slate-500 mt-4">
                       {new Date(r.createdAt).toLocaleString()}
                     </p>
                   </div>

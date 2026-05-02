@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSocket } from '../hooks/useSocket';
+import { getApiBase } from '@/lib/apiBase';
 
 export default function AnnouncementBar() {
   const [announcement, setAnnouncement] = useState(null);
@@ -13,7 +14,7 @@ export default function AnnouncementBar() {
   useEffect(() => {
     const fetchAnnouncement = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/announcement');
+        const response = await fetch(`${getApiBase()}/api/announcement`);
         if (response.ok) {
           const data = await response.json();
           if (data) {
@@ -21,8 +22,10 @@ export default function AnnouncementBar() {
             setIsVisible(true);
           }
         }
-      } catch (error) {
-        console.error('Failed to fetch announcement:', error);
+      } catch {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('Announcement fetch skipped (API may be offline)');
+        }
       }
     };
 

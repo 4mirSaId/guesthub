@@ -1,7 +1,7 @@
 # Announcement Banner System - Complete Guide
 
 ## Overview
-A full-stack real-time announcement banner system for the Rosa Beach hotel app. Admins can create, update, and delete announcements that appear instantly across all client pages via Socket.IO.
+A full-stack real-time announcement banner system for the Hotel Name hotel app. Admins can create, update, and delete announcements that appear instantly across all client pages via Socket.IO.
 
 ---
 

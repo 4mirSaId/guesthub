@@ -13,9 +13,9 @@ export default function Activities() {
   ];
 
   return (
-    <div className="bg-white text-gray-800 min-h-screen">
+    <div className="bg-slate-950 text-slate-100 min-h-screen">
       <div className="max-w-6xl mx-auto py-20 px-6">
-        <h1 className="text-5xl font-bold mb-12 text-center text-gray-800">
+        <h1 className="text-5xl font-bold mb-12 text-center text-white">
           Today&apos;s Activities 📅
         </h1>
 
@@ -23,10 +23,10 @@ export default function Activities() {
           {activities.map((act, index) => (
             <div
               key={index}
-              className="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl hover:scale-[1.02] border border-gray-100 transition-all duration-300 ease-in-out"
+              className="bg-slate-900 p-8 rounded-2xl shadow-xl shadow-black/20 hover:shadow-black/40 hover:scale-[1.02] border border-slate-800 transition-all duration-300 ease-in-out"
             >
-              <span className="text-2xl font-bold text-emerald-500 block mb-2">{act.time}</span>
-              <span className="text-lg text-gray-700">{act.name}</span>
+              <span className="text-2xl font-bold text-emerald-400 block mb-2">{act.time}</span>
+              <span className="text-lg text-slate-200">{act.name}</span>
             </div>
           ))}
         </div>

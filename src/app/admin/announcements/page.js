@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { getApiBase } from '@/lib/apiBase';
 
 export default function AnnouncementsAdmin() {
   const [message, setMessage] = useState('');
@@ -20,7 +21,7 @@ export default function AnnouncementsAdmin() {
 
   const fetchAnnouncements = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/announcement/all');
+      const response = await fetch(`${getApiBase()}/api/announcement/all`);
       if (response.ok) {
         const data = await response.json();
         setAnnouncements(data);
@@ -44,9 +45,10 @@ export default function AnnouncementsAdmin() {
     setLoading(true);
 
     try {
+      const base = getApiBase();
       const url = editingId
-        ? `http://localhost:3001/api/announcement/${editingId}`
-        : 'http://localhost:3001/api/announcement';
+        ? `${base}/api/announcement/${editingId}`
+        : `${base}/api/announcement`;
 
       const method = editingId ? 'PATCH' : 'POST';
 
@@ -100,7 +102,7 @@ export default function AnnouncementsAdmin() {
     setError('');
 
     try {
-      const response = await fetch(`http://localhost:3001/api/announcement/${id}`, {
+      const response = await fetch(`${getApiBase()}/api/announcement/${id}`, {
         method: 'DELETE'
       });
 
@@ -137,44 +139,44 @@ export default function AnnouncementsAdmin() {
 
   const iconOptions = ['⚠️', '🔴', '❌', 'ℹ️', '🔔', '📢', '💡', '🎯'];
   const priorityColors = {
-    danger: 'border-red-500 bg-red-50',
-    warning: 'border-amber-500 bg-amber-50',
-    info: 'border-blue-500 bg-blue-50'
+    danger: 'border-red-900/70 bg-red-950/35',
+    warning: 'border-amber-900/70 bg-amber-950/25',
+    info: 'border-sky-900/70 bg-sky-950/25'
   };
   const priorityBadgeColors = {
-    danger: 'bg-red-200 text-red-800',
-    warning: 'bg-amber-200 text-amber-800',
-    info: 'bg-blue-200 text-blue-800'
+    danger: 'bg-red-950/60 text-red-200 border border-red-900/60',
+    warning: 'bg-amber-950/40 text-amber-200 border border-amber-900/60',
+    info: 'bg-sky-950/40 text-sky-200 border border-sky-900/60'
   };
 
   const activeAnnouncement = announcements.find((a) => a.active);
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-950 text-slate-100 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">Announcement Management</h1>
+        <h1 className="text-4xl font-bold text-white mb-8">Announcement Management</h1>
 
         {/* Error and Success Messages */}
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+          <div className="mb-6 p-4 rounded-xl border border-red-900/60 bg-red-950/50 text-red-200">
             {error}
           </div>
         )}
         {successMessage && (
-          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700">
+          <div className="mb-6 p-4 rounded-xl border border-emerald-900/60 bg-emerald-950/40 text-emerald-100">
             {successMessage}
           </div>
         )}
 
         {/* Active Announcement Alert */}
         {activeAnnouncement && (
-          <div className={`mb-8 p-4 border-2 rounded-lg ${priorityColors[activeAnnouncement.priority]}`}>
+          <div className={`mb-8 p-4 border-2 rounded-xl ${priorityColors[activeAnnouncement.priority]}`}>
             <div className="flex items-start gap-3">
               <span className="text-2xl flex-shrink-0">{activeAnnouncement.icon}</span>
               <div className="flex-1">
                 <h3 className="font-bold text-lg mb-2">Currently Active</h3>
-                <p className="text-gray-700 mb-3">{activeAnnouncement.message}</p>
-                <div className="flex items-center gap-3 text-sm text-gray-600">
+                <p className="text-slate-100 mb-3">{activeAnnouncement.message}</p>
+                <div className="flex items-center gap-3 text-sm text-slate-300">
                   <span className={`px-3 py-1 rounded-full ${priorityBadgeColors[activeAnnouncement.priority]}`}>
                     {activeAnnouncement.priority.charAt(0).toUpperCase() + activeAnnouncement.priority.slice(1)}
                   </span>
@@ -186,15 +188,15 @@ export default function AnnouncementsAdmin() {
         )}
 
         {/* Form */}
-        <div className="bg-white shadow-lg rounded-lg p-8 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+        <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8 mb-8 shadow-xl shadow-black/20">
+          <h2 className="text-2xl font-bold text-white mb-6">
             {editingId ? 'Edit Announcement' : 'Create New Announcement'}
           </h2>
 
           <form onSubmit={handlePublish} className="space-y-6">
             {/* Message Input */}
             <div>
-              <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="message" className="block text-sm font-medium text-slate-300 mb-2">
                 Message *
               </label>
               <textarea
@@ -203,21 +205,21 @@ export default function AnnouncementsAdmin() {
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Enter announcement message..."
                 rows="4"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800"
+                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500"
               />
-              <p className="text-sm text-gray-500 mt-1">{message.length}/500 characters</p>
+              <p className="text-sm text-slate-500 mt-1">{message.length}/500 characters</p>
             </div>
 
             {/* Priority */}
             <div>
-              <label htmlFor="priority" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="priority" className="block text-sm font-medium text-slate-300 mb-2">
                 Priority Level
               </label>
               <select
                 id="priority"
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-800"
+                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500"
               >
                 <option value="info">Info</option>
                 <option value="warning">Warning</option>
@@ -227,7 +229,7 @@ export default function AnnouncementsAdmin() {
 
             {/* Icon Selection */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
+              <label className="block text-sm font-medium text-slate-300 mb-3">
                 Icon
               </label>
               <div className="flex flex-wrap gap-2">
@@ -238,8 +240,8 @@ export default function AnnouncementsAdmin() {
                     onClick={() => setIcon(opt)}
                     className={`text-3xl p-2 rounded-lg border-2 transition-all ${
                       icon === opt
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-300 bg-white hover:border-gray-400'
+                        ? 'border-emerald-500 bg-emerald-950/40'
+                        : 'border-slate-700 bg-slate-950 hover:border-slate-600'
                     }`}
                   >
                     {opt}
@@ -250,7 +252,7 @@ export default function AnnouncementsAdmin() {
 
             {/* Auto-hide */}
             <div>
-              <label htmlFor="autoHide" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="autoHide" className="block text-sm font-medium text-slate-300 mb-2">
                 Auto-hide After (seconds) - Leave empty for no auto-hide
               </label>
               <input
@@ -259,7 +261,7 @@ export default function AnnouncementsAdmin() {
                 value={autoHideSeconds}
                 onChange={(e) => setAutoHideSeconds(e.target.value)}
                 placeholder="e.g., 10 for 10 seconds"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-800"
+                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500"
               />
             </div>
 
@@ -268,7 +270,7 @@ export default function AnnouncementsAdmin() {
               <button
                 type="submit"
                 disabled={loading}
-                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50"
+                className="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-xl transition-colors disabled:opacity-50"
               >
                 {loading ? 'Publishing...' : editingId ? 'Update & Publish' : 'Publish Announcement'}
               </button>
@@ -276,7 +278,7 @@ export default function AnnouncementsAdmin() {
                 <button
                   type="button"
                   onClick={handleCancel}
-                  className="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold rounded-lg transition-colors"
+                  className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold rounded-xl transition-colors"
                 >
                   Cancel Edit
                 </button>
@@ -286,26 +288,26 @@ export default function AnnouncementsAdmin() {
         </div>
 
         {/* Announcements List */}
-        <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-          <div className="px-8 py-6 border-b border-gray-200">
-            <h2 className="text-2xl font-bold text-gray-900">All Announcements</h2>
+        <div className="rounded-2xl border border-slate-800 bg-slate-900 overflow-hidden shadow-xl shadow-black/20">
+          <div className="px-8 py-6 border-b border-slate-800">
+            <h2 className="text-2xl font-bold text-white">All Announcements</h2>
           </div>
 
           {announcements.length === 0 ? (
-            <div className="px-8 py-6 text-center text-gray-500">
+            <div className="px-8 py-6 text-center text-slate-400">
               No announcements yet. Create one to get started!
             </div>
           ) : (
-            <div className="divide-y divide-gray-200">
+            <div className="divide-y divide-slate-800">
               {announcements.map((announcement) => (
-                <div key={announcement._id} className="px-8 py-6 hover:bg-gray-50 transition-colors">
+                <div key={announcement._id} className="px-8 py-6 hover:bg-slate-950/60 transition-colors">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <span className="text-2xl">{announcement.icon}</span>
                         <div>
-                          <p className="text-gray-900 font-semibold">{announcement.message}</p>
-                          <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
+                          <p className="text-white font-semibold">{announcement.message}</p>
+                          <div className="flex items-center gap-2 mt-2 text-sm text-slate-300">
                             <span className={`px-2 py-1 rounded ${priorityBadgeColors[announcement.priority]}`}>
                               {announcement.priority}
                             </span>
@@ -313,12 +315,12 @@ export default function AnnouncementsAdmin() {
                               <span className="px-2 py-1 bg-green-200 text-green-800 rounded">Active</span>
                             )}
                             {announcement.autoHideSeconds && (
-                              <span className="text-gray-500">
+                              <span className="text-slate-500">
                                 Auto-hides: {announcement.autoHideSeconds}s
                               </span>
                             )}
                           </div>
-                          <p className="text-xs text-gray-500 mt-2">
+                          <p className="text-xs text-slate-500 mt-2">
                             {new Date(announcement.createdAt).toLocaleString()}
                           </p>
                         </div>
@@ -327,13 +329,13 @@ export default function AnnouncementsAdmin() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleEdit(announcement)}
-                        className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium transition-colors"
+                        className="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-xl text-sm font-medium transition-colors"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(announcement._id)}
-                        className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition-colors"
+                        className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl text-sm font-medium transition-colors"
                       >
                         Delete
                       </button>

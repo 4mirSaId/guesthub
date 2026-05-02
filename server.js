@@ -10,7 +10,6 @@ const requestRoutes = require('./routes/requests');
 const complaintsRoutes = require('./routes/complaints');
 const settingsRoutes = require('./routes/settings');
 const authRoutes = require('./routes/auth');
-const weatherRoutes = require('./routes/weather');
 const eventsRoutes = require('./routes/events');
 const announcementsRoutes = require('./routes/announcements');
 const SongRequest = require('./models/SongRequest');
@@ -37,10 +36,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/complaints', complaintsRoutes);
 app.use('/api/settings', settingsRoutes);
-app.use('/api/weather', weatherRoutes);
 app.use('/api/events', eventsRoutes);
 app.use('/api/announcement', announcementsRoutes);
 app.use('/api/service-requests', require('./routes/serviceRoutes'));
+app.use('/api/feedback', require('./routes/feedbackRoutes'));
 
 // MongoDB Atlas connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://<username>:<password>@<cluster>.mongodb.net/songrequests?retryWrites=true&w=majority';

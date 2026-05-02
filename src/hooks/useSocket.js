@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import io from 'socket.io-client';
+import { getApiBase } from '@/lib/apiBase';
+import { socketClientOptions } from '@/lib/socketClientOptions';
 
 let socket = null;
 
@@ -11,11 +13,8 @@ export function useSocket() {
   useEffect(() => {
     // Initialize socket connection only once
     if (!socket) {
-      socket = io('http://localhost:3001', {
-        reconnection: true,
-        reconnectionDelay: 1000,
-        reconnectionDelayMax: 5000,
-        reconnectionAttempts: 5
+      socket = io(getApiBase(), {
+        ...socketClientOptions,
       });
 
       socket.on('connect', () => {

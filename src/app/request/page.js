@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
+import { getApiBase } from '@/lib/apiBase';
+import { socketClientOptions } from '@/lib/socketClientOptions';
 
 export default function RequestPage() {
   const [song, setSong] = useState('');
@@ -14,7 +16,7 @@ export default function RequestPage() {
   const [complaintLoading, setComplaintLoading] = useState(false);
   const [complaintMessage, setComplaintMessage] = useState('');
   const [settings, setSettings] = useState({
-    partyName: 'Rosa Beach Community',
+    partyName: 'Hotel Name Community',
     theme: {
       bgColor: '#ffffff',
       accentColor: '#10b981',
@@ -29,18 +31,19 @@ export default function RequestPage() {
     // Fetch initial settings
     const loadSettings = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/settings');
+        const response = await fetch(`${getApiBase()}/api/settings`);
+        if (!response.ok) return;
         const data = await response.json();
         if (active) setSettings(data);
-      } catch (error) {
-        console.error('Failed to fetch settings:', error);
+      } catch {
+        /* API offline */
       }
     };
 
     loadSettings();
 
     // Socket.IO for real-time settings updates
-    const socket = io('http://localhost:3001');
+    const socket = io(getApiBase(), { ...socketClientOptions });
 
     socket.on('settings-updated', (updatedSettings) => {
       if (active) setSettings(updatedSettings);
@@ -64,7 +67,7 @@ export default function RequestPage() {
     setMessage('');
 
     try {
-      const response = await fetch('http://localhost:3001/api/requests', {
+      const response = await fetch(`${getApiBase()}/api/requests`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -98,7 +101,7 @@ export default function RequestPage() {
     setComplaintMessage('');
 
     try {
-      const response = await fetch('http://localhost:3001/api/complaints', {
+      const response = await fetch(`${getApiBase()}/api/complaints`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -123,16 +126,16 @@ export default function RequestPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+    <div className="min-h-screen bg-slate-950 text-slate-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md mx-auto rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl shadow-black/30">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Song Request</h1>
-          <p className="text-gray-600">Request your favorite song and let the DJ know what you want to hear!</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Song Request</h1>
+          <p className="text-slate-400">Request your favorite song and let the DJ know what you want to hear!</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="song" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="song" className="block text-sm font-medium text-slate-300 mb-1">
               Song Name *
             </label>
             <input
@@ -141,13 +144,13 @@ export default function RequestPage() {
               value={song}
               onChange={(e) => setSong(e.target.value)}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-gray-800"
+              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500"
               placeholder="Enter song name"
             />
           </div>
 
           <div>
-            <label htmlFor="artist" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="artist" className="block text-sm font-medium text-slate-300 mb-1">
               Artist Name (Optional)
             </label>
             <input
@@ -155,7 +158,7 @@ export default function RequestPage() {
               id="artist"
               value={artist}
               onChange={(e) => setArtist(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-gray-800"
+              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500"
               placeholder="Enter artist name"
             />
           </div>
@@ -163,14 +166,20 @@ export default function RequestPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-300 text-white font-medium py-2 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+            className="w-full rounded-xl bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-700 disabled:text-slate-400 text-white font-semibold py-3.5 text-base shadow-lg shadow-emerald-900/30 transition-colors duration-300"
           >
             {loading ? 'Submitting...' : 'Submit Request'}
           </button>
         </form>
 
         {message && (
-          <div className={`mt-6 p-4 rounded-md ${message.includes('successfully') ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
+          <div
+            className={`mt-6 rounded-xl border px-4 py-3 text-sm ${
+              message.includes('successfully')
+                ? 'border-emerald-900/60 bg-emerald-950/40 text-emerald-100'
+                : 'border-red-900/60 bg-red-950/50 text-red-200'
+            }`}
+          >
             {message}
           </div>
         )}
