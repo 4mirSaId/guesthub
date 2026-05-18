@@ -2,11 +2,33 @@ const express = require('express');
 
 const router = express.Router();
 
-// Mock admin credentials (in production, use proper user database)
-const ADMIN_USERNAME = 'admin';
-const ADMIN_PASSWORD = 'dj2026!amir';
+const USERS = {
+  animation: {
+    password: 'dj2026!amir',
+    role: 'animation',
+  },
+  // Legacy username — same access as animation
+  admin: {
+    password: 'dj2026!amir',
+    role: 'animation',
+  },
+  guestrelation: {
+    password: 'guest__2026!!',
+    role: 'guestrelation',
+  },
+};
 
-// POST /api/auth/login - Admin login
+function decodeToken(token) {
+  try {
+    const decoded = Buffer.from(token, 'base64').toString('utf8');
+    const username = decoded.split(':')[0];
+    return USERS[username] ? username : null;
+  } catch {
+    return null;
+  }
+}
+
+// POST /api/auth/login
 router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -15,13 +37,15 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Username and password required' });
     }
 
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-      // In production, use JWT or sessions
+    const user = USERS[username];
+    if (user && user.password === password) {
       const token = Buffer.from(`${username}:${Date.now()}`).toString('base64');
-      res.json({ 
-        success: true, 
+      res.json({
+        success: true,
         token,
-        message: 'Login successful'
+        role: user.role,
+        username,
+        message: 'Login successful',
       });
     } else {
       res.status(401).json({ error: 'Invalid credentials' });
@@ -31,22 +55,30 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// POST /api/auth/logout - Admin logout
+// POST /api/auth/logout
 router.post('/logout', (req, res) => {
   res.json({ success: true, message: 'Logout successful' });
 });
 
-// GET /api/auth/verify - Verify token
+// GET /api/auth/verify
 router.get('/verify', (req, res) => {
   try {
     const token = req.headers.authorization?.replace('Bearer ', '');
-    
+
     if (!token) {
       return res.status(401).json({ error: 'No token provided' });
     }
 
-    // In production, verify JWT properly
-    res.json({ valid: true });
+    const username = decodeToken(token);
+    if (!username) {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+
+    res.json({
+      valid: true,
+      role: USERS[username].role,
+      username,
+    });
   } catch (error) {
     res.status(401).json({ error: 'Invalid token' });
   }

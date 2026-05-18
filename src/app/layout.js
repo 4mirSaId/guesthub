@@ -1,11 +1,10 @@
 import './globals.css';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 import ClientProviders from '../components/ClientProviders';
+import AppChrome from '../components/AppChrome';
 
 export const metadata = {
-  title: 'Hotel Name App',
-  description: 'Welcome to Hotel Name Community',
+  title: 'Hotel GuestHub App',
+  description: 'Welcome to Hotel GuestHub Community',
 };
 
 export const viewport = {
@@ -23,9 +22,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className="bg-slate-950 text-slate-100">
         <ClientProviders>
-          <Navbar />
-          {children}
-          <Footer />
+          <AppChrome>{children}</AppChrome>
         </ClientProviders>
       </body>
     </html>

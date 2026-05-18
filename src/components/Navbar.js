@@ -27,14 +27,14 @@ export default function Navbar() {
             <div className="relative h-8 w-8 sm:h-10 sm:w-10">
               <Image
                 src="/image.png"
-                alt="Hotel Name Logo"
+                alt="Hotel GuestHub Logo"
                 fill
                 sizes="(max-width: 768px) 32px, 40px"
                 className="object-contain rounded-lg"
                 priority
               />
             </div>
-            <span className="text-lg sm:text-2xl font-bold text-white">Hotel Name</span>
+            <span className="text-lg sm:text-2xl font-bold text-white">Hotel GuestHub</span>
           </Link>
 
           {/* Desktop Navigation */}

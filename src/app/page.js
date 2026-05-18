@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import Link from 'next/link';
 import TonightShow from '../components/TonightShow';
 import GuestReviews from '../components/GuestReviews';
+import SpecialEvents from '../components/SpecialEvents';
 
 function Section({ title, subtitle, children, className = '' }) {
   return (
@@ -122,7 +123,7 @@ export default function Home() {
                 Hotel live experience
               </p>
               <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight">
-                Welcome to Hotel Name
+                Welcome to Hotel GuestHub
               </h1>
               <p className="mt-5 text-sm sm:text-base lg:text-lg text-slate-300 leading-relaxed">
                 Discover a new way to experience your stay. Access daily activities, explore tonight’s shows, request services, and interact in real-time — all from one place.
@@ -196,6 +197,8 @@ export default function Home() {
           />
         
       </Section>
+
+      <SpecialEvents />
 
       {/* SONG REQUEST */}
       <Section className="py-10 sm:py-14" title="Music requests">

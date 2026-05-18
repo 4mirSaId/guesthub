@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { getApiBase } from '@/lib/apiBase';
 
 export default function ComplaintsPage() {
   const [formData, setFormData] = useState({
@@ -25,7 +24,7 @@ export default function ComplaintsPage() {
     setMessage('');
 
     try {
-      const response = await fetch(`${getApiBase()}/api/complaints`, {
+      const response = await fetch('http://localhost:3001/api/complaints', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -52,16 +51,16 @@ export default function ComplaintsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md mx-auto rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl shadow-black/30">
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Submit a Complaint</h1>
-          <p className="text-slate-400">We value your feedback. Please let us know how we can improve your stay.</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Submit a Complaint</h1>
+          <p className="text-gray-600">We value your feedback. Please let us know how we can improve your stay.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="fullName" className="block text-sm font-medium text-slate-300 mb-1">
+            <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
               Full Name *
             </label>
             <input
@@ -71,13 +70,13 @@ export default function ComplaintsPage() {
               value={formData.fullName}
               onChange={handleChange}
               required
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-gray-800"
               placeholder="Enter your full name"
             />
           </div>
 
           <div>
-            <label htmlFor="roomNumber" className="block text-sm font-medium text-slate-300 mb-1">
+            <label htmlFor="roomNumber" className="block text-sm font-medium text-gray-700 mb-1">
               Room Number *
             </label>
             <input
@@ -87,13 +86,13 @@ export default function ComplaintsPage() {
               value={formData.roomNumber}
               onChange={handleChange}
               required
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-gray-800"
               placeholder="Enter your room number"
             />
           </div>
 
           <div>
-            <label htmlFor="complaintText" className="block text-sm font-medium text-slate-300 mb-1">
+            <label htmlFor="complaintText" className="block text-sm font-medium text-gray-700 mb-1">
               Complaint Details *
             </label>
             <textarea
@@ -103,7 +102,7 @@ export default function ComplaintsPage() {
               onChange={handleChange}
               required
               rows={4}
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500 resize-y min-h-[120px]"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-gray-800"
               placeholder="Please describe your complaint in detail..."
             />
           </div>
@@ -111,20 +110,14 @@ export default function ComplaintsPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full rounded-xl bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-700 disabled:text-slate-400 text-white font-semibold py-3.5 text-base shadow-lg shadow-emerald-900/30 transition-colors duration-300"
+            className="w-full bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-300 text-white font-medium py-2 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
           >
             {isSubmitting ? 'Submitting...' : 'Submit Complaint'}
           </button>
         </form>
 
         {message && (
-          <div
-            className={`mt-6 rounded-xl border px-4 py-3 text-sm ${
-              message.includes('Thank you')
-                ? 'border-emerald-900/60 bg-emerald-950/40 text-emerald-100'
-                : 'border-red-900/60 bg-red-950/50 text-red-200'
-            }`}
-          >
+          <div className={`mt-6 p-4 rounded-md ${message.includes('Thank you') ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
             {message}
           </div>
         )}

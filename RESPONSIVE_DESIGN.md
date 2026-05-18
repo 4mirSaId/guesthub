@@ -1,7 +1,7 @@
 # Responsive Design Implementation Guide
 
 ## Overview
-Your Hotel Name Community app has been optimized for all device screen sizes with a mobile-first approach. This document outlines all responsive design improvements and best practices.
+Your Hotel GuestHub Community app has been optimized for all device screen sizes with a mobile-first approach. This document outlines all responsive design improvements and best practices.
 
 ## Key Improvements Made
 
@@ -105,7 +105,7 @@ py-12 sm:py-16 md:py-20        (vertical padding scales)
 ```jsx
 // Scaling text from mobile to desktop
 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
-  Welcome to Hotel Name
+  Welcome to Hotel GuestHub
 </h1>
 ```
 

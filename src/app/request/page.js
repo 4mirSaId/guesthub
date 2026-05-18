@@ -16,7 +16,7 @@ export default function RequestPage() {
   const [complaintLoading, setComplaintLoading] = useState(false);
   const [complaintMessage, setComplaintMessage] = useState('');
   const [settings, setSettings] = useState({
-    partyName: 'Hotel Name Community',
+    partyName: 'Hotel GuestHub Community',
     theme: {
       bgColor: '#ffffff',
       accentColor: '#10b981',

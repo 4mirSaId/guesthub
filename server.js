@@ -40,6 +40,7 @@ app.use('/api/events', eventsRoutes);
 app.use('/api/announcement', announcementsRoutes);
 app.use('/api/service-requests', require('./routes/serviceRoutes'));
 app.use('/api/feedback', require('./routes/feedbackRoutes'));
+app.use('/api/program', require('./routes/program'));
 
 // MongoDB Atlas connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://<username>:<password>@<cluster>.mongodb.net/songrequests?retryWrites=true&w=majority';

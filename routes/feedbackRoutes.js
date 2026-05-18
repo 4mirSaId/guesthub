@@ -47,6 +47,11 @@ router.post('/', async (req, res) => {
     });
 
     const saved = await doc.save();
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('new-feedback', saved);
+    }
+
     res.status(201).json(saved);
   } catch (error) {
     res.status(500).json({ error: error.message });

@@ -24,7 +24,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="mt-4 pt-4 border-t border-slate-800 text-center">
-          <p className="text-xs sm:text-sm text-slate-500">© 2026 Hotel Name App. All rights reserved.</p>
+          <p className="text-xs sm:text-sm text-slate-500">© 2026 Hotel GuestHub App. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -1,23 +1,77 @@
-export default function NightShows() {
-  const weekA = [
-    { day: 'Monday', show: 'Variety Show', emoji: '🎭' },
-    { day: 'Tuesday', show: 'Karaoke Hits', emoji: '🎤' },
-    { day: 'Wednesday', show: 'Tunisian Night', emoji: '🇹🇳' },
-    { day: 'Thursday', show: 'Dance Around the World', emoji: '🌍' },
-    { day: 'Friday', show: 'Miss Hotel Name', emoji: '👑' },
-    { day: 'Saturday', show: 'Acting Show', emoji: '🎬' },
-    { day: 'Sunday', show: 'White Party', emoji: '⚪' },
-  ];
+'use client';
 
-  const weekB = [
-    { day: 'Monday', show: 'Mix Show', emoji: '🔀' },
-    { day: 'Tuesday', show: 'Games and Dance (Rosa Talent)', emoji: '🎮' },
-    { day: 'Wednesday', show: 'Tunisian Beats', emoji: '🥁' },
-    { day: 'Thursday', show: 'Comedy Show', emoji: '😂' },
-    { day: 'Friday', show: 'Mister Hotel Name', emoji: '🤴' },
-    { day: 'Saturday', show: 'Best of Rosa', emoji: '⭐' },
-    { day: 'Sunday', show: 'Pink Party', emoji: '🩷' },
-  ];
+import { useState, useEffect } from 'react';
+import io from 'socket.io-client';
+import { getApiBase } from '@/lib/apiBase';
+import { socketClientOptions } from '@/lib/socketClientOptions';
+
+function ShowWeek({ title, items }) {
+  return (
+    <section className="rounded-2xl shadow-xl shadow-black/20 border border-slate-800 bg-slate-900 p-8 transition-all duration-300 ease-in-out hover:shadow-black/40">
+      <h2 className="text-3xl font-semibold text-white mb-6">{title}</h2>
+      <div className="space-y-4">
+        {items.length === 0 ? (
+          <p className="text-slate-500">No shows scheduled.</p>
+        ) : (
+          items.map((item) => (
+            <div
+              key={item._id || item.day}
+              className="rounded-2xl bg-slate-950 p-5 border border-slate-800 shadow-lg shadow-black/20 transition hover:border-slate-700"
+            >
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm uppercase tracking-[0.2em] text-slate-500">{item.day}</p>
+                  <p className="text-xl font-semibold text-white mt-2">{item.show}</p>
+                </div>
+                <span className="text-3xl">{item.emoji}</span>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </section>
+  );
+}
+
+export default function NightShows() {
+  const [weekA, setWeekA] = useState([]);
+  const [weekB, setWeekB] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+
+    const applyProgram = (data) => {
+      setWeekA(data.nightShows?.weekA || []);
+      setWeekB(data.nightShows?.weekB || []);
+    };
+
+    const load = async () => {
+      try {
+        const res = await fetch(`${getApiBase()}/api/program`);
+        if (!res.ok) throw new Error('Failed to load');
+        const data = await res.json();
+        if (active) applyProgram(data);
+      } catch {
+        if (active) applyProgram({ nightShows: { weekA: [], weekB: [] } });
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+
+    load();
+
+    const socket = io(getApiBase(), socketClientOptions);
+    socket.on('program-updated', (data) => {
+      if (active) applyProgram(data);
+    });
+
+    return () => {
+      active = false;
+      socket.off('program-updated');
+      socket.disconnect();
+    };
+  }, []);
 
   return (
     <div className="bg-slate-950 text-slate-100 min-h-screen">
@@ -29,41 +83,14 @@ export default function NightShows() {
           </p>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-2">
-          <section className="rounded-2xl shadow-xl shadow-black/20 border border-slate-800 bg-slate-900 p-8 transition-all duration-300 ease-in-out hover:shadow-black/40">
-            <h2 className="text-3xl font-semibold text-white mb-6">Week A</h2>
-            <div className="space-y-4">
-              {weekA.map((item) => (
-                <div key={item.day} className="rounded-2xl bg-slate-950 p-5 border border-slate-800 shadow-lg shadow-black/20 transition hover:border-slate-700">
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
-                      <p className="text-sm uppercase tracking-[0.2em] text-slate-500">{item.day}</p>
-                      <p className="text-xl font-semibold text-white mt-2">{item.show}</p>
-                    </div>
-                    <span className="text-3xl">{item.emoji}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="rounded-2xl shadow-xl shadow-black/20 border border-slate-800 bg-slate-900 p-8 transition-all duration-300 ease-in-out hover:shadow-black/40">
-            <h2 className="text-3xl font-semibold text-white mb-6">Week B</h2>
-            <div className="space-y-4">
-              {weekB.map((item) => (
-                <div key={item.day} className="rounded-2xl bg-slate-950 p-5 border border-slate-800 shadow-lg shadow-black/20 transition hover:border-slate-700">
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
-                      <p className="text-sm uppercase tracking-[0.2em] text-slate-500">{item.day}</p>
-                      <p className="text-xl font-semibold text-white mt-2">{item.show}</p>
-                    </div>
-                    <span className="text-3xl">{item.emoji}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        </div>
+        {loading ? (
+          <p className="text-center text-slate-400 text-xl">Loading night shows…</p>
+        ) : (
+          <div className="grid gap-8 lg:grid-cols-2">
+            <ShowWeek title="Week A" items={weekA} />
+            <ShowWeek title="Week B" items={weekB} />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -35,8 +35,18 @@ export default function AnnouncementBar() {
   // Listen to real-time updates via Socket.IO
   useEffect(() => {
     if (!socket) return;
+    let hideTimer;
+    let closeTimer;
+
+    const hideAnnouncement = () => {
+      setIsClosing(true);
+      closeTimer = setTimeout(() => setIsVisible(false), 300);
+    };
 
     socket.on('announcement-update', (updatedAnnouncement) => {
+      clearTimeout(hideTimer);
+      clearTimeout(closeTimer);
+
       if (updatedAnnouncement) {
         setAnnouncement(updatedAnnouncement);
         setIsVisible(true);
@@ -44,15 +54,12 @@ export default function AnnouncementBar() {
 
         // Auto-hide if specified
         if (updatedAnnouncement.autoHideSeconds) {
-          setTimeout(() => {
-            setIsClosing(true);
-            setTimeout(() => setIsVisible(false), 300);
-          }, updatedAnnouncement.autoHideSeconds * 1000);
+          hideTimer = setTimeout(hideAnnouncement, updatedAnnouncement.autoHideSeconds * 1000);
         }
       } else {
         // No active announcement
         setIsClosing(true);
-        setTimeout(() => {
+        closeTimer = setTimeout(() => {
           setIsVisible(false);
           setAnnouncement(null);
         }, 300);
@@ -60,6 +67,8 @@ export default function AnnouncementBar() {
     });
 
     return () => {
+      clearTimeout(hideTimer);
+      clearTimeout(closeTimer);
       socket.off('announcement-update');
     };
   }, [socket]);
@@ -81,7 +90,7 @@ export default function AnnouncementBar() {
 
   return (
     <div
-      className={`fixed top-0 left-0 right-0 z-50 border-b-2 transition-all duration-300 ease-in-out ${priorityClass} ${
+      className={`sticky top-0 z-[60] border-b-2 transition-all duration-300 ease-in-out ${priorityClass} ${
         isClosing ? '-translate-y-full' : 'translate-y-0'
       }`}
     >

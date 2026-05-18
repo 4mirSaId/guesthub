@@ -14,6 +14,11 @@ router.post("/", async (req, res) => {
 
   await newRequest.save();
 
+  const io = req.app.get("io");
+  if (io) {
+    io.emit("new-service-request", newRequest);
+  }
+
   res.json(newRequest);
 });
 
@@ -32,6 +37,11 @@ router.patch("/:id", async (req, res) => {
     { status },
     { new: true }
   );
+
+  const io = req.app.get("io");
+  if (io) {
+    io.emit("update-service-request", updated);
+  }
 
   res.json(updated);
 });

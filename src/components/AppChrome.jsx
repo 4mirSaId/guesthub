@@ -1,16 +1,22 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import AnnouncementBar from './AnnouncementBar';
+import Navbar from './Navbar';
+import Footer from './Footer';
 
-export default function ClientProviders({ children }) {
+export default function AppChrome({ children }) {
   const pathname = usePathname();
   const isStaffRoute = pathname?.startsWith('/admin');
 
+  if (isStaffRoute) {
+    return <>{children}</>;
+  }
+
   return (
     <>
-      {!isStaffRoute && <AnnouncementBar />}
+      <Navbar />
       {children}
+      <Footer />
     </>
   );
 }
