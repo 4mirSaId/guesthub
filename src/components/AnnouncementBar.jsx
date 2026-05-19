@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useSocket } from '../hooks/useSocket';
-import { getApiBase } from '@/lib/apiBase';
 
 export default function AnnouncementBar() {
   const [announcement, setAnnouncement] = useState(null);
@@ -14,7 +13,7 @@ export default function AnnouncementBar() {
   useEffect(() => {
     const fetchAnnouncement = async () => {
       try {
-        const response = await fetch(`${getApiBase()}/api/announcement`);
+        const response = await fetch('/api/announcement');
         if (response.ok) {
           const data = await response.json();
           if (data) {

@@ -3,11 +3,9 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import io from 'socket.io-client';
-import { getApiBase } from '@/lib/apiBase';
+import { getSocketBase } from '@/lib/socketBase';
 import { socketClientOptions } from '@/lib/socketClientOptions';
 import AnnouncementManager from '@/components/AnnouncementManager';
-
-const API_BASE = getApiBase();
 
 export default function GuestRelationDashboard() {
   const router = useRouter();
@@ -85,7 +83,7 @@ export default function GuestRelationDashboard() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-        const response = await fetch(`${API_BASE}/api/auth/verify`, {
+        const response = await fetch('/api/auth/verify', {
           headers: { Authorization: `Bearer ${token}` },
           signal: controller.signal,
         });
@@ -164,9 +162,9 @@ export default function GuestRelationDashboard() {
         const token = localStorage.getItem('grToken');
 
         const [complaintsRes, servicesRes, feedbackRes] = await Promise.all([
-          fetch(`${API_BASE}/api/complaints`, { signal: controller.signal }),
-          fetch(`${API_BASE}/api/service-requests`, { signal: controller.signal }),
-          fetch(`${API_BASE}/api/feedback`, {
+          fetch('/api/complaints', { signal: controller.signal }),
+          fetch('/api/service-requests', { signal: controller.signal }),
+          fetch('/api/feedback', {
             signal: controller.signal,
             headers: { Authorization: `Bearer ${token}` },
           }),
@@ -201,7 +199,14 @@ export default function GuestRelationDashboard() {
 
     let socket;
     try {
-      socket = io(API_BASE, { ...socketClientOptions, forceNew: true });
+      const socketBase = getSocketBase();
+      if (!socketBase) {
+        return () => {
+          active = false;
+        };
+      }
+
+      socket = io(socketBase, { ...socketClientOptions, forceNew: true });
 
       socket.on('new-complaint', (newComplaint) => {
         if (active) {
@@ -280,7 +285,7 @@ export default function GuestRelationDashboard() {
   const updateServiceRequestStatus = async (id, status) => {
     setServiceUpdating((prev) => ({ ...prev, [id]: true }));
     try {
-      const response = await fetch(`${API_BASE}/api/service-requests/${id}`, {
+      const response = await fetch(`/api/service-requests/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status }),
@@ -298,7 +303,7 @@ export default function GuestRelationDashboard() {
 
   const updateComplaintStatus = async (id, status) => {
     try {
-      const response = await fetch(`${API_BASE}/api/complaints/${id}`, {
+      const response = await fetch(`/api/complaints/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status }),
@@ -354,7 +359,7 @@ export default function GuestRelationDashboard() {
     localStorage.removeItem('grToken');
     localStorage.removeItem('grUsername');
     try {
-      await fetch(`${API_BASE}/api/auth/logout`, { method: 'POST' });
+      await fetch('/api/auth/logout', { method: 'POST' });
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -373,8 +378,7 @@ export default function GuestRelationDashboard() {
       <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-8 gap-4">
         <div className="text-xl font-semibold text-center text-white">Cannot connect to the API server</div>
         <p className="text-slate-400 text-center max-w-md text-sm">
-          Start the backend at{' '}
-          <code className="bg-slate-900 px-1.5 py-0.5 rounded text-slate-100 border border-slate-800">{API_BASE}</code>
+          The internal API is not responding right now. Reload the app or check the deployment logs.
         </p>
         <button
           type="button"

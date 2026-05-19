@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import axios from "axios";
-import { getApiBase } from '@/lib/apiBase';
 
 export default function ServicePage() {
   const [room, setRoom] = useState("");
@@ -21,7 +20,7 @@ export default function ServicePage() {
     setFeedback("");
 
     try {
-      await axios.post(`${getApiBase()}/api/service-requests`, {
+      await axios.post("/api/service-requests", {
         room,
         type,
         message,

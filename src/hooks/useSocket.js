@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import io from 'socket.io-client';
-import { getApiBase } from '@/lib/apiBase';
+import { getSocketBase } from '@/lib/socketBase';
 import { socketClientOptions } from '@/lib/socketClientOptions';
 
 let socket = null;
@@ -13,7 +13,12 @@ export function useSocket() {
   useEffect(() => {
     // Initialize socket connection only once
     if (!socket) {
-      socket = io(getApiBase(), {
+      const socketBase = getSocketBase();
+      if (!socketBase) {
+        return;
+      }
+
+      socket = io(socketBase, {
         ...socketClientOptions,
       });
 

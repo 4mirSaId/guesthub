@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
-import { getApiBase } from '@/lib/apiBase';
+import { getSocketBase } from '@/lib/socketBase';
 import { socketClientOptions } from '@/lib/socketClientOptions';
 
 export default function RequestPage() {
@@ -31,7 +31,7 @@ export default function RequestPage() {
     // Fetch initial settings
     const loadSettings = async () => {
       try {
-        const response = await fetch(`${getApiBase()}/api/settings`);
+        const response = await fetch('/api/settings');
         if (!response.ok) return;
         const data = await response.json();
         if (active) setSettings(data);
@@ -43,7 +43,14 @@ export default function RequestPage() {
     loadSettings();
 
     // Socket.IO for real-time settings updates
-    const socket = io(getApiBase(), { ...socketClientOptions });
+    const socketBase = getSocketBase();
+    if (!socketBase) {
+      return () => {
+        active = false;
+      };
+    }
+
+    const socket = io(socketBase, { ...socketClientOptions });
 
     socket.on('settings-updated', (updatedSettings) => {
       if (active) setSettings(updatedSettings);
@@ -67,7 +74,7 @@ export default function RequestPage() {
     setMessage('');
 
     try {
-      const response = await fetch(`${getApiBase()}/api/requests`, {
+      const response = await fetch('/api/requests', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -101,7 +108,7 @@ export default function RequestPage() {
     setComplaintMessage('');
 
     try {
-      const response = await fetch(`${getApiBase()}/api/complaints`, {
+      const response = await fetch('/api/complaints', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

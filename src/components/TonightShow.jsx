@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import io from 'socket.io-client';
-import { getApiBase } from '@/lib/apiBase';
+import { getSocketBase } from '@/lib/socketBase';
 import { socketClientOptions } from '@/lib/socketClientOptions';
 
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -31,8 +31,8 @@ const TonightShow = () => {
     const load = async () => {
       try {
         const [settingsRes, programRes] = await Promise.all([
-          fetch(`${getApiBase()}/api/settings`),
-          fetch(`${getApiBase()}/api/program`),
+          fetch('/api/settings'),
+          fetch('/api/program'),
         ]);
 
         if (active && settingsRes.ok) {
@@ -52,7 +52,14 @@ const TonightShow = () => {
 
     load();
 
-    const socket = io(getApiBase(), socketClientOptions);
+    const socketBase = getSocketBase();
+    if (!socketBase) {
+      return () => {
+        active = false;
+      };
+    }
+
+    const socket = io(socketBase, socketClientOptions);
     socket.on('program-updated', (program) => {
       if (active) {
         setWeekA(buildDayMap(program.nightShows?.weekA));

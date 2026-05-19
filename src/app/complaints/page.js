@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { getApiBase } from '@/lib/apiBase';
 
 export default function ComplaintsPage() {
   const [formData, setFormData] = useState({
@@ -25,7 +24,7 @@ export default function ComplaintsPage() {
     setMessage('');
 
     try {
-      const response = await fetch(`${getApiBase()}/api/complaints`, {
+      const response = await fetch('/api/complaints', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

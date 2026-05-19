@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getApiBase } from '@/lib/apiBase';
 
 const inputClass =
   'w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/80';
@@ -24,7 +23,7 @@ export default function AnimationProgramEditor({ section }) {
 
     const loadProgram = async () => {
       try {
-        const res = await fetch(`${getApiBase()}/api/program`);
+        const res = await fetch('/api/program');
         if (!res.ok) throw new Error('Failed to load');
         const data = await res.json();
         if (active) setProgram(data);
@@ -47,7 +46,7 @@ export default function AnimationProgramEditor({ section }) {
     setMessage('');
     try {
       const token = localStorage.getItem('animationToken');
-      const res = await fetch(`${getApiBase()}/api/program`, {
+      const res = await fetch('/api/program', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

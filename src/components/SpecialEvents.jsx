@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import io from 'socket.io-client';
-import { getApiBase } from '@/lib/apiBase';
+import { getSocketBase } from '@/lib/socketBase';
 import { socketClientOptions } from '@/lib/socketClientOptions';
 
 function formatCreatedAt(value) {
@@ -26,7 +26,7 @@ export default function SpecialEvents() {
 
     const loadEvents = async () => {
       try {
-        const response = await fetch(`${getApiBase()}/api/events`);
+        const response = await fetch('/api/events');
         if (!response.ok) throw new Error('Failed to load events');
 
         const data = await response.json();
@@ -40,7 +40,14 @@ export default function SpecialEvents() {
 
     loadEvents();
 
-    const socket = io(getApiBase(), {
+    const socketBase = getSocketBase();
+    if (!socketBase) {
+      return () => {
+        active = false;
+      };
+    }
+
+    const socket = io(socketBase, {
       ...socketClientOptions,
       forceNew: true,
     });

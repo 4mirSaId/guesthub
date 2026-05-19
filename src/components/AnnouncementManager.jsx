@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { getApiBase } from '@/lib/apiBase';
 
 const iconOptions = ['!', 'i', '*'];
 
@@ -18,7 +17,7 @@ const priorityBadgeColors = {
 };
 
 async function requestAnnouncements() {
-  const response = await fetch(`${getApiBase()}/api/announcement/all`);
+  const response = await fetch('/api/announcement/all');
   if (!response.ok) throw new Error('Failed to fetch announcements');
 
   const data = await response.json();
@@ -87,10 +86,9 @@ export default function AnnouncementManager({ embedded = false }) {
     setLoading(true);
 
     try {
-      const base = getApiBase();
       const url = editingId
-        ? `${base}/api/announcement/${editingId}`
-        : `${base}/api/announcement`;
+        ? `/api/announcement/${editingId}`
+        : '/api/announcement';
 
       const payload = {
         message: message.trim(),
@@ -142,7 +140,7 @@ export default function AnnouncementManager({ embedded = false }) {
     setSuccessMessage('');
 
     try {
-      const response = await fetch(`${getApiBase()}/api/announcement/${id}`, {
+      const response = await fetch(`/api/announcement/${id}`, {
         method: 'DELETE',
       });
 

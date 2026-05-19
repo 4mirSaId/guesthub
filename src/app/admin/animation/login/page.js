@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { getApiBase } from '@/lib/apiBase';
 
 export default function AnimationLoginPage() {
   const router = useRouter();

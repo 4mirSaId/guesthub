@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import io from 'socket.io-client';
-import { getApiBase } from '@/lib/apiBase';
+import { getSocketBase } from '@/lib/socketBase';
 import { socketClientOptions } from '@/lib/socketClientOptions';
 
 const AnimationProgramEditor = dynamic(
@@ -14,8 +14,6 @@ const AnimationProgramEditor = dynamic(
     loading: () => <p className="text-slate-400 py-8">Loading editor…</p>,
   }
 );
-
-const API_BASE = getApiBase();
 
 export default function AnimationDashboard() {
   const router = useRouter();
@@ -124,7 +122,7 @@ export default function AnimationDashboard() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 4000);
 
-        const response = await fetch(`${API_BASE}/api/auth/verify`, {
+        const response = await fetch('/api/auth/verify', {
           headers: { Authorization: `Bearer ${token}` },
           signal: controller.signal,
         });
@@ -197,15 +195,15 @@ export default function AnimationDashboard() {
 
         const token = localStorage.getItem('animationToken');
         const [requestsRes, settingsRes, eventsRes] = await Promise.all([
-          fetch(`${API_BASE}/api/requests`, {
+          fetch('/api/requests', {
             signal: controller.signal,
             headers: { 'Authorization': `Bearer ${token}` }
           }),
-          fetch(`${API_BASE}/api/settings`, {
+          fetch('/api/settings', {
             signal: controller.signal,
             headers: { 'Authorization': `Bearer ${token}` }
           }),
-          fetch(`${API_BASE}/api/events`, {
+          fetch('/api/events', {
             signal: controller.signal,
             headers: { 'Authorization': `Bearer ${token}` }
           }),
@@ -240,7 +238,14 @@ export default function AnimationDashboard() {
 
     let socket;
     try {
-      socket = io(API_BASE, {
+      const socketBase = getSocketBase();
+      if (!socketBase) {
+        return () => {
+          active = false;
+        };
+      }
+
+      socket = io(socketBase, {
         ...socketClientOptions,
         forceNew: true,
       });
@@ -318,7 +323,7 @@ export default function AnimationDashboard() {
 
   const updateStatus = async (id, status) => {
     try {
-      const response = await fetch(`${API_BASE}/api/requests/${id}`, {
+      const response = await fetch(`/api/requests/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -339,7 +344,7 @@ export default function AnimationDashboard() {
 
   const createEvent = async (eventData) => {
     try {
-      const response = await fetch(`${API_BASE}/api/events`, {
+      const response = await fetch('/api/events', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -370,7 +375,7 @@ export default function AnimationDashboard() {
 
   const updateEvent = async (id, eventData) => {
     try {
-      const response = await fetch(`${API_BASE}/api/events/${id}`, {
+      const response = await fetch(`/api/events/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -397,7 +402,7 @@ export default function AnimationDashboard() {
 
   const deleteEvent = async (id) => {
     try {
-      const response = await fetch(`${API_BASE}/api/events/${id}`, {
+      const response = await fetch(`/api/events/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('animationToken')}`
@@ -422,7 +427,7 @@ export default function AnimationDashboard() {
     setSettingsMessage('');
 
     try {
-      const response = await fetch(`${API_BASE}/api/settings`, {
+      const response = await fetch('/api/settings', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -470,7 +475,7 @@ export default function AnimationDashboard() {
     localStorage.removeItem('animationUsername');
     
     try {
-      await fetch(`${API_BASE}/api/auth/logout`, {
+      await fetch('/api/auth/logout', {
         method: 'POST',
       });
     } catch (error) {
@@ -485,11 +490,7 @@ export default function AnimationDashboard() {
       <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-8 gap-4">
         <div className="text-xl font-semibold text-center text-white">Cannot connect to the API server</div>
         <p className="text-slate-400 text-center max-w-md text-sm">
-          Start the backend at{' '}
-          <code className="bg-slate-900 px-1.5 py-0.5 rounded text-slate-100 border border-slate-800">{API_BASE}</code>
-          , or set{' '}
-          <code className="bg-slate-900 px-1.5 py-0.5 rounded text-slate-100 border border-slate-800">NEXT_PUBLIC_API_URL</code> in{' '}
-          <code className="bg-slate-900 px-1.5 py-0.5 rounded text-slate-100 border border-slate-800">.env.local</code>.
+          The internal API is not responding right now. Reload the app or check the deployment logs.
         </p>
         <button
           type="button"

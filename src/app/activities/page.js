@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
-import { getApiBase } from '@/lib/apiBase';
+import { getSocketBase } from '@/lib/socketBase';
 import { socketClientOptions } from '@/lib/socketClientOptions';
 import { formatTimeRange } from '@/lib/formatScheduleTime';
 
@@ -21,7 +21,7 @@ export default function Activities() {
 
     const load = async () => {
       try {
-        const res = await fetch(`${getApiBase()}/api/program`);
+        const res = await fetch('/api/program');
         if (!res.ok) throw new Error('Failed to load');
         const data = await res.json();
         if (active) applyProgram(data);
@@ -34,7 +34,14 @@ export default function Activities() {
 
     load();
 
-    const socket = io(getApiBase(), socketClientOptions);
+    const socketBase = getSocketBase();
+    if (!socketBase) {
+      return () => {
+        active = false;
+      };
+    }
+
+    const socket = io(socketBase, socketClientOptions);
     socket.on('program-updated', (data) => {
       if (active) applyProgram(data);
     });
