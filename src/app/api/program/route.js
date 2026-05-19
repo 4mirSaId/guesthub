@@ -42,7 +42,7 @@ export async function GET() {
 
 export async function PUT(request) {
   try {
-    const user = getAuthUser(request);
+    const user = await getAuthUser(request);
     if (!user || user.role !== 'animation') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

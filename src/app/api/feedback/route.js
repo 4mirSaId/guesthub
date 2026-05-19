@@ -11,7 +11,7 @@ function computeIsPublic(rating) {
 
 export async function GET(request) {
   try {
-    const user = getAuthUser(request);
+    const user = await getAuthUser(request);
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
