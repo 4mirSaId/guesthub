@@ -236,7 +236,6 @@ export default function AnimationDashboard() {
       }
     };
 
-    setDataReady(false);
     loadData();
 
     let socket;

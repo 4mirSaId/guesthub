@@ -15,17 +15,38 @@ const announcementsRoutes = require('./routes/announcements');
 const SongRequest = require('./models/SongRequest');
 const ServiceRequest = require('./models/ServiceRequest');
 
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'https://hotel-guesthub.vercel.app',
+  process.env.CLIENT_ORIGIN,
+  process.env.NEXT_PUBLIC_SITE_URL,
+  process.env.NEXT_PUBLIC_API_URL,
+].filter(Boolean).map((origin) => origin.replace(/\/$/, ''));
+
+function isAllowedOrigin(origin) {
+  if (!origin) return true;
+  return allowedOrigins.includes(origin.replace(/\/$/, ''));
+}
+
+function corsOrigin(origin, callback) {
+  if (isAllowedOrigin(origin)) {
+    return callback(null, true);
+  }
+  return callback(new Error('Not allowed by CORS'));
+}
+
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST", "PATCH"]
+    origin: corsOrigin,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"]
   }
 });
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: corsOrigin, credentials: true }));
 app.use(express.json());
 
 // Make io accessible in routes

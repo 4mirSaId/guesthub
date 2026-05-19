@@ -3,8 +3,13 @@ import ClientProviders from '../components/ClientProviders';
 import AppChrome from '../components/AppChrome';
 
 export const metadata = {
-  title: 'Hotel GuestHub App',
-  description: 'Welcome to Hotel GuestHub Community',
+  title: 'GuestHub',
+  icons: {
+    icon: '/GH.png',
+    shortcut: '/GH.png',
+    apple: '/GH.png',
+  },
+  description: 'Welcome to Hotel GuestHub',
 };
 
 export const viewport = {

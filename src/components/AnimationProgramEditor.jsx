@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { getApiBase } from '@/lib/apiBase';
 
 const inputClass =
@@ -19,22 +19,28 @@ export default function AnimationProgramEditor({ section }) {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
 
-  const loadProgram = useCallback(async () => {
-    try {
-      const res = await fetch(`${getApiBase()}/api/program`);
-      if (!res.ok) throw new Error('Failed to load');
-      const data = await res.json();
-      setProgram(data);
-    } catch {
-      setMessage('Could not load program data.');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
+    let active = true;
+
+    const loadProgram = async () => {
+      try {
+        const res = await fetch(`${getApiBase()}/api/program`);
+        if (!res.ok) throw new Error('Failed to load');
+        const data = await res.json();
+        if (active) setProgram(data);
+      } catch {
+        if (active) setMessage('Could not load program data.');
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+
     loadProgram();
-  }, [loadProgram]);
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const saveProgram = async (nextProgram) => {
     setSaving(true);
