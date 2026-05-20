@@ -1,0 +1,89 @@
+{
+  "navbar": {
+    "home": "Accueil",
+    "activities": "Activités",
+    "nightShows": "Spectacles de Nuit",
+    "songRequest": "Demande de Chanson",
+    "serviceRequest": "Demande de Service",
+    "complaints": "Réclamations",
+    "feedback": "Commentaires",
+    "language": "Langue"
+  },
+  "footer": {
+    "copyright": "© 2024 Hotel GuestHub. Tous droits réservés.",
+    "followUs": "Suivez-nous sur les réseaux sociaux"
+  },
+  "admin": {
+    "dashboard": "Tableau de Bord",
+    "management": "Gestion",
+    "settings": "Paramètres",
+    "logout": "Déconnexion",
+    "login": "Connexion",
+    "announcements": "Annonces",
+    "animation": "Animation",
+    "guestRelation": "Relations avec les Clients",
+    "services": "Services"
+  },
+  "pages": {
+    "home": {
+      "tagline": "Expérience hôtelière en direct",
+      "welcome": "Bienvenue à Hotel GuestHub",
+      "description": "Découvrez une nouvelle façon de vivre votre séjour. Accédez aux activités quotidiennes, explorez les spectacles de ce soir, demandez des services et interagissez en temps réel — tout en un seul endroit.",
+      "exploreBtnText": "Explorer",
+      "feedbackBtnText": "Laisser un commentaire",
+      "stayOrganized": "Votre séjour, organisé",
+      "stayDescription": "Accédez directement à la fonctionnalité dont vous avez besoin. Tout est conçu pour mobile, rapide et simple.",
+      "whatYouCanDo": "Ce que vous pouvez faire",
+      "dailyActivities": "Activités Quotidiennes",
+      "activitiesDesc": "Découvrez les activités d'aujourd'hui et l'horaire.",
+      "viewActivitiesBtn": "Voir les Activités",
+      "reviews": "Avis des Clients",
+      "reviewsDesc": "Découvrez ce que pensent les autres clients de leur séjour.",
+      "specialEvents": "Événements Spéciaux",
+      "eventsDesc": "Ne manquez pas les événements spéciaux à venir.",
+      "reviewsFeedback": "Avis / Commentaires"
+    },
+    "activities": {
+      "title": "Activités",
+      "description": "Découvrez nos activités passionnantes"
+    },
+    "nightShows": {
+      "title": "Spectacle d'Aujourd'hui",
+      "noShow": "Aucun spectacle programmé ce soir"
+    },
+    "songRequest": {
+      "title": "Demande de Chanson",
+      "submit": "Soumettre la Demande",
+      "success": "Demande de chanson soumise avec succès"
+    },
+    "serviceRequest": {
+      "title": "Demande de Service",
+      "submit": "Soumettre la Demande",
+      "success": "Demande de service soumise avec succès"
+    },
+    "complaints": {
+      "title": "Réclamations",
+      "submit": "Soumettre une Réclamation",
+      "success": "Réclamation soumise avec succès"
+    },
+    "feedback": {
+      "title": "Commentaires",
+      "submit": "Soumettre les Commentaires",
+      "success": "Commentaires soumis avec succès"
+    }
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "submit": "Soumettre",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "back": "Retour",
+    "yes": "Oui",
+    "no": "Non",
+    "required": "Ce champ est requis"
+  }
+}

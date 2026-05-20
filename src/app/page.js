@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import Link from 'next/link';
+import { useLanguage } from '../context/LanguageContext';
 import TonightShow from '../components/TonightShow';
 import GuestReviews from '../components/GuestReviews';
 import SpecialEvents from '../components/SpecialEvents';
@@ -103,6 +104,7 @@ function Stars({ value }) {
 }
 
 export default function Home() {
+  const { t } = useLanguage();
   const reviews = useMemo(() => sampleReviews, []);
 
   return (
@@ -120,21 +122,21 @@ export default function Home() {
           <div className="max-w-6xl mx-auto">
             <div className="max-w-3xl">
               <p className="text-xs sm:text-sm uppercase tracking-[0.25em] text-slate-400">
-                Hotel live experience
+                {t('pages.home.tagline')}
               </p>
               <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight">
-                Welcome to Hotel GuestHub
+                {t('pages.home.welcome')}
               </h1>
               <p className="mt-5 text-sm sm:text-base lg:text-lg text-slate-300 leading-relaxed">
-                Discover a new way to experience your stay. Access daily activities, explore tonight’s shows, request services, and interact in real-time — all from one place.
+                {t('pages.home.description')}
               </p>
 
               <div className="mt-8 flex flex-col sm:flex-row gap-3">
                 <Button href="/activities" className="px-6 py-3.5 text-sm sm:text-base">
-                  Explore
+                  {t('pages.home.exploreBtnText')}
                 </Button>
                 <Button href="/feedback" variant="ghost" className="px-6 py-3.5 text-sm sm:text-base">
-                  Leave feedback
+                  {t('pages.home.feedbackBtnText')}
                 </Button>
               </div>
             </div>
@@ -148,31 +150,31 @@ export default function Home() {
                 <div className="lg:col-span-7">
                   <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 sm:p-8 shadow-xl shadow-black/20">
                     <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                      Your stay, organized
+                      {t('pages.home.stayOrganized')}
                     </h3>
                     <p className="mt-3 text-sm sm:text-base text-slate-400">
-                      Jump directly to the feature you need. Everything is built for mobile, fast, and simple.
+                      {t('pages.home.stayDescription')}
                     </p>
                     <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
                       <Link className="rounded-xl border border-slate-800 bg-slate-950/70 px-4 py-3 text-sm text-slate-200 hover:border-slate-700 hover:bg-slate-950 transition-colors" href="/activities">
-                        Activities
+                        {t('navbar.activities')}
                       </Link>
                       <Link className="rounded-xl border border-slate-800 bg-slate-950/70 px-4 py-3 text-sm text-slate-200 hover:border-slate-700 hover:bg-slate-950 transition-colors" href="/night-shows">
-                        Night shows
+                        {t('navbar.nightShows')}
                       </Link>
                       <Link className="rounded-xl border border-slate-800 bg-slate-950/70 px-4 py-3 text-sm text-slate-200 hover:border-slate-700 hover:bg-slate-950 transition-colors" href="/request">
-                        Song request
+                        {t('navbar.songRequest')}
                       </Link>
                       <Link className="rounded-xl border border-slate-800 bg-slate-950/70 px-4 py-3 text-sm text-slate-200 hover:border-slate-700 hover:bg-slate-950 transition-colors" href="/service">
-                        Service
+                        {t('navbar.serviceRequest')}
                       </Link>
                     </div>
                     <div className="mt-4 grid grid-cols-2 gap-3">
                       <Link className="rounded-xl border border-slate-800 bg-slate-950/70 px-4 py-3 text-sm text-slate-200 hover:border-slate-700 hover:bg-slate-950 transition-colors" href="/complaints">
-                        Complaints
+                        {t('navbar.complaints')}
                       </Link>
                       <Link className="rounded-xl border border-slate-800 bg-slate-950/70 px-4 py-3 text-sm text-slate-200 hover:border-slate-700 hover:bg-slate-950 transition-colors" href="/feedback">
-                        Reviews / Feedback
+                        {t('pages.home.reviewsFeedback')}
                       </Link>
                     </div>
                   </div>
@@ -186,14 +188,14 @@ export default function Home() {
       
 
       {/* ACTIVITIES */}
-      <Section className="py-10 sm:py-14" title="What you can do">
+      <Section className="py-10 sm:py-14" title={t('pages.home.whatYouCanDo')}>
         
           <Card
             icon="📅"
-            title="Daily Activities"
-            description="Discover today’s activities and schedule."
+            title={t('pages.home.dailyActivities')}
+            description={t('pages.home.activitiesDesc')}
             href="/activities"
-            cta="View Activities"
+            cta={t('pages.home.viewActivitiesBtn')}
           />
         
       </Section>

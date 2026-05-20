@@ -1,0 +1,89 @@
+{
+  "navbar": {
+    "home": "Startseite",
+    "activities": "Aktivitäten",
+    "nightShows": "Nachtshows",
+    "songRequest": "Liedanfrage",
+    "serviceRequest": "Serviceanfrage",
+    "complaints": "Beschwerden",
+    "feedback": "Feedback",
+    "language": "Sprache"
+  },
+  "footer": {
+    "copyright": "© 2024 Hotel GuestHub. Alle Rechte vorbehalten.",
+    "followUs": "Folgen Sie uns auf Social Media"
+  },
+  "admin": {
+    "dashboard": "Dashboard",
+    "management": "Verwaltung",
+    "settings": "Einstellungen",
+    "logout": "Abmelden",
+    "login": "Anmelden",
+    "announcements": "Ankündigungen",
+    "animation": "Animation",
+    "guestRelation": "Gastzufriedenheit",
+    "services": "Dienstleistungen"
+  },
+  "pages": {
+    "home": {
+      "tagline": "Hotelerlebnis live",
+      "welcome": "Willkommen bei Hotel GuestHub",
+      "description": "Entdecken Sie eine neue Art, Ihren Aufenthalt zu erleben. Zugriff auf tägliche Aktivitäten, erkunden Sie die heutige Show, fordern Sie Services an und interagieren Sie in Echtzeit — alles an einem Ort.",
+      "exploreBtnText": "Erkunden",
+      "feedbackBtnText": "Feedback geben",
+      "stayOrganized": "Ihr Aufenthalt, organisiert",
+      "stayDescription": "Wählen Sie direkt die Funktion, die Sie benötigen. Alles ist für Mobilgeräte optimiert, schnell und einfach.",
+      "whatYouCanDo": "Was Sie tun können",
+      "dailyActivities": "Tägliche Aktivitäten",
+      "activitiesDesc": "Entdecken Sie die heutigen Aktivitäten und den Zeitplan.",
+      "viewActivitiesBtn": "Aktivitäten Ansehen",
+      "reviews": "Gastkritiken",
+      "reviewsDesc": "Sehen Sie, was andere Gäste über ihren Aufenthalt denken.",
+      "specialEvents": "Spezielle Veranstaltungen",
+      "eventsDesc": "Verpassen Sie nicht die kommenden Sonderveranstaltungen.",
+      "reviewsFeedback": "Bewertungen / Feedback"
+    },
+    "activities": {
+      "title": "Aktivitäten",
+      "description": "Erkunden Sie unsere spannenden Aktivitäten"
+    },
+    "nightShows": {
+      "title": "Heutige Show",
+      "noShow": "Heute Nacht ist keine Show geplant"
+    },
+    "songRequest": {
+      "title": "Liedanfrage",
+      "submit": "Anfrage Einreichen",
+      "success": "Liedanfrage erfolgreich eingereicht"
+    },
+    "serviceRequest": {
+      "title": "Serviceanfrage",
+      "submit": "Anfrage Einreichen",
+      "success": "Serviceanfrage erfolgreich eingereicht"
+    },
+    "complaints": {
+      "title": "Beschwerden",
+      "submit": "Beschwerde Einreichen",
+      "success": "Beschwerde erfolgreich eingereicht"
+    },
+    "feedback": {
+      "title": "Feedback",
+      "submit": "Feedback Senden",
+      "success": "Feedback erfolgreich eingereicht"
+    }
+  },
+  "common": {
+    "loading": "Wird geladen...",
+    "error": "Ein Fehler ist aufgetreten",
+    "success": "Erfolg",
+    "cancel": "Abbrechen",
+    "submit": "Absenden",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "back": "Zurück",
+    "yes": "Ja",
+    "no": "Nein",
+    "required": "Dieses Feld ist erforderlich"
+  }
+}

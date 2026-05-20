@@ -4,18 +4,27 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { language, changeLanguage, t } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
 
   const navItems = [
-    { href: '/', label: 'Home' },
-    { href: '/activities', label: 'Activities' },
-    { href: '/night-shows', label: 'Night Shows' },
-    { href: '/request', label: 'Song request' },
-    { href: '/service', label: 'Service request'},
-    { href: '/complaints', label: 'Complaints' },
+    { href: '/', label: 'navbar.home' },
+    { href: '/activities', label: 'navbar.activities' },
+    { href: '/night-shows', label: 'navbar.nightShows' },
+    { href: '/request', label: 'navbar.songRequest' },
+    { href: '/service', label: 'navbar.serviceRequest' },
+    { href: '/complaints', label: 'navbar.complaints' },
+  ];
+
+  const languages = [
+    { code: 'en', name: 'English' },
+    { code: 'fr', name: 'Français' },
+    { code: 'de', name: 'Deutsch' },
   ];
 
   return (
@@ -49,9 +58,45 @@ export default function Navbar() {
                     : 'text-slate-300 hover:text-white hover:bg-slate-900/60'
                 }`}
               >
-                {item.label}
+                {t(item.label)}
               </Link>
             ))}
+            
+            {/* Language Selector - Desktop */}
+            <div className="relative">
+              <button
+                onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+                className="px-3 lg:px-4 py-2 rounded-xl font-medium text-sm lg:text-base text-slate-300 hover:text-white hover:bg-slate-900/60 transition-all duration-300 ease-in-out flex items-center space-x-2"
+                aria-label={t('navbar.language')}
+              >
+                <span>🌐</span>
+                <span>{language.toUpperCase()}</span>
+                <svg className={`w-4 h-4 transition-transform duration-200 ${isLangMenuOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </button>
+              
+              {isLangMenuOpen && (
+                <div className="absolute right-0 mt-2 w-32 bg-slate-900 rounded-lg shadow-lg border border-slate-800 py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        changeLanguage(lang.code);
+                        setIsLangMenuOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-sm transition-colors duration-200 ${
+                        language === lang.code
+                          ? 'bg-emerald-500 text-white'
+                          : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                      }`}
+                    >
+                      {lang.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -101,9 +146,32 @@ export default function Navbar() {
                       : 'text-slate-300 hover:text-white hover:bg-slate-900/60'
                   }`}
                 >
-                  {item.label}
+                  {t(item.label)}
                 </Link>
               ))}
+              
+              {/* Language Selector - Mobile */}
+              <div className="border-t border-slate-800 mt-2 pt-2">
+                <div className="text-xs text-slate-400 px-4 py-2">{t('navbar.language')}</div>
+                <div className="flex gap-2 px-4">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        changeLanguage(lang.code);
+                        setIsMenuOpen(false);
+                      }}
+                      className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                        language === lang.code
+                          ? 'bg-emerald-500 text-white shadow-md'
+                          : 'text-slate-300 hover:text-white hover:bg-slate-900/60'
+                      }`}
+                    >
+                      {lang.code.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         )}

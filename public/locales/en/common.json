@@ -1,0 +1,89 @@
+{
+  "navbar": {
+    "home": "Home",
+    "activities": "Activities",
+    "nightShows": "Night Shows",
+    "songRequest": "Song request",
+    "serviceRequest": "Service request",
+    "complaints": "Complaints",
+    "feedback": "Feedback",
+    "language": "Language"
+  },
+  "footer": {
+    "copyright": "© 2024 Hotel GuestHub. All rights reserved.",
+    "followUs": "Follow us on social media"
+  },
+  "admin": {
+    "dashboard": "Dashboard",
+    "management": "Management",
+    "settings": "Settings",
+    "logout": "Logout",
+    "login": "Login",
+    "announcements": "Announcements",
+    "animation": "Animation",
+    "guestRelation": "Guest Relation",
+    "services": "Services"
+  },
+  "pages": {
+    "home": {
+      "tagline": "Hotel live experience",
+      "welcome": "Welcome to Hotel GuestHub",
+      "description": "Discover a new way to experience your stay. Access daily activities, explore tonight's shows, request services, and interact in real-time — all from one place.",
+      "exploreBtnText": "Explore",
+      "feedbackBtnText": "Leave feedback",
+      "stayOrganized": "Your stay, organized",
+      "stayDescription": "Jump directly to the feature you need. Everything is built for mobile, fast, and simple.",
+      "whatYouCanDo": "What you can do",
+      "dailyActivities": "Daily Activities",
+      "activitiesDesc": "Discover today's activities and schedule.",
+      "viewActivitiesBtn": "View Activities",
+      "reviews": "Guest Reviews",
+      "reviewsDesc": "See what other guests think about their stay.",
+      "specialEvents": "Special Events",
+      "eventsDesc": "Don't miss out on upcoming special events.",
+      "reviewsFeedback": "Reviews / Feedback"
+    },
+    "activities": {
+      "title": "Activities",
+      "description": "Explore our exciting activities"
+    },
+    "nightShows": {
+      "title": "Tonight's Show",
+      "noShow": "No show scheduled for tonight"
+    },
+    "songRequest": {
+      "title": "Song Request",
+      "submit": "Submit Request",
+      "success": "Song request submitted successfully"
+    },
+    "serviceRequest": {
+      "title": "Service Request",
+      "submit": "Submit Request",
+      "success": "Service request submitted successfully"
+    },
+    "complaints": {
+      "title": "Complaints",
+      "submit": "Submit Complaint",
+      "success": "Complaint submitted successfully"
+    },
+    "feedback": {
+      "title": "Feedback",
+      "submit": "Submit Feedback",
+      "success": "Feedback submitted successfully"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "yes": "Yes",
+    "no": "No",
+    "required": "This field is required"
+  }
+}

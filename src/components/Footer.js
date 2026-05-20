@@ -1,6 +1,11 @@
+'use client';
+
 import React from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 const Footer = () => {
+  const { t } = useLanguage();
+
   return (
     <footer className="sticky bottom-0 bg-slate-950/80 backdrop-blur-md border-t border-slate-800 shadow-sm py-6 sm:py-8 md:py-10">
       <div className="container mx-auto px-4 sm:px-6 md:px-8">
@@ -24,7 +29,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="mt-4 pt-4 border-t border-slate-800 text-center">
-          <p className="text-xs sm:text-sm text-slate-500">© 2026 Hotel GuestHub App. All rights reserved.</p>
+          <p className="text-xs sm:text-sm text-slate-500">{t('footer.copyright')}</p>
         </div>
       </div>
     </footer>
