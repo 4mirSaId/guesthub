@@ -375,7 +375,7 @@ export default function AnimationDashboard() {
 
   const updateEvent = async (id, eventData) => {
     try {
-      const response = await fetch(`/api/events/${id}`, {
+      const response = await fetch(`http://localhost:3001/api/events/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -402,7 +402,7 @@ export default function AnimationDashboard() {
 
   const deleteEvent = async (id) => {
     try {
-      const response = await fetch(`/api/events/${id}`, {
+      const response = await fetch(`http://localhost:3001/api/events/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('animationToken')}`

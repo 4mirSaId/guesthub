@@ -10,7 +10,7 @@
     "language": "Language"
   },
   "footer": {
-    "copyright": "© 2024 Hotel GuestHub. All rights reserved.",
+    "copyright": "© 2026 Hammamet Garden Resort & Spa GuestHub. All rights reserved.",
     "followUs": "Follow us on social media"
   },
   "admin": {
@@ -27,7 +27,7 @@
   "pages": {
     "home": {
       "tagline": "Hotel live experience",
-      "welcome": "Welcome to Hotel GuestHub",
+      "welcome": "Welcome to Hammamet Garden Resort & Spa GuestHub",
       "description": "Discover a new way to experience your stay. Access daily activities, explore tonight's shows, request services, and interact in real-time — all from one place.",
       "exploreBtnText": "Explore",
       "feedbackBtnText": "Leave feedback",
@@ -42,34 +42,121 @@
       "specialEvents": "Special Events",
       "eventsDesc": "Don't miss out on upcoming special events.",
       "reviewsFeedback": "Reviews / Feedback"
+    ,
+      "musicRequestsTitle": "Music requests",
+      "requestSongTitle": "Request a Song",
+      "requestSongDesc": "Ask the DJ for your favorite track and keep the vibe going.",
+      "requestSongCta": "Ask for a Song",
+      "servicesTitle": "Services",
+      "serviceRequestTitle": "Service Request",
+      "serviceRequestDesc": "Request a service easily and get a quick response.",
+      "serviceRequestCta": "Request a Service",
+      "supportTitle": "Support",
+      "complaintsTitle": "Complaints",
+      "complaintsDesc": "Report any issue quickly so we can help right away.",
+      "complaintsCta": "Send Complaint",
+      "footerText": "Enjoy your stay | DJ Amir"
     },
     "activities": {
       "title": "Activities",
       "description": "Explore our exciting activities"
+    ,
+      "heroTitle": "Today's Activities 📅",
+      "loading": "Loading activities…",
+      "empty": "No activities scheduled yet.",
+      "kidsClubTitle": "Kids Club Schedule 🧒",
+      "dayLabel": "Day",
+      "sessionsLabel": "Sessions"
     },
     "nightShows": {
       "title": "Tonight's Show",
       "noShow": "No show scheduled for tonight"
+    ,
+      "description": "Explore the weekly night show program for Week A and Week B.",
+      "loading": "Loading night shows…",
+      "showWeekA": "Week A",
+      "showWeekB": "Week B",
+      "noNightShows": "No shows scheduled."
+    },
+    "guestReviews": {
+      "title": "Guest Reviews",
+      "description": "Recent feedback from our guests. Share yours anytime.",
+      "leaveFeedback": "Leave feedback",
+      "empty": "No public reviews yet.",
+      "emptyAction": "Be the first to share feedback"
+    },
+    "specialEvents": {
+      "title": "Special events",
+      "description": "Latest events announced by the animation team.",
+      "loading": "Loading events...",
+      "empty": "No special events announced yet."
     },
     "songRequest": {
       "title": "Song Request",
-      "submit": "Submit Request",
-      "success": "Song request submitted successfully"
+      "intro": "Request your favorite song and let the DJ know what you want to hear!",
+      "songLabel": "Song Name *",
+      "songPlaceholder": "Enter song name",
+      "artistLabel": "Artist Name (Optional)",
+      "artistPlaceholder": "Enter artist name",
+      "submitting": "Submitting...",
+      "submitButton": "Submit Request",
+      "songRequired": "Song name is required",
+      "requestSuccess": "Request submitted successfully!",
+      "requestFailed": "Failed to submit request",
+      "networkError": "Network error. Please try again."
     },
     "serviceRequest": {
       "title": "Service Request",
-      "submit": "Submit Request",
-      "success": "Service request submitted successfully"
+      "intro": "Submit a service request for your room",
+      "roomRequired": "Room number is required",
+      "successMessage": "Request sent successfully ✅",
+      "failureMessage": "Failed to send request. Please try again.",
+      "roomLabel": "Room Number *",
+      "roomPlaceholder": "Enter your room number",
+      "typeLabel": "Service Type *",
+      "typeCleaning": "🧹 Cleaning",
+      "typeMaintenance": "🔧 Maintenance",
+      "typeFoodDrink": "🍽️ Food & Drink",
+      "typeOther": "📋 Other",
+      "detailsLabel": "Additional Details (Optional)",
+      "detailsPlaceholder": "Describe your service request in detail...",
+      "sending": "Submitting...",
+      "submitButton": "Submit Request 🛎️"
     },
     "complaints": {
       "title": "Complaints",
-      "submit": "Submit Complaint",
-      "success": "Complaint submitted successfully"
+      "intro": "We value your feedback. Please let us know how we can improve your stay.",
+      "fullNameLabel": "Full Name *",
+      "fullNamePlaceholder": "Enter your full name",
+      "roomNumberLabel": "Room Number *",
+      "roomNumberPlaceholder": "Enter your room number",
+      "complaintDetailsLabel": "Complaint Details *",
+      "complaintDetailsPlaceholder": "Please describe your complaint in detail...",
+      "submitting": "Submitting...",
+      "submitButton": "Submit Complaint",
+      "successMessage": "Thank you for your feedback! Your complaint has been submitted successfully.",
+      "failureMessage": "Failed to submit complaint. Please try again.",
+      "networkError": "Network error. Please check your connection and try again."
     },
     "feedback": {
       "title": "Feedback",
-      "submit": "Submit Feedback",
-      "success": "Feedback submitted successfully"
+      "intro": "Quick and anonymous — help us improve your stay.",
+      "typeLabel": "Type",
+      "typeService": "Service",
+      "typeRestaurant": "Restaurant",
+      "typeAnimation": "Animation",
+      "typeGeneral": "General",
+      "ratingLabel": "Rating",
+      "commentLabel": "Comment",
+      "commentOptional": "(optional)",
+      "commentPlaceholder": "Tell us more…",
+      "errorSelectRating": "Please select a rating from 1 to 5 stars.",
+      "errorStorage": "Unable to save your session. Please enable storage and try again.",
+      "errorDefault": "Something went wrong. Please try again.",
+      "networkError": "Network error. Please try again.",
+      "successMessage": "Thanks for your feedback.",
+      "sending": "Sending…",
+      "submitButton": "Submit"
     }
   },
   "common": {

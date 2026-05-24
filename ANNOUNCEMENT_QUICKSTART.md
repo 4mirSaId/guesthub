@@ -27,7 +27,7 @@ Expected output: `✓ Ready in XXXms` ✅
 2. You should see an empty announcements form
 
 ### Step 2: Create Your First Announcement
-1. Type a message: "🏖️ Welcome to Hotel GuestHub Community!"
+1. Type a message: "🏖️ Welcome to Hotel GuestHub!"
 2. Select priority: `warning` (amber/yellow)
 3. Select icon: `🏖️`
 4. Click "Publish Announcement"

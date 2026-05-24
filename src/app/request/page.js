@@ -1,11 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 import io from 'socket.io-client';
 import { getSocketBase } from '@/lib/socketBase';
 import { socketClientOptions } from '@/lib/socketClientOptions';
 
 export default function RequestPage() {
+  const { t } = useLanguage();
   const [song, setSong] = useState('');
   const [artist, setArtist] = useState('');
   const [loading, setLoading] = useState(false);
@@ -66,7 +68,7 @@ export default function RequestPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!song.trim()) {
-      setMessage('Song name is required');
+      setMessage(t('pages.songRequest.songRequired'));
       return;
     }
 
@@ -83,15 +85,15 @@ export default function RequestPage() {
       });
 
       if (response.ok) {
-        setMessage('Request submitted successfully!');
+        setMessage(t('pages.songRequest.requestSuccess'));
         setSong('');
         setArtist('');
       } else {
         const error = await response.json();
-        setMessage(error.error || 'Failed to submit request');
+        setMessage(error.error || t('pages.songRequest.requestFailed'));
       }
     } catch (error) {
-      setMessage('Network error. Please try again.');
+      setMessage(t('pages.songRequest.networkError'));
     } finally {
       setLoading(false);
     }
@@ -136,14 +138,14 @@ export default function RequestPage() {
     <div className="min-h-screen bg-slate-950 text-slate-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md mx-auto rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-xl shadow-black/30">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Song Request</h1>
-          <p className="text-slate-400">Request your favorite song and let the DJ know what you want to hear!</p>
+          <h1 className="text-3xl font-bold text-white mb-2">{t('pages.songRequest.title')}</h1>
+          <p className="text-slate-400">{t('pages.songRequest.intro')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="song" className="block text-sm font-medium text-slate-300 mb-1">
-              Song Name *
+              {t('pages.songRequest.songLabel')}
             </label>
             <input
               type="text"
@@ -152,13 +154,13 @@ export default function RequestPage() {
               onChange={(e) => setSong(e.target.value)}
               required
               className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500"
-              placeholder="Enter song name"
+              placeholder={t('pages.songRequest.songPlaceholder')}
             />
           </div>
 
           <div>
             <label htmlFor="artist" className="block text-sm font-medium text-slate-300 mb-1">
-              Artist Name (Optional)
+              {t('pages.songRequest.artistLabel')}
             </label>
             <input
               type="text"
@@ -166,7 +168,7 @@ export default function RequestPage() {
               value={artist}
               onChange={(e) => setArtist(e.target.value)}
               className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500"
-              placeholder="Enter artist name"
+              placeholder={t('pages.songRequest.artistPlaceholder')}
             />
           </div>
 
@@ -175,7 +177,7 @@ export default function RequestPage() {
             disabled={loading}
             className="w-full rounded-xl bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-700 disabled:text-slate-400 text-white font-semibold py-3.5 text-base shadow-lg shadow-emerald-900/30 transition-colors duration-300"
           >
-            {loading ? 'Submitting...' : 'Submit Request'}
+            {loading ? t('pages.songRequest.submitting') : t('pages.songRequest.submitButton')}
           </button>
         </form>
 

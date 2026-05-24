@@ -10,7 +10,7 @@
     "language": "Langue"
   },
   "footer": {
-    "copyright": "© 2024 Hotel GuestHub. Tous droits réservés.",
+    "copyright": "© 2026 Hammamet Garden Resort & Spa GuestHub. Tous droits réservés.",
     "followUs": "Suivez-nous sur les réseaux sociaux"
   },
   "admin": {
@@ -27,7 +27,7 @@
   "pages": {
     "home": {
       "tagline": "Expérience hôtelière en direct",
-      "welcome": "Bienvenue à Hotel GuestHub",
+      "welcome": "Bienvenue à Hammamet Garden Resort & Spa GuestHub",
       "description": "Découvrez une nouvelle façon de vivre votre séjour. Accédez aux activités quotidiennes, explorez les spectacles de ce soir, demandez des services et interagissez en temps réel — tout en un seul endroit.",
       "exploreBtnText": "Explorer",
       "feedbackBtnText": "Laisser un commentaire",
@@ -42,34 +42,121 @@
       "specialEvents": "Événements Spéciaux",
       "eventsDesc": "Ne manquez pas les événements spéciaux à venir.",
       "reviewsFeedback": "Avis / Commentaires"
+    ,
+      "musicRequestsTitle": "Demandes musicales",
+      "requestSongTitle": "Demander une chanson",
+      "requestSongDesc": "Demandez au DJ votre morceau préféré et faites monter l'ambiance.",
+      "requestSongCta": "Demander une chanson",
+      "servicesTitle": "Services",
+      "serviceRequestTitle": "Demande de service",
+      "serviceRequestDesc": "Demandez un service facilement et recevez une réponse rapide.",
+      "serviceRequestCta": "Demander un service",
+      "supportTitle": "Support",
+      "complaintsTitle": "Réclamations",
+      "complaintsDesc": "Signalez rapidement un problème afin que nous puissions vous aider.",
+      "complaintsCta": "Envoyer une réclamation",
+      "footerText": "Bon séjour | DJ Amir"
     },
     "activities": {
       "title": "Activités",
       "description": "Découvrez nos activités passionnantes"
+    ,
+      "heroTitle": "Activités d'aujourd'hui 📅",
+      "loading": "Chargement des activités…",
+      "empty": "Aucune activité programmée pour le moment.",
+      "kidsClubTitle": "Programme Kids Club 🧒",
+      "dayLabel": "Jour",
+      "sessionsLabel": "Sessions"
     },
     "nightShows": {
       "title": "Spectacle d'Aujourd'hui",
       "noShow": "Aucun spectacle programmé ce soir"
+    ,
+      "description": "Explorez le programme des spectacles de la semaine pour la Semaine A et la Semaine B.",
+      "loading": "Chargement des spectacles…",
+      "showWeekA": "Semaine A",
+      "showWeekB": "Semaine B",
+      "noNightShows": "Aucun spectacle prévu."
+    },
+    "guestReviews": {
+      "title": "Avis des clients",
+      "description": "Retours récents de nos clients. Partagez le vôtre à tout moment.",
+      "leaveFeedback": "Laisser un commentaire",
+      "empty": "Pas encore d'avis publics.",
+      "emptyAction": "Soyez le premier à partager un avis"
+    },
+    "specialEvents": {
+      "title": "Événements spéciaux",
+      "description": "Derniers événements annoncés par l'équipe d'animation.",
+      "loading": "Chargement des événements...",
+      "empty": "Aucun événement spécial annoncé pour le moment."
     },
     "songRequest": {
       "title": "Demande de Chanson",
-      "submit": "Soumettre la Demande",
-      "success": "Demande de chanson soumise avec succès"
+      "intro": "Demandez votre chanson préférée et faites savoir au DJ ce que vous voulez entendre !",
+      "songLabel": "Nom de la chanson *",
+      "songPlaceholder": "Entrez le nom de la chanson",
+      "artistLabel": "Nom de l'artiste (optionnel)",
+      "artistPlaceholder": "Entrez le nom de l'artiste",
+      "submitting": "Envoi…",
+      "submitButton": "Soumettre la demande",
+      "songRequired": "Le nom de la chanson est requis",
+      "requestSuccess": "Demande soumise avec succès !",
+      "requestFailed": "Échec de l'envoi de la demande",
+      "networkError": "Erreur réseau. Veuillez réessayer."
     },
     "serviceRequest": {
       "title": "Demande de Service",
-      "submit": "Soumettre la Demande",
-      "success": "Demande de service soumise avec succès"
+      "intro": "Soumettez une demande de service pour votre chambre",
+      "roomRequired": "Le numéro de chambre est requis",
+      "successMessage": "Demande envoyée avec succès ✅",
+      "failureMessage": "Échec de l'envoi. Veuillez réessayer.",
+      "roomLabel": "Numéro de chambre *",
+      "roomPlaceholder": "Entrez votre numéro de chambre",
+      "typeLabel": "Type de service *",
+      "typeCleaning": "🧹 Nettoyage",
+      "typeMaintenance": "🔧 Entretien",
+      "typeFoodDrink": "🍽️ Nourriture & Boissons",
+      "typeOther": "📋 Autre",
+      "detailsLabel": "Détails supplémentaires (optionnel)",
+      "detailsPlaceholder": "Décrivez votre demande de service en détail...",
+      "sending": "Envoi…",
+      "submitButton": "Envoyer la demande"
     },
     "complaints": {
       "title": "Réclamations",
-      "submit": "Soumettre une Réclamation",
-      "success": "Réclamation soumise avec succès"
+      "intro": "Nous apprécions votre retour. Dites-nous comment améliorer votre séjour.",
+      "fullNameLabel": "Nom complet *",
+      "fullNamePlaceholder": "Entrez votre nom complet",
+      "roomNumberLabel": "Numéro de chambre *",
+      "roomNumberPlaceholder": "Entrez votre numéro de chambre",
+      "complaintDetailsLabel": "Détails de la réclamation *",
+      "complaintDetailsPlaceholder": "Veuillez décrire votre réclamation en détail...",
+      "submitting": "Envoi…",
+      "submitButton": "Envoyer la réclamation",
+      "successMessage": "Merci pour votre retour ! Votre réclamation a bien été envoyée.",
+      "failureMessage": "Échec de l'envoi de la réclamation. Veuillez réessayer.",
+      "networkError": "Erreur réseau. Veuillez vérifier votre connexion et réessayer."
     },
     "feedback": {
       "title": "Commentaires",
-      "submit": "Soumettre les Commentaires",
-      "success": "Commentaires soumis avec succès"
+      "intro": "Rapide et anonyme — aidez-nous à améliorer votre séjour.",
+      "typeLabel": "Type",
+      "typeService": "Service",
+      "typeRestaurant": "Restaurant",
+      "typeAnimation": "Animation",
+      "typeGeneral": "Général",
+      "ratingLabel": "Évaluation",
+      "commentLabel": "Commentaire",
+      "commentOptional": "(optionnel)",
+      "commentPlaceholder": "Dites‑nous en plus…",
+      "errorSelectRating": "Veuillez sélectionner une note de 1 à 5 étoiles.",
+      "errorStorage": "Impossible d'enregistrer votre session. Activez le stockage et réessayez.",
+      "errorDefault": "Une erreur est survenue. Veuillez réessayer.",
+      "networkError": "Erreur réseau. Veuillez réessayer.",
+      "successMessage": "Merci pour votre avis.",
+      "sending": "Envoi…",
+      "submitButton": "Soumettre"
     }
   },
   "common": {

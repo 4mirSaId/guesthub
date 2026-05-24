@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 
-const TYPES = [
-  { value: 'Service', label: 'Service' },
-  { value: 'Restaurant', label: 'Restaurant' },
-  { value: 'Animation', label: 'Animation' },
-  { value: 'General', label: 'General' },
+const getTypeOptions = (t) => [
+  { value: 'Service', label: t('pages.feedback.typeService') },
+  { value: 'Restaurant', label: t('pages.feedback.typeRestaurant') },
+  { value: 'Animation', label: t('pages.feedback.typeAnimation') },
+  { value: 'General', label: t('pages.feedback.typeGeneral') },
 ];
 
 function ensureClientId() {
@@ -18,6 +19,8 @@ function ensureClientId() {
 }
 
 export default function FeedbackPage() {
+  const { t } = useLanguage();
+  const TYPES = getTypeOptions(t);
   const [type, setType] = useState('General');
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
@@ -35,13 +38,13 @@ export default function FeedbackPage() {
     setSuccess(false);
 
     if (rating < 1 || rating > 5) {
-      setError('Please select a rating from 1 to 5 stars.');
+      setError(t('pages.feedback.errorSelectRating'));
       return;
     }
 
     const clientId = ensureClientId();
     if (!clientId) {
-      setError('Unable to save your session. Please enable storage and try again.');
+      setError(t('pages.feedback.errorStorage'));
       return;
     }
 
@@ -60,7 +63,7 @@ export default function FeedbackPage() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        setError(data.error || 'Something went wrong. Please try again.');
+        setError(data.error || t('pages.feedback.errorDefault'));
         return;
       }
 
@@ -69,7 +72,7 @@ export default function FeedbackPage() {
       setRating(0);
       setType('General');
     } catch {
-      setError('Network error. Please try again.');
+      setError(t('pages.feedback.networkError'));
     } finally {
       setLoading(false);
     }
@@ -80,10 +83,10 @@ export default function FeedbackPage() {
       <div className="max-w-lg mx-auto">
         <div className="text-center mb-10">
           <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
-            Your feedback
+            {t('pages.feedback.title')}
           </h1>
           <p className="text-slate-400 mt-3 text-sm sm:text-base">
-            Quick and anonymous — help us improve your stay.
+            {t('pages.feedback.intro')}
           </p>
         </div>
 
@@ -93,7 +96,7 @@ export default function FeedbackPage() {
         >
           <div>
             <label htmlFor="fb-type" className="block text-sm font-medium text-slate-300 mb-2">
-              Type
+              {t('pages.feedback.typeLabel')}
             </label>
             <select
               id="fb-type"
@@ -101,16 +104,16 @@ export default function FeedbackPage() {
               onChange={(e) => setType(e.target.value)}
               className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500"
             >
-              {TYPES.map((t) => (
-                <option key={t.value} value={t.value}>
-                  {t.label}
+              {TYPES.map((item) => (
+                <option key={item.value} value={item.value}>
+                  {item.label}
                 </option>
               ))}
             </select>
           </div>
 
           <div>
-            <span className="block text-sm font-medium text-slate-300 mb-3">Rating</span>
+            <span className="block text-sm font-medium text-slate-300 mb-3">{t('pages.feedback.ratingLabel')}</span>
             <div className="flex flex-wrap gap-2 sm:gap-3" role="group" aria-label="Star rating">
               {[1, 2, 3, 4, 5].map((n) => (
                 <button
@@ -132,14 +135,14 @@ export default function FeedbackPage() {
 
           <div>
             <label htmlFor="fb-comment" className="block text-sm font-medium text-slate-300 mb-2">
-              Comment <span className="text-slate-500 font-normal">(optional)</span>
+              {t('pages.feedback.commentLabel')} <span className="text-slate-500 font-normal">{t('pages.feedback.commentOptional')}</span>
             </label>
             <textarea
               id="fb-comment"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               rows={4}
-              placeholder="Tell us more…"
+              placeholder={t('pages.feedback.commentPlaceholder')}
               className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500 resize-y min-h-[120px]"
             />
           </div>
@@ -152,7 +155,7 @@ export default function FeedbackPage() {
 
           {success && (
             <div className="rounded-xl border border-emerald-900/60 bg-emerald-950/40 px-4 py-3 text-sm text-emerald-100">
-              Thanks for your feedback.
+              {t('pages.feedback.successMessage')}
             </div>
           )}
 
@@ -161,7 +164,7 @@ export default function FeedbackPage() {
             disabled={loading}
             className="w-full rounded-xl bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-700 disabled:text-slate-400 text-white font-semibold py-3.5 text-base shadow-lg shadow-emerald-900/30 transition-colors duration-300"
           >
-            {loading ? 'Sending…' : 'Submit'}
+            {loading ? t('pages.feedback.sending') : t('pages.feedback.submitButton')}
           </button>
         </form>
       </div>

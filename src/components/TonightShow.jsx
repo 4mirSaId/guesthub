@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 import io from 'socket.io-client';
 import { getSocketBase } from '@/lib/socketBase';
 import { socketClientOptions } from '@/lib/socketClientOptions';
@@ -24,6 +25,7 @@ const TonightShow = () => {
   const [currentShow, setCurrentShow] = useState({ name: '', emoji: '' });
   const [currentDay, setCurrentDay] = useState('');
   const [currentWeek, setCurrentWeek] = useState('A');
+  const { t, language } = useLanguage();
 
   useEffect(() => {
     let active = true;
@@ -85,7 +87,7 @@ const TonightShow = () => {
     const update = () => {
       const now = new Date();
       const day = now.getDay();
-      setCurrentDay(DAY_NAMES[day]);
+      setCurrentDay(now.toLocaleDateString(language, { weekday: 'long' }));
       setCurrentShow(program[day] || { name: 'No show today', emoji: '❓' });
     };
 
@@ -96,7 +98,7 @@ const TonightShow = () => {
 
   return (
     <div className="rounded-2xl border border-slate-800 bg-slate-900/80 shadow-xl shadow-black/30 p-6 sm:p-8 w-full max-w-sm mx-auto text-center transition-all duration-500 ease-in-out hover:scale-105">
-      <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">Tonight&apos;s Show</h2>
+      <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">{t('pages.nightShows.title')}</h2>
       <p className="text-base sm:text-lg text-slate-400 mb-2">{currentDay}</p>
       <p className="text-2xl sm:text-3xl font-bold text-emerald-400 mb-2">
         {currentShow.emoji} {currentShow.name}

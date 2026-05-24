@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function ComplaintsPage() {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     fullName: '',
     roomNumber: '',
@@ -10,6 +12,7 @@ export default function ComplaintsPage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -22,6 +25,7 @@ export default function ComplaintsPage() {
     e.preventDefault();
     setIsSubmitting(true);
     setMessage('');
+    setIsSuccess(false);
 
     try {
       const response = await fetch('/api/complaints', {
@@ -33,7 +37,8 @@ export default function ComplaintsPage() {
       });
 
       if (response.ok) {
-        setMessage('Thank you for your feedback! Your complaint has been submitted successfully.');
+        setIsSuccess(true);
+        setMessage(t('pages.complaints.successMessage'));
         setFormData({
           fullName: '',
           roomNumber: '',
@@ -41,10 +46,10 @@ export default function ComplaintsPage() {
         });
       } else {
         const errorData = await response.json();
-        setMessage(errorData.error || 'Failed to submit complaint. Please try again.');
+        setMessage(errorData.error || t('pages.complaints.failureMessage'));
       }
     } catch (error) {
-      setMessage('Network error. Please check your connection and try again.');
+      setMessage(t('pages.complaints.networkError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -54,14 +59,14 @@ export default function ComplaintsPage() {
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Submit a Complaint</h1>
-          <p className="text-gray-600">We value your feedback. Please let us know how we can improve your stay.</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('pages.complaints.title')}</h1>
+          <p className="text-gray-600">{t('pages.complaints.intro')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
-              Full Name *
+              {t('pages.complaints.fullNameLabel')}
             </label>
             <input
               type="text"
@@ -71,13 +76,13 @@ export default function ComplaintsPage() {
               onChange={handleChange}
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-gray-800"
-              placeholder="Enter your full name"
+              placeholder={t('pages.complaints.fullNamePlaceholder')}
             />
           </div>
 
           <div>
             <label htmlFor="roomNumber" className="block text-sm font-medium text-gray-700 mb-1">
-              Room Number *
+              {t('pages.complaints.roomNumberLabel')}
             </label>
             <input
               type="text"
@@ -87,13 +92,13 @@ export default function ComplaintsPage() {
               onChange={handleChange}
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-gray-800"
-              placeholder="Enter your room number"
+              placeholder={t('pages.complaints.roomNumberPlaceholder')}
             />
           </div>
 
           <div>
             <label htmlFor="complaintText" className="block text-sm font-medium text-gray-700 mb-1">
-              Complaint Details *
+              {t('pages.complaints.complaintDetailsLabel')}
             </label>
             <textarea
               id="complaintText"
@@ -103,7 +108,7 @@ export default function ComplaintsPage() {
               required
               rows={4}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-gray-800"
-              placeholder="Please describe your complaint in detail..."
+              placeholder={t('pages.complaints.complaintDetailsPlaceholder')}
             />
           </div>
 
@@ -112,12 +117,12 @@ export default function ComplaintsPage() {
             disabled={isSubmitting}
             className="w-full bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-300 text-white font-medium py-2 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
           >
-            {isSubmitting ? 'Submitting...' : 'Submit Complaint'}
+            {isSubmitting ? t('pages.complaints.submitting') : t('pages.complaints.submitButton')}
           </button>
         </form>
 
         {message && (
-          <div className={`mt-6 p-4 rounded-md ${message.includes('Thank you') ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
+          <div className={`mt-6 p-4 rounded-md ${isSuccess ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
             {message}
           </div>
         )}

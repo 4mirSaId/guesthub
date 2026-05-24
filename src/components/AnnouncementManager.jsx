@@ -17,7 +17,7 @@ const priorityBadgeColors = {
 };
 
 async function requestAnnouncements() {
-  const response = await fetch('http://localhost:3001/api/announcement/all');
+  const response = await fetch('/api/announcement/all');
   if (!response.ok) throw new Error('Failed to fetch announcements');
 
   const data = await response.json();

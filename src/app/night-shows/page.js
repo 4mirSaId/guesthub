@@ -1,17 +1,20 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 import io from 'socket.io-client';
 import { getSocketBase } from '@/lib/socketBase';
 import { socketClientOptions } from '@/lib/socketClientOptions';
 
 function ShowWeek({ title, items }) {
+  const { t } = useLanguage();
+
   return (
     <section className="rounded-2xl shadow-xl shadow-black/20 border border-slate-800 bg-slate-900 p-8 transition-all duration-300 ease-in-out hover:shadow-black/40">
       <h2 className="text-3xl font-semibold text-white mb-6">{title}</h2>
       <div className="space-y-4">
         {items.length === 0 ? (
-          <p className="text-slate-500">No shows scheduled.</p>
+          <p className="text-slate-500">{t('pages.nightShows.noNightShows')}</p>
         ) : (
           items.map((item) => (
             <div
@@ -34,6 +37,7 @@ function ShowWeek({ title, items }) {
 }
 
 export default function NightShows() {
+  const { t } = useLanguage();
   const [weekA, setWeekA] = useState([]);
   const [weekB, setWeekB] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -84,18 +88,18 @@ export default function NightShows() {
     <div className="bg-slate-950 text-slate-100 min-h-screen">
       <div className="max-w-6xl mx-auto py-20 px-6">
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-white">Night Shows 🎭</h1>
+          <h1 className="text-5xl font-bold text-white">{t('pages.nightShows.title')}</h1>
           <p className="text-xl text-slate-400 mt-4">
-            Explore the weekly night show program for Week A and Week B.
+            {t('pages.nightShows.description')}
           </p>
         </div>
 
         {loading ? (
-          <p className="text-center text-slate-400 text-xl">Loading night shows…</p>
+          <p className="text-center text-slate-400 text-xl">{t('pages.nightShows.loading')}</p>
         ) : (
           <div className="grid gap-8 lg:grid-cols-2">
-            <ShowWeek title="Week A" items={weekA} />
-            <ShowWeek title="Week B" items={weekB} />
+            <ShowWeek title={t('pages.nightShows.showWeekA')} items={weekA} />
+            <ShowWeek title={t('pages.nightShows.showWeekB')} items={weekB} />
           </div>
         )}
       </div>

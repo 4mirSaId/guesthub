@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useLanguage } from '@/context/LanguageContext';
 import axios from "axios";
 
 export default function ServicePage() {
+  const { t } = useLanguage();
   const [room, setRoom] = useState("");
   const [type, setType] = useState("Cleaning");
   const [message, setMessage] = useState("");
@@ -12,7 +14,7 @@ export default function ServicePage() {
 
   const handleSubmit = async () => {
     if (!room) {
-      setFeedback("Room number is required");
+      setFeedback(t('pages.serviceRequest.roomRequired'));
       return;
     }
 
@@ -28,11 +30,11 @@ export default function ServicePage() {
 
       setRoom("");
       setMessage("");
-      setFeedback("Request sent successfully ✅");
+      setFeedback(t('pages.serviceRequest.successMessage'));
       setTimeout(() => setFeedback(""), 3000);
     } catch (error) {
       console.error("Error submitting service request:", error);
-      setFeedback("Failed to send request. Please try again.");
+      setFeedback(t('pages.serviceRequest.failureMessage'));
     } finally {
       setLoading(false);
     }
@@ -43,8 +45,8 @@ export default function ServicePage() {
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-emerald-400 mb-3">Service Request</h1>
-          <p className="text-slate-400 text-lg">Submit a service request for your room</p>
+          <h1 className="text-5xl font-bold text-emerald-400 mb-3">{t('pages.serviceRequest.title')}</h1>
+          <p className="text-slate-400 text-lg">{t('pages.serviceRequest.intro')}</p>
         </div>
 
         {/* Form Card */}
@@ -53,11 +55,11 @@ export default function ServicePage() {
             {/* Room Number */}
             <div>
               <label className="block text-lg font-semibold text-white mb-3">
-                Room Number *
+                {t('pages.serviceRequest.roomLabel')}
               </label>
               <input
                 type="text"
-                placeholder="Enter your room number"
+                placeholder={t('pages.serviceRequest.roomPlaceholder')}
                 value={room}
                 onChange={(e) => setRoom(e.target.value)}
                 className="w-full rounded-xl border border-slate-700 bg-slate-950 px-6 py-4 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500 text-lg transition-all duration-300"
@@ -67,27 +69,27 @@ export default function ServicePage() {
             {/* Service Type */}
             <div>
               <label className="block text-lg font-semibold text-white mb-3">
-                Service Type *
+                {t('pages.serviceRequest.typeLabel')}
               </label>
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value)}
                 className="w-full rounded-xl border border-slate-700 bg-slate-950 px-6 py-4 text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500 text-lg transition-all duration-300 appearance-none cursor-pointer"
               >
-                <option value="Cleaning">🧹 Cleaning</option>
-                <option value="Maintenance">🔧 Maintenance</option>
-                <option value="Food & Drink">🍽️ Food & Drink</option>
-                <option value="Other">📋 Other</option>
+                <option value="Cleaning">{t('pages.serviceRequest.typeCleaning')}</option>
+                <option value="Maintenance">{t('pages.serviceRequest.typeMaintenance')}</option>
+                <option value="Food & Drink">{t('pages.serviceRequest.typeFoodDrink')}</option>
+                <option value="Other">{t('pages.serviceRequest.typeOther')}</option>
               </select>
             </div>
 
             {/* Message */}
             <div>
               <label className="block text-lg font-semibold text-white mb-3">
-                Additional Details (Optional)
+                {t('pages.serviceRequest.detailsLabel')}
               </label>
               <textarea
-                placeholder="Describe your service request in detail..."
+                placeholder={t('pages.serviceRequest.detailsPlaceholder')}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 className="w-full rounded-xl border border-slate-700 bg-slate-950 px-6 py-4 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500 text-lg transition-all duration-300 resize-y min-h-[120px]"
@@ -101,7 +103,7 @@ export default function ServicePage() {
               disabled={loading}
               className="w-full rounded-xl bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-700 disabled:text-slate-400 text-white font-semibold py-4 px-6 transition-all duration-300 ease-in-out shadow-lg shadow-emerald-900/30 text-lg"
             >
-              {loading ? "Submitting..." : "Submit Request 🛎️"}
+              {loading ? t('pages.serviceRequest.sending') : t('pages.serviceRequest.submitButton')}
             </button>
           </form>
 

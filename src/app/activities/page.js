@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
+import { useLanguage } from '@/context/LanguageContext';
 import { getSocketBase } from '@/lib/socketBase';
 import { socketClientOptions } from '@/lib/socketClientOptions';
 import { formatTimeRange } from '@/lib/formatScheduleTime';
 
 export default function Activities() {
+  const { t } = useLanguage();
   const [activities, setActivities] = useState([]);
   const [kidsClub, setKidsClub] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -57,14 +59,14 @@ export default function Activities() {
     <div className="bg-slate-950 text-slate-100 min-h-screen">
       <div className="max-w-6xl mx-auto py-20 px-6">
         <h1 className="text-5xl font-bold mb-12 text-center text-white">
-          Today&apos;s Activities 📅
+          {t('pages.activities.heroTitle')}
         </h1>
 
         {loading ? (
-          <p className="text-center text-slate-400 text-xl">Loading activities…</p>
+          <p className="text-center text-slate-400 text-xl">{t('pages.activities.loading')}</p>
         ) : activities.length === 0 ? (
           <p className="text-center text-slate-400 text-xl py-16 rounded-2xl border border-slate-800 bg-slate-900/60 max-w-4xl mx-auto">
-            No activities scheduled yet.
+            {t('pages.activities.empty')}
           </p>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-4xl mx-auto">
@@ -83,13 +85,13 @@ export default function Activities() {
         {kidsClub.length > 0 && (
           <section className="mt-24 max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-white">Kids Club Schedule 🧒</h2>
+              <h2 className="text-4xl font-bold text-white">{t('pages.activities.kidsClubTitle')}</h2>
             </div>
 
             <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6 sm:p-8 shadow-xl shadow-black/20">
               <div className="hidden sm:grid sm:grid-cols-[7rem_1fr] gap-4 px-2 pb-4 mb-2 border-b border-slate-800 text-sm font-semibold uppercase tracking-wider text-slate-500">
-                <span>Day</span>
-                <span>Sessions</span>
+                <span>{t('pages.activities.dayLabel')}</span>
+                <span>{t('pages.activities.sessionsLabel')}</span>
               </div>
 
               <div className="space-y-4">

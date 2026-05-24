@@ -105,7 +105,7 @@ py-12 sm:py-16 md:py-20        (vertical padding scales)
 ```jsx
 // Scaling text from mobile to desktop
 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
-  Welcome to Hotel GuestHub
+  Welcome to Hammamet Garden Resort & Spa GuestHub
 </h1>
 ```
 

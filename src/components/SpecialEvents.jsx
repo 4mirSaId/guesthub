@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 import io from 'socket.io-client';
 import { getSocketBase } from '@/lib/socketBase';
 import { socketClientOptions } from '@/lib/socketClientOptions';
@@ -18,6 +19,7 @@ function formatCreatedAt(value) {
 }
 
 export default function SpecialEvents() {
+  const { t } = useLanguage();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -86,20 +88,20 @@ export default function SpecialEvents() {
       <div className="max-w-6xl mx-auto">
         <div className="mb-8 sm:mb-10">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight">
-            Special events
+            {t('pages.specialEvents.title')}
           </h2>
           <p className="mt-2 text-sm sm:text-base text-slate-400 max-w-3xl">
-            Latest events announced by the animation team.
+            {t('pages.specialEvents.description')}
           </p>
         </div>
 
         {loading ? (
           <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-8 text-center text-slate-400">
-            Loading events...
+            {t('pages.specialEvents.loading')}
           </div>
         ) : events.length === 0 ? (
           <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-8 text-center text-slate-400">
-            No special events announced yet.
+            {t('pages.specialEvents.empty')}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">

@@ -113,7 +113,7 @@ export default function Home() {
       <section className="relative overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center opacity-20"
-          style={{ backgroundImage: "url('/rosabeachpool.webp')" }}
+          style={{ backgroundImage: "url('/hammamet-garden.avif')" }}
           aria-hidden="true"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/40 via-slate-950/75 to-slate-950" aria-hidden="true" />
@@ -203,35 +203,35 @@ export default function Home() {
       <SpecialEvents />
 
       {/* SONG REQUEST */}
-      <Section className="py-10 sm:py-14" title="Music requests">
+      <Section className="py-10 sm:py-14" title={t('pages.home.musicRequestsTitle')}>
         <Card
           icon="🎧"
-          title="Request a Song"
-          description="Ask the DJ for your favorite track and keep the vibe going."
+          title={t('pages.home.requestSongTitle')}
+          description={t('pages.home.requestSongDesc')}
           href="/request"
-          cta="Ask for a Song"
+          cta={t('pages.home.requestSongCta')}
         />
       </Section>
 
       {/* SERVICE REQUEST */}
-      <Section className="py-10 sm:py-14" title="Services">
+      <Section className="py-10 sm:py-14" title={t('pages.home.servicesTitle')}>
         <Card
           icon="🛎️"
-          title="Need Something?"
-          description="Request a service easily and get a quick response."
+          title={t('pages.home.serviceRequestTitle')}
+          description={t('pages.home.serviceRequestDesc')}
           href="/service"
-          cta="Ask for a Service"
+          cta={t('pages.home.serviceRequestCta')}
         />
       </Section>
 
       {/* COMPLAINTS */}
-      <Section className="py-10 sm:py-14" title="Support">
+      <Section className="py-10 sm:py-14" title={t('pages.home.supportTitle')}>
         <Card
           icon="📝"
-          title="Complaints"
-          description="Report any issue quickly so we can help right away."
+          title={t('pages.home.complaintsTitle')}
+          description={t('pages.home.complaintsDesc')}
           href="/complaints"
-          cta="Send Complaint"
+          cta={t('pages.home.complaintsCta')}
         />
       </Section>
 
@@ -242,7 +242,7 @@ export default function Home() {
 
       {/* FOOTER */}
       <footer className="text-center py-8 sm:py-12 px-4 border-t border-slate-800 text-slate-500 bg-slate-950 text-sm sm:text-base">
-        Enjoy your stay | DJ Amir
+        {t('pages.home.footerText')}
       </footer>
 
     </div>

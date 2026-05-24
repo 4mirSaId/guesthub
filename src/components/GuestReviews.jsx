@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 import Link from 'next/link';
 
 function Stars({ value }) {
@@ -13,6 +14,7 @@ function Stars({ value }) {
 }
 
 export default function GuestReviews() {
+  const { t } = useLanguage();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -50,17 +52,17 @@ export default function GuestReviews() {
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10 sm:mb-12">
           <div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight">
-              Guest Reviews
+                {t('pages.guestReviews.title')}
             </h2>
             <p className="text-slate-400 mt-2 text-sm sm:text-base max-w-xl">
-              Recent feedback from our guests. Share yours anytime.
+                {t('pages.guestReviews.description')}
             </p>
           </div>
           <Link
             href="/feedback"
             className="inline-flex justify-center items-center rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-5 py-3 text-sm sm:text-base shadow-lg shadow-emerald-900/30 transition-colors duration-300"
           >
-            Leave feedback
+              {t('pages.guestReviews.leaveFeedback')}
           </Link>
         </div>
 
@@ -70,9 +72,9 @@ export default function GuestReviews() {
           </div>
         ) : items.length === 0 ? (
           <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-10 text-center text-slate-400">
-            No public reviews yet.{' '}
+            {t('pages.guestReviews.empty')}{' '}
             <Link href="/feedback" className="text-emerald-400 hover:text-emerald-300 font-medium underline-offset-2 hover:underline">
-              Be the first to share feedback
+              {t('pages.guestReviews.emptyAction')}
             </Link>
             .
           </div>
