@@ -10,7 +10,7 @@
     "language": "Sprache"
   },
   "footer": {
-    "copyright": "© 2026 Hammamet Garden Resort & Spa GuestHub. Alle Rechte vorbehalten.",
+    "copyright": "© [hotelName] GuestHub. Alle Rechte vorbehalten.",
     "followUs": "Folgen Sie uns auf Social Media"
   },
   "admin": {
@@ -27,7 +27,7 @@
   "pages": {
     "home": {
       "tagline": "Hotelerlebnis live",
-      "welcome": "Willkommen bei Hammamet Garden Resort & Spa GuestHub",
+      "welcome": "Willkommen [hotelName] GuestHub",
       "description": "Entdecken Sie eine neue Art, Ihren Aufenthalt zu erleben. Zugriff auf tägliche Aktivitäten, erkunden Sie die heutige Show, fordern Sie Services an und interagieren Sie in Echtzeit — alles an einem Ort.",
       "exploreBtnText": "Erkunden",
       "feedbackBtnText": "Feedback geben",

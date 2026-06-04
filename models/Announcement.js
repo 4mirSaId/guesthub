@@ -18,7 +18,7 @@ const announcementSchema = new mongoose.Schema({
   },
   icon: {
     type: String,
-    default: '⚠️'
+    default: ''
   },
   autoHideSeconds: {
     type: Number,
@@ -37,4 +37,4 @@ const announcementSchema = new mongoose.Schema({
 // Index for finding active announcements
 announcementSchema.index({ active: 1, createdAt: -1 });
 
-module.exports = mongoose.model('Announcement', announcementSchema);
+module.exports = mongoose.models.Announcement || mongoose.model('Announcement', announcementSchema);

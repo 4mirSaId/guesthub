@@ -113,7 +113,7 @@ export default function Home() {
       <section className="relative overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center opacity-20"
-          style={{ backgroundImage: "url('/hammamet-garden.avif')" }}
+          style={{ backgroundImage: "url('/hotel-lobby.png')" }}
           aria-hidden="true"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/40 via-slate-950/75 to-slate-950" aria-hidden="true" />
@@ -240,10 +240,7 @@ export default function Home() {
       {/* Existing live public reviews section (real API) */}
       <GuestReviews />
 
-      {/* FOOTER */}
-      <footer className="text-center py-8 sm:py-12 px-4 border-t border-slate-800 text-slate-500 bg-slate-950 text-sm sm:text-base">
-        {t('pages.home.footerText')}
-      </footer>
+      
 
     </div>
   );

@@ -26,7 +26,6 @@ function ShowWeek({ title, items }) {
                   <p className="text-sm uppercase tracking-[0.2em] text-slate-500">{item.day}</p>
                   <p className="text-xl font-semibold text-white mt-2">{item.show}</p>
                 </div>
-                <span className="text-3xl">{item.emoji}</span>
               </div>
             </div>
           ))
@@ -52,7 +51,7 @@ export default function NightShows() {
 
     const load = async () => {
       try {
-        const res = await fetch('/api/program');
+        const res = await fetch('http://localhost:3001/api/program');
         if (!res.ok) throw new Error('Failed to load');
         const data = await res.json();
         if (active) applyProgram(data);

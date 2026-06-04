@@ -1,5 +1,7 @@
 ﻿'use client';
 
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 const portals = [
@@ -7,14 +9,12 @@ const portals = [
     href: '/admin/animation/login',
     title: 'Animation',
     description: 'Song requests, special events, and party settings',
-    emoji: '🎤',
     accent: 'emerald',
   },
   {
     href: '/admin/guestrelation/login',
     title: 'Guest Relations',
     description: 'Service requests, complaints, feedback, and announcements',
-    emoji: '🛎️',
     accent: 'sky',
   },
 ];
@@ -33,6 +33,66 @@ const accentStyles = {
 };
 
 export default function AdminPortalPage() {
+  const router = useRouter();
+  const [isChecking, setIsChecking] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      // Check for animation login
+      const animationToken = localStorage.getItem('animationToken');
+      if (animationToken) {
+        try {
+          const response = await fetch('http://localhost:3001/api/auth/verify', {
+            headers: { Authorization: `Bearer ${animationToken}` },
+          });
+          if (response.ok) {
+            const data = await response.json();
+            if (data.role === 'animation') {
+              router.replace('/admin/animation');
+              return;
+            }
+          }
+        } catch (error) {
+          console.error('Animation auth check failed:', error);
+        }
+      }
+
+      // Check for guest relation login
+      const grToken = localStorage.getItem('grToken');
+      if (grToken) {
+        try {
+          const response = await fetch('http://localhost:3001/api/auth/verify', {
+            headers: { Authorization: `Bearer ${grToken}` },
+          });
+          if (response.ok) {
+            const data = await response.json();
+            if (data.role === 'guestrelation') {
+              router.replace('/admin/guestrelation');
+              return;
+            }
+          }
+        } catch (error) {
+          console.error('Guest relation auth check failed:', error);
+        }
+      }
+
+      // No valid auth found, show portal
+      setIsChecking(false);
+    };
+
+    checkAuth();
+  }, [router]);
+
+  if (isChecking) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-8">
+        <div className="text-center">
+          <p className="text-slate-400">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-8">
       <div className="w-full max-w-3xl">
@@ -50,9 +110,6 @@ export default function AdminPortalPage() {
                 href={portal.href}
                 className={`group block rounded-2xl border border-slate-800 bg-slate-900 p-8 sm:p-10 shadow-xl shadow-black/30 transition-all duration-300 ${styles.card}`}
               >
-                <span className="text-5xl mb-6 block" aria-hidden>
-                  {portal.emoji}
-                </span>
                 <h2 className={`text-2xl font-bold mb-3 ${styles.title}`}>{portal.title}</h2>
                 <p className="text-slate-400 text-base mb-8 leading-relaxed">{portal.description}</p>
                 <span

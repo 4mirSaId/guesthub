@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import io from 'socket.io-client';
 import { getSocketBase } from '@/lib/socketBase';
 import { socketClientOptions } from '@/lib/socketClientOptions';
+import { usePushNotifications } from '@/hooks/usePushNotifications';
 import AnnouncementManager from '@/components/AnnouncementManager';
 
 export default function GuestRelationDashboard() {
@@ -26,6 +27,12 @@ export default function GuestRelationDashboard() {
     feedback: 0,
   });
   const activeTabRef = useRef(activeTab);
+
+  usePushNotifications({
+    enabled: authenticated,
+    role: 'guestrelation',
+    tokenKey: 'grToken',
+  });
 
   const feedbackStats = useMemo(() => {
     const total = feedbackItems.length;
@@ -83,7 +90,7 @@ export default function GuestRelationDashboard() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-        const response = await fetch('/api/auth/verify', {
+        const response = await fetch('http://localhost:3001/api/auth/verify', {
           headers: { Authorization: `Bearer ${token}` },
           signal: controller.signal,
         });
@@ -162,9 +169,9 @@ export default function GuestRelationDashboard() {
         const token = localStorage.getItem('grToken');
 
         const [complaintsRes, servicesRes, feedbackRes] = await Promise.all([
-          fetch('/api/complaints', { signal: controller.signal }),
-          fetch('/api/service-requests', { signal: controller.signal }),
-          fetch('/api/feedback', {
+          fetch('http://localhost:3001/api/complaints', { signal: controller.signal }),
+          fetch('http://localhost:3001/api/service-requests', { signal: controller.signal }),
+          fetch('http://localhost:3001/api/feedback', {
             signal: controller.signal,
             headers: { Authorization: `Bearer ${token}` },
           }),
@@ -359,11 +366,11 @@ export default function GuestRelationDashboard() {
     localStorage.removeItem('grToken');
     localStorage.removeItem('grUsername');
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
+      await fetch('http://localhost:3001/api/auth/logout', { method: 'POST' });
     } catch (error) {
       console.error('Logout error:', error);
     }
-    router.push('/admin/guestrelation/login');
+    router.push('/admin');
   };
 
   const tabClass = (tab) =>
@@ -410,12 +417,6 @@ export default function GuestRelationDashboard() {
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <a
-              href="/admin"
-              className="text-slate-400 hover:text-white text-sm font-medium transition-colors"
-            >
-              ← Portal
-            </a>
             <button
               type="button"
               onClick={handleLogout}

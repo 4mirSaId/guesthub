@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Navbar from './Navbar';
+import AnnouncementBar from './AnnouncementBar';
 import Footer from './Footer';
 
 export default function AppChrome({ children }) {
@@ -15,6 +16,7 @@ export default function AppChrome({ children }) {
   return (
     <>
       <Navbar />
+      <AnnouncementBar />
       {children}
       <Footer />
     </>

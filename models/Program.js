@@ -13,7 +13,7 @@ const nightShowItemSchema = new mongoose.Schema(
   {
     day: { type: String, required: true },
     show: { type: String, required: true },
-    emoji: { type: String, default: '🎭' },
+    emoji: { type: String, default: '' },
     order: { type: Number, default: 0 },
   },
   { _id: true }
@@ -47,4 +47,4 @@ const programSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('Program', programSchema);
+module.exports = mongoose.models.Program || mongoose.model('Program', programSchema);

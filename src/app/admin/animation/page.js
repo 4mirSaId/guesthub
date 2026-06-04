@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import io from 'socket.io-client';
 import { getSocketBase } from '@/lib/socketBase';
 import { socketClientOptions } from '@/lib/socketClientOptions';
+import { usePushNotifications } from '@/hooks/usePushNotifications';
 
 const AnimationProgramEditor = dynamic(
   () => import('@/components/AnimationProgramEditor'),
@@ -43,6 +44,12 @@ export default function AnimationDashboard() {
     requests: 0,
   });
   const activeTabRef = useRef(activeTab);
+
+  usePushNotifications({
+    enabled: authState === 'authed',
+    role: 'animation',
+    tokenKey: 'animationToken',
+  });
 
   const switchTab = (tab) => {
     activeTabRef.current = tab;
@@ -122,7 +129,7 @@ export default function AnimationDashboard() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 4000);
 
-        const response = await fetch('/api/auth/verify', {
+        const response = await fetch('http://localhost:3001/api/auth/verify', {
           headers: { Authorization: `Bearer ${token}` },
           signal: controller.signal,
         });
@@ -195,15 +202,15 @@ export default function AnimationDashboard() {
 
         const token = localStorage.getItem('animationToken');
         const [requestsRes, settingsRes, eventsRes] = await Promise.all([
-          fetch('/api/requests', {
+          fetch('http://localhost:3001/api/requests', {
             signal: controller.signal,
             headers: { 'Authorization': `Bearer ${token}` }
           }),
-          fetch('/api/settings', {
+          fetch('http://localhost:3001/api/settings', {
             signal: controller.signal,
             headers: { 'Authorization': `Bearer ${token}` }
           }),
-          fetch('/api/events', {
+          fetch('http://localhost:3001/api/events', {
             signal: controller.signal,
             headers: { 'Authorization': `Bearer ${token}` }
           }),
@@ -344,7 +351,7 @@ export default function AnimationDashboard() {
 
   const createEvent = async (eventData) => {
     try {
-      const response = await fetch('/api/events', {
+      const response = await fetch('http://localhost:3001/api/events', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -427,7 +434,7 @@ export default function AnimationDashboard() {
     setSettingsMessage('');
 
     try {
-      const response = await fetch('/api/settings', {
+      const response = await fetch('http://localhost:3001/api/settings', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -475,14 +482,14 @@ export default function AnimationDashboard() {
     localStorage.removeItem('animationUsername');
     
     try {
-      await fetch('/api/auth/logout', {
+      await fetch('http://localhost:3001/api/auth/logout', {
         method: 'POST',
       });
     } catch (error) {
       console.error('Logout error:', error);
     }
 
-    router.push('/admin/animation/login');
+    router.push('/admin');
   };
 
   if (apiUnreachable) {
@@ -533,12 +540,6 @@ export default function AnimationDashboard() {
             <p className="text-slate-400 text-lg mt-2">Logged in as: <span className="text-emerald-400 font-semibold">{animationUsername}</span></p>
           </div>
           <div className="flex items-center gap-4">
-            <a
-              href="/admin"
-              className="text-slate-400 hover:text-white text-sm font-medium transition-colors"
-            >
-              ← Portal
-            </a>
             <button
               type="button"
               onClick={handleLogout}
@@ -641,20 +642,6 @@ export default function AnimationDashboard() {
           >
             Special Events
           </button>
-          <button
-            onClick={() => switchTab('settings')}
-            className={`px-8 py-4 font-semibold text-lg rounded-xl transition-all duration-300 ease-in-out ${
-              activeTab === 'settings'
-                ? `bg-emerald-500 text-white shadow-md`
-                : 'text-slate-300 hover:text-white hover:bg-slate-900/60'
-            }`}
-            style={{
-              backgroundColor: activeTab === 'settings' ? '#10b981' : 'transparent',
-              color: activeTab === 'settings' ? 'white' : 'inherit'
-            }}
-          >
-            Party Settings
-          </button>
         </div>
 
         {/* Requests Tab */}
@@ -725,24 +712,24 @@ export default function AnimationDashboard() {
         )}
 
         {activeTab === 'activities' && <AnimationProgramEditor section="activities" />}
-        {activeTab === 'nightShows' && <AnimationProgramEditor section="nightShows" />}
+        {activeTab === 'nightShows' && <AnimationProgramEditor section="nightShows" settings={settings} onSettingsChange={setSettings} onSaveSettings={saveSettings} />}
         {activeTab === 'kidsClub' && <AnimationProgramEditor section="kidsClub" />}
 
         {/* Events Tab */}
         {activeTab === 'events' && (
           <div>
-            <h2 className="text-4xl font-bold mb-12 text-gray-800">Special Events</h2>
+            <h2 className="text-4xl font-bold mb-12 text-white">Special Events</h2>
             <div className="space-y-8 max-w-4xl">
               {/* Add New Event Form */}
-              <div className="p-8 rounded-2xl shadow-md bg-white border border-gray-100">
-                <h3 className="text-2xl font-bold mb-6 text-gray-800">Add New Event</h3>
+              <div className="p-8 rounded-2xl shadow-xl shadow-black/20 bg-slate-900 border border-slate-800">
+                <h3 className="text-2xl font-bold mb-6 text-white">Add New Event</h3>
                 <EventForm onSubmit={createEvent} />
               </div>
 
               {/* Events List */}
               <div className="space-y-6">
                 {events.length === 0 ? (
-                  <div className="text-center text-gray-500 text-xl py-16 bg-white rounded-2xl shadow-md border border-gray-100">
+                  <div className="text-center text-slate-400 text-xl py-16 bg-slate-900 rounded-2xl shadow-xl shadow-black/20 border border-slate-800">
                     No special events yet.
                   </div>
                 ) : (
@@ -760,110 +747,7 @@ export default function AnimationDashboard() {
           </div>
         )}
 
-        {/* Settings Tab */}
-        {activeTab === 'settings' && (
-          <div>
-            <h2 className="text-4xl font-bold mb-12 text-gray-800">Party Settings</h2>
-            <div className="space-y-8 max-w-4xl">
-              {/* Party Name */}
-              <div
-                className="p-8 rounded-2xl shadow-md bg-white border border-gray-100"
-              >
-                <label className="block text-lg font-semibold mb-4 text-gray-800">Party Name</label>
-                <input
-                  type="text"
-                  value={settings.partyName || ''}
-                  onChange={(e) => setSettings({
-                    ...settings,
-                    partyName: e.target.value
-                  })}
-                  className="w-full px-6 py-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-800 text-lg transition-all duration-300 ease-in-out"
-                  style={{
-                    borderColor: '#10b981',
-                    borderWidth: '2px'
-                  }}
-                  placeholder="Enter party name (e.g., Night Party 2026)"
-                />
-              </div>
 
-              {/* Daily Dress Theme Name */}
-              <div
-                className="p-8 rounded-2xl shadow-md bg-white border border-gray-100"
-              >
-                <label className="block text-lg font-semibold mb-4 text-gray-800">Daily Dress Theme Name</label>
-                <input
-                  type="text"
-                  value={settings.dailyDressThemeName || ''}
-                  onChange={(e) => setSettings({
-                    ...settings,
-                    dailyDressThemeName: e.target.value
-                  })}
-                  className="w-full px-6 py-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-800 text-lg transition-all duration-300 ease-in-out"
-                  style={{
-                    borderColor: '#10b981',
-                    borderWidth: '2px'
-                  }}
-                  placeholder="Enter dress theme (e.g., Beach Casual, Tropical Vibes)"
-                />
-              </div>
-
-              {/* Current Week */}
-              <div
-                className="p-8 rounded-2xl shadow-md bg-white border border-gray-100"
-              >
-                <label className="block text-lg font-semibold mb-4 text-gray-800">Current Week for Tonight&apos;s Show</label>
-                <div className="flex gap-6">
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="currentWeek"
-                      value="A"
-                      checked={settings.currentWeek === 'A'}
-                      onChange={(e) => setSettings({
-                        ...settings,
-                        currentWeek: e.target.value
-                      })}
-                      className="mr-3"
-                    />
-                    <span className="text-lg">Week A</span>
-                  </label>
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="currentWeek"
-                      value="B"
-                      checked={settings.currentWeek === 'B'}
-                      onChange={(e) => setSettings({
-                        ...settings,
-                        currentWeek: e.target.value
-                      })}
-                      className="mr-3"
-                    />
-                    <span className="text-lg">Week B</span>
-                  </label>
-                </div>
-                <p className="text-sm text-gray-500 mt-2">Switch between Week A and Week B programs for the nightly entertainment schedule.</p>
-              </div>
-
-              {/* Save Button */}
-              <button
-                onClick={saveSettings}
-                disabled={settingsSaving}
-                className="w-full px-8 py-4 rounded-xl font-semibold text-white shadow-md hover:shadow-lg transition-all duration-300 ease-in-out bg-emerald-500 hover:bg-emerald-600"
-                style={{
-                  backgroundColor: '#10b981',
-                  opacity: settingsSaving ? 0.6 : 1
-                }}
-              >
-                {settingsSaving ? 'Saving...' : 'Save Settings'}
-              </button>
-
-              {settingsMessage && (
-                <p className="text-center font-semibold text-lg">{settingsMessage}</p>
-              )}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -900,51 +784,50 @@ function EventForm({ onSubmit, initialData = {}, onCancel }) {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-lg font-semibold mb-3 text-gray-800">Event Name *</label>
+          <label className="block text-lg font-semibold mb-3 text-white">Event Name *</label>
           <input
             type="text"
             value={formData.eventName}
             onChange={(e) => setFormData({ ...formData, eventName: e.target.value })}
-            className="w-full px-6 py-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-800 text-lg transition-all duration-300 ease-in-out"
+            className="w-full px-6 py-4 rounded-xl border border-slate-700 bg-slate-800 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-lg transition-all duration-300 ease-in-out"
             placeholder="e.g., Beach Volleyball Tournament"
             required
           />
         </div>
         <div>
-          <label className="block text-lg font-semibold mb-3 text-gray-800">Time *</label>
+          <label className="block text-lg font-semibold mb-3 text-white">Date & Time *</label>
           <input
-            type="text"
+            type="datetime-local"
             value={formData.time}
             onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-            className="w-full px-6 py-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-800 text-lg transition-all duration-300 ease-in-out"
-            placeholder="e.g., 2:00 PM - 5:00 PM"
+            className="w-full px-6 py-4 rounded-xl border border-slate-700 bg-slate-800 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-lg transition-all duration-300 ease-in-out"
             required
           />
         </div>
       </div>
       <div>
-        <label className="block text-lg font-semibold mb-3 text-gray-800">Location *</label>
+        <label className="block text-lg font-semibold mb-3 text-white">Location *</label>
         <input
           type="text"
           value={formData.location}
           onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-          className="w-full px-6 py-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-800 text-lg transition-all duration-300 ease-in-out"
+          className="w-full px-6 py-4 rounded-xl border border-slate-700 bg-slate-800 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-lg transition-all duration-300 ease-in-out"
           placeholder="e.g., Main Beach Area"
           required
         />
       </div>
       <div>
-        <label className="block text-lg font-semibold mb-3 text-gray-800">More Info</label>
+        <label className="block text-lg font-semibold mb-3 text-white">More Info</label>
         <textarea
           value={formData.moreInfo}
           onChange={(e) => setFormData({ ...formData, moreInfo: e.target.value })}
-          className="w-full px-6 py-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-gray-800 text-lg transition-all duration-300 ease-in-out resize-vertical"
+          className="w-full px-6 py-4 rounded-xl border border-slate-700 bg-slate-800 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-lg transition-all duration-300 ease-in-out resize-vertical"
           placeholder="Additional details about the event..."
           rows={3}
         />
       </div>
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl text-lg shadow-sm">
+        <div className="bg-red-900/30 border border-red-700 text-red-200 px-6 py-4 rounded-xl text-lg shadow-sm">
           {error}
         </div>
       )}
@@ -952,7 +835,7 @@ function EventForm({ onSubmit, initialData = {}, onCancel }) {
         <button
           type="submit"
           disabled={loading}
-          className="px-8 py-4 rounded-xl font-semibold text-white shadow-md hover:shadow-lg transition-all duration-300 ease-in-out bg-emerald-500 hover:bg-emerald-600 disabled:bg-gray-400"
+          className="px-8 py-4 rounded-xl font-semibold text-white shadow-md hover:shadow-lg transition-all duration-300 ease-in-out bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-600"
         >
           {loading ? 'Saving...' : (initialData._id ? 'Update Event' : 'Add Event')}
         </button>
@@ -960,7 +843,7 @@ function EventForm({ onSubmit, initialData = {}, onCancel }) {
           <button
             type="button"
             onClick={onCancel}
-            className="px-8 py-4 rounded-xl font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition-all duration-300 ease-in-out"
+            className="px-8 py-4 rounded-xl font-semibold text-slate-300 bg-slate-800 border border-slate-700 hover:bg-slate-700 transition-all duration-300 ease-in-out"
           >
             Cancel
           </button>
@@ -984,10 +867,10 @@ function EventCard({ event, onUpdate, onDelete }) {
   };
 
   return (
-    <div className="p-8 rounded-2xl shadow-md bg-white border border-gray-100 hover:shadow-xl transition-all duration-300 ease-in-out">
+    <div className="p-8 rounded-2xl shadow-xl shadow-black/20 bg-slate-900 border border-slate-800 hover:shadow-black/40 transition-all duration-300 ease-in-out">
       {editing ? (
         <div>
-          <h3 className="text-2xl font-bold mb-6 text-gray-800">Edit Event</h3>
+          <h3 className="text-2xl font-bold mb-6 text-white">Edit Event</h3>
           <EventForm
             onSubmit={async (data) => {
               const result = await onUpdate(event._id, data);
@@ -1002,38 +885,38 @@ function EventCard({ event, onUpdate, onDelete }) {
         <div>
           <div className="flex justify-between items-start mb-6">
             <div className="flex-1">
-              <h3 className="text-2xl font-bold text-gray-800 mb-2">{event.eventName}</h3>
-              <div className="space-y-2 text-gray-600">
+              <h3 className="text-2xl font-bold text-white mb-2">{event.eventName}</h3>
+              <div className="space-y-2 text-slate-300">
                 <p className="flex items-center">
-                  <span className="font-semibold mr-2">ðŸ•’</span>
+                  <span className="font-semibold text-emerald-500 mr-2">Time:</span>
                   {event.time}
                 </p>
                 <p className="flex items-center">
-                  <span className="font-semibold mr-2">ðŸ“</span>
+                  <span className="font-semibold text-emerald-500 mr-2">Location:</span>
                   {event.location}
                 </p>
                 {event.moreInfo && (
                   <p className="flex items-start">
-                    <span className="font-semibold mr-2">â„¹ï¸</span>
+                    <span className="font-semibold text-emerald-500 mr-2">Info:</span>
                     <span className="whitespace-pre-line">{event.moreInfo}</span>
                   </p>
                 )}
               </div>
-              <p className="text-sm text-gray-400 mt-4">
+              <p className="text-sm text-slate-500 mt-4">
                 Created: {new Date(event.createdAt).toLocaleString()}
               </p>
             </div>
             <div className="flex gap-3 ml-6">
               <button
                 onClick={() => setEditing(true)}
-                className="px-6 py-3 rounded-xl transition-all duration-300 ease-in-out text-white font-medium shadow-md hover:shadow-lg bg-blue-500 hover:bg-blue-600"
+                className="px-6 py-3 rounded-xl transition-all duration-300 ease-in-out text-white font-medium shadow-md hover:shadow-lg bg-blue-600 hover:bg-blue-700"
               >
                 Edit
               </button>
               <button
                 onClick={handleDelete}
                 disabled={deleting}
-                className="px-6 py-3 rounded-xl transition-all duration-300 ease-in-out text-white font-medium shadow-md hover:shadow-lg bg-red-500 hover:bg-red-600 disabled:bg-gray-400"
+                className="px-6 py-3 rounded-xl transition-all duration-300 ease-in-out text-white font-medium shadow-md hover:shadow-lg bg-red-600 hover:bg-red-700 disabled:bg-slate-600"
               >
                 {deleting ? 'Deleting...' : 'Delete'}
               </button>

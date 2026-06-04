@@ -1,5 +1,6 @@
 const express = require('express');
 const Complaint = require('../models/Complaint');
+const { notifyNewComplaint } = require('../lib/pushNotifications');
 
 const router = express.Router();
 
@@ -34,6 +35,10 @@ router.post('/', async (req, res) => {
     if (io) {
       io.emit('new-complaint', savedComplaint);
     }
+
+    notifyNewComplaint(savedComplaint).catch((err) => {
+      console.error('Push notification error (complaint):', err.message);
+    });
 
     res.status(201).json(savedComplaint);
   } catch (error) {

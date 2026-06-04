@@ -13,7 +13,7 @@ function buildDayMap(items = []) {
   items.forEach((item) => {
     const index = DAY_NAMES.indexOf(item.day);
     if (index >= 0) {
-      map[index] = { name: item.show, emoji: item.emoji || '🎭' };
+      map[index] = { name: item.show, emoji: item.emoji || '' };
     }
   });
   return map;
@@ -33,8 +33,8 @@ const TonightShow = () => {
     const load = async () => {
       try {
         const [settingsRes, programRes] = await Promise.all([
-          fetch('/api/settings'),
-          fetch('/api/program'),
+          fetch('http://localhost:3001/api/settings'),
+          fetch('http://localhost:3001/api/program'),
         ]);
 
         if (active && settingsRes.ok) {
@@ -88,7 +88,7 @@ const TonightShow = () => {
       const now = new Date();
       const day = now.getDay();
       setCurrentDay(now.toLocaleDateString(language, { weekday: 'long' }));
-      setCurrentShow(program[day] || { name: 'No show today', emoji: '❓' });
+      setCurrentShow(program[day] || { name: 'No show today', emoji: '' });
     };
 
     update();
@@ -101,7 +101,7 @@ const TonightShow = () => {
       <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">{t('pages.nightShows.title')}</h2>
       <p className="text-base sm:text-lg text-slate-400 mb-2">{currentDay}</p>
       <p className="text-2xl sm:text-3xl font-bold text-emerald-400 mb-2">
-        {currentShow.emoji} {currentShow.name}
+        {currentShow.name}
       </p>
     </div>
   );

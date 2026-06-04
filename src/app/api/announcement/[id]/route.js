@@ -20,9 +20,11 @@ export async function PATCH(request, { params }) {
     if (icon !== undefined) updateData.icon = icon;
     if (autoHideSeconds !== undefined) updateData.autoHideSeconds = autoHideSeconds;
 
+    const { id } = await params;
+
     if (active === true) {
       await Announcement.updateMany(
-        { _id: { $ne: params.id }, active: true },
+        { _id: { $ne: id }, active: true },
         { active: false }
       );
       updateData.active = true;
@@ -31,9 +33,9 @@ export async function PATCH(request, { params }) {
     }
 
     const updatedAnnouncement = await Announcement.findByIdAndUpdate(
-      params.id,
+      id,
       updateData,
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     if (!updatedAnnouncement) {
@@ -50,7 +52,8 @@ export async function PATCH(request, { params }) {
 export async function DELETE(_request, { params }) {
   try {
     await connectToDatabase();
-    const deletedAnnouncement = await Announcement.findByIdAndDelete(params.id);
+    const { id } = await params;
+    const deletedAnnouncement = await Announcement.findByIdAndDelete(id);
 
     if (!deletedAnnouncement) {
       return NextResponse.json({ error: 'Announcement not found' }, { status: 404 });

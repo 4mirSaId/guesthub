@@ -17,8 +17,8 @@ const ServiceRequest = require('./models/ServiceRequest');
 
 const allowedOrigins = [
   'http://localhost:3000',
-  'http://127.0.0.1:3000',
-  'https://hotel-guesthub.vercel.app',
+  /*'http://127.0.0.1:3000',
+  'https://hotel-guesthub.vercel.app',*/
   process.env.CLIENT_ORIGIN,
   process.env.NEXT_PUBLIC_SITE_URL,
   process.env.NEXT_PUBLIC_API_URL,
@@ -62,6 +62,7 @@ app.use('/api/announcement', announcementsRoutes);
 app.use('/api/service-requests', require('./routes/serviceRoutes'));
 app.use('/api/feedback', require('./routes/feedbackRoutes'));
 app.use('/api/program', require('./routes/program'));
+app.use('/api/push', require('./routes/push'));
 
 // MongoDB Atlas connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://<username>:<password>@<cluster>.mongodb.net/songrequests?retryWrites=true&w=majority';

@@ -12,19 +12,19 @@ const Footer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <div>
             <h3 className="text-sm sm:text-base font-semibold mb-2 text-white">Adress</h3>
-            <p className="text-xs sm:text-sm text-slate-400">Hammamet, Tunisia</p>
+            <p className="text-xs sm:text-sm text-slate-400">City, Gouvernorat, Country</p>
           </div>
           <div>
             <h3 className="text-sm sm:text-base font-semibold mb-2 text-white">Téléphone</h3>
-            <p className="text-xs sm:text-sm text-slate-400">+216 72227033</p>
+            <p className="text-xs sm:text-sm text-slate-400">+216 72******</p>
           </div>
           <div>
             <h3 className="text-sm sm:text-base font-semibold mb-2 text-white">Email</h3>
-            <p className="text-xs sm:text-sm text-slate-400">booking@hotelhammametgarden.tn</p>
+            <p className="text-xs sm:text-sm text-slate-400">mail@mail.mail</p>
           </div>
           <div>
             <h3 className="text-sm sm:text-base font-semibold mb-2 text-white">Website</h3>
-            <a href="https://hotelhammametgarden.tn" className="text-xs sm:text-sm text-emerald-400 hover:text-emerald-300 transition-colors duration-300">hotelhammametgarden.tn</a>
+            <a href="https://official-website.com" className="text-xs sm:text-sm text-emerald-400 hover:text-emerald-300 transition-colors duration-300">official-website.com</a>
           </div>
         </div>
         <div className="mt-4 pt-4 border-t border-slate-800 text-center">

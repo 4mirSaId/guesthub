@@ -15,4 +15,4 @@ const serviceRequestSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("ServiceRequest", serviceRequestSchema);
+module.exports = mongoose.models.ServiceRequest || mongoose.model("ServiceRequest", serviceRequestSchema);

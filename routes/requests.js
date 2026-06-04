@@ -1,5 +1,6 @@
 const express = require('express');
 const SongRequest = require('../models/SongRequest');
+const { notifyNewSongRequest } = require('../lib/pushNotifications');
 
 const router = express.Router();
 
@@ -31,6 +32,10 @@ router.post('/', async (req, res) => {
     // Emit Socket.IO event
     const io = req.app.get('io');
     io.emit('new-request', savedRequest);
+
+    notifyNewSongRequest(savedRequest).catch((err) => {
+      console.error('Push notification error (song request):', err.message);
+    });
 
     res.status(201).json(savedRequest);
   } catch (error) {

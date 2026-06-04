@@ -26,4 +26,4 @@ const specialEventSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('SpecialEvent', specialEventSchema);
+module.exports = mongoose.models.SpecialEvent || mongoose.model('SpecialEvent', specialEventSchema);

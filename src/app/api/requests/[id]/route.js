@@ -6,15 +6,16 @@ export async function PATCH(request, { params }) {
   try {
     await connectToDatabase();
     const { status } = await request.json();
+    const { id } = await params;
 
     if (!['pending', 'accepted', 'rejected'].includes(status)) {
       return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
     }
 
     const updatedRequest = await SongRequest.findByIdAndUpdate(
-      params.id,
+      id,
       { status },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     if (!updatedRequest) {

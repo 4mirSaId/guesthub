@@ -1,8 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-
-const iconOptions = ['!', 'i', '*'];
+import { useSocket } from '../hooks/useSocket';
 
 const priorityColors = {
   danger: 'border-red-900/70 bg-red-950/35',
@@ -17,7 +16,7 @@ const priorityBadgeColors = {
 };
 
 async function requestAnnouncements() {
-  const response = await fetch('/api/announcement/all');
+  const response = await fetch('http://localhost:3001/api/announcement/all');
   if (!response.ok) throw new Error('Failed to fetch announcements');
 
   const data = await response.json();
@@ -27,13 +26,14 @@ async function requestAnnouncements() {
 export default function AnnouncementManager({ embedded = false }) {
   const [message, setMessage] = useState('');
   const [priority, setPriority] = useState('warning');
-  const [icon, setIcon] = useState('!');
-  const [autoHideSeconds, setAutoHideSeconds] = useState('');
+  const [autoHideHours, setAutoHideHours] = useState('');
+  const [autoHideMinutes, setAutoHideMinutes] = useState('');
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const socket = useSocket();
 
   const fetchAnnouncements = useCallback(async () => {
     try {
@@ -65,11 +65,26 @@ export default function AnnouncementManager({ embedded = false }) {
     };
   }, []);
 
+  // Listen to real-time announcement updates via Socket.IO
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleAnnouncementUpdate = async () => {
+      await fetchAnnouncements();
+    };
+
+    socket.on('announcement-update', handleAnnouncementUpdate);
+
+    return () => {
+      socket.off('announcement-update', handleAnnouncementUpdate);
+    };
+  }, [socket, fetchAnnouncements]);
+
   const resetForm = () => {
     setMessage('');
-    setAutoHideSeconds('');
+    setAutoHideHours('');
+    setAutoHideMinutes('');
     setPriority('warning');
-    setIcon('!');
     setEditingId(null);
   };
 
@@ -93,19 +108,21 @@ export default function AnnouncementManager({ embedded = false }) {
       const payload = {
         message: message.trim(),
         priority,
-        icon,
         active: true,
         autoHideSeconds: null,
       };
 
-      if (autoHideSeconds.trim()) {
-        const seconds = Number.parseInt(autoHideSeconds, 10);
-        if (Number.isNaN(seconds) || seconds < 1) {
-          setError('Auto-hide must be a positive number of seconds.');
+      const hours = Number.parseInt(autoHideHours, 10) || 0;
+      const minutes = Number.parseInt(autoHideMinutes, 10) || 0;
+
+      if (hours > 0 || minutes > 0) {
+        const totalSeconds = hours * 3600 + minutes * 60;
+        if (totalSeconds < 1) {
+          setError('Auto-hide must be at least 1 minute.');
           setLoading(false);
           return;
         }
-        payload.autoHideSeconds = seconds;
+        payload.autoHideSeconds = totalSeconds;
       }
 
       const response = await fetch(url, {
@@ -164,8 +181,15 @@ export default function AnnouncementManager({ embedded = false }) {
   const handleEdit = (announcement) => {
     setMessage(announcement.message || '');
     setPriority(announcement.priority || 'warning');
-    setIcon(announcement.icon || '!');
-    setAutoHideSeconds(announcement.autoHideSeconds ? String(announcement.autoHideSeconds) : '');
+    if (announcement.autoHideSeconds) {
+      const hours = Math.floor(announcement.autoHideSeconds / 3600);
+      const minutes = Math.floor((announcement.autoHideSeconds % 3600) / 60);
+      setAutoHideHours(hours > 0 ? String(hours) : '');
+      setAutoHideMinutes(minutes > 0 ? String(minutes) : '');
+    } else {
+      setAutoHideHours('');
+      setAutoHideMinutes('');
+    }
     setEditingId(announcement._id);
     setError('');
     setSuccessMessage('');
@@ -202,9 +226,6 @@ export default function AnnouncementManager({ embedded = false }) {
         {activeAnnouncement && (
           <div className={`mb-8 p-4 border-2 rounded-xl ${priorityColors[activeAnnouncement.priority]}`}>
             <div className="flex items-start gap-3">
-              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-950/70 text-lg font-bold">
-                {activeAnnouncement.icon}
-              </span>
               <div className="flex-1">
                 <h3 className="font-bold text-lg mb-2 text-white">Currently active</h3>
                 <p className="text-slate-100 mb-3">{activeAnnouncement.message}</p>
@@ -241,7 +262,7 @@ export default function AnnouncementManager({ embedded = false }) {
               <p className="text-sm text-slate-500 mt-1">{message.length}/500 characters</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
                 <label htmlFor="announcement-priority" className="block text-sm font-medium text-slate-300 mb-2">
                   Priority
@@ -259,39 +280,32 @@ export default function AnnouncementManager({ embedded = false }) {
               </div>
 
               <div>
-                <span className="block text-sm font-medium text-slate-300 mb-2">Icon</span>
-                <div className="flex gap-2">
-                  {iconOptions.map((option) => (
-                    <button
-                      key={option}
-                      type="button"
-                      onClick={() => setIcon(option)}
-                      className={`h-12 w-12 rounded-xl border text-lg font-bold transition-colors ${
-                        icon === option
-                          ? 'border-emerald-500 bg-emerald-950/40 text-white'
-                          : 'border-slate-700 bg-slate-950 text-slate-300 hover:border-slate-600'
-                      }`}
-                      aria-pressed={icon === option}
-                    >
-                      {option}
-                    </button>
-                  ))}
+                <label className="block text-sm font-medium text-slate-300 mb-2">Auto-hide duration</label>
+                <div className="flex gap-3">
+                  <div className="flex-1">
+                    <input
+                      type="number"
+                      min="0"
+                      max="24"
+                      value={autoHideHours}
+                      onChange={(event) => setAutoHideHours(event.target.value)}
+                      placeholder="Hours"
+                      className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <input
+                      type="number"
+                      min="0"
+                      max="59"
+                      value={autoHideMinutes}
+                      onChange={(event) => setAutoHideMinutes(event.target.value)}
+                      placeholder="Minutes"
+                      className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500"
+                    />
+                  </div>
                 </div>
-              </div>
-
-              <div>
-                <label htmlFor="announcement-auto-hide" className="block text-sm font-medium text-slate-300 mb-2">
-                  Auto-hide seconds
-                </label>
-                <input
-                  id="announcement-auto-hide"
-                  type="number"
-                  min="1"
-                  value={autoHideSeconds}
-                  onChange={(event) => setAutoHideSeconds(event.target.value)}
-                  placeholder="Leave empty"
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500"
-                />
+                <p className="text-xs text-slate-500 mt-1">Leave empty to disable auto-hide</p>
               </div>
             </div>
 
@@ -330,7 +344,7 @@ export default function AnnouncementManager({ embedded = false }) {
               {announcements.map((announcement) => (
                 <div key={announcement._id} className="px-6 sm:px-8 py-6 hover:bg-slate-950/60 transition-colors">
                   <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-                    <div className="flex items-start gap-3 flex-1">
+                    <div className="flex-1">
                       <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-950 text-lg font-bold">
                         {announcement.icon}
                       </span>
@@ -347,7 +361,13 @@ export default function AnnouncementManager({ embedded = false }) {
                           )}
                           {announcement.autoHideSeconds && (
                             <span className="text-slate-500">
-                              Auto-hides: {announcement.autoHideSeconds}s
+                              {(() => {
+                                const hours = Math.floor(announcement.autoHideSeconds / 3600);
+                                const minutes = Math.floor((announcement.autoHideSeconds % 3600) / 60);
+                                if (hours > 0 && minutes > 0) return `Auto-hides: ${hours}h ${minutes}m`;
+                                if (hours > 0) return `Auto-hides: ${hours}h`;
+                                return `Auto-hides: ${minutes}m`;
+                              })()}
                             </span>
                           )}
                         </div>

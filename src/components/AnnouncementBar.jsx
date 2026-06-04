@@ -13,7 +13,7 @@ export default function AnnouncementBar() {
   useEffect(() => {
     const fetchAnnouncement = async () => {
       try {
-        const response = await fetch('/api/announcement');
+        const response = await fetch('http://localhost:3001/api/announcement');
         if (response.ok) {
           const data = await response.json();
           if (data) {
@@ -96,7 +96,6 @@ export default function AnnouncementBar() {
       <div className="max-w-full mx-auto px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 flex-1">
-            <span className="text-xl flex-shrink-0">{announcement.icon}</span>
             <p className="text-white font-bold text-sm sm:text-base">
               {announcement.message}
             </p>

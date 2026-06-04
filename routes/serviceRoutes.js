@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const ServiceRequest = require("../models/ServiceRequest");
+const { notifyNewServiceRequest } = require("../lib/pushNotifications");
 
 // CREATE
 router.post("/", async (req, res) => {
@@ -18,6 +19,10 @@ router.post("/", async (req, res) => {
   if (io) {
     io.emit("new-service-request", newRequest);
   }
+
+  notifyNewServiceRequest(newRequest).catch((err) => {
+    console.error("Push notification error (service request):", err.message);
+  });
 
   res.json(newRequest);
 });

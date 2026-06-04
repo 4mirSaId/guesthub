@@ -23,7 +23,7 @@ export default function GuestReviews() {
 
     const load = async () => {
       try {
-        const res = await fetch('/api/feedback/public');
+        const res = await fetch('http://localhost:3001/api/feedback/public');
         if (!res.ok) throw new Error('Failed to load');
         const data = await res.json();
         if (!cancelled) setItems(Array.isArray(data) ? data : []);

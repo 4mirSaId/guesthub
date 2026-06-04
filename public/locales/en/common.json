@@ -10,7 +10,7 @@
     "language": "Language"
   },
   "footer": {
-    "copyright": "© 2026 Hammamet Garden Resort & Spa GuestHub. All rights reserved.",
+    "copyright": "© 2026 [hotelName] GuestHub. All rights reserved.",
     "followUs": "Follow us on social media"
   },
   "admin": {
@@ -27,7 +27,7 @@
   "pages": {
     "home": {
       "tagline": "Hotel live experience",
-      "welcome": "Welcome to Hammamet Garden Resort & Spa GuestHub",
+      "welcome": "Welcome to [hotelName] GuestHub",
       "description": "Discover a new way to experience your stay. Access daily activities, explore tonight's shows, request services, and interact in real-time — all from one place.",
       "exploreBtnText": "Explore",
       "feedbackBtnText": "Leave feedback",
@@ -93,7 +93,7 @@
     },
     "songRequest": {
       "title": "Song Request",
-      "intro": "Request your favorite song and let the DJ know what you want to hear!",
+      "intro": "Please request clean and appropriate songs. During Disco Time, choose music that matches the current vibe and dance floor energy. Requests that fit the atmosphere are more likely to be played.",
       "songLabel": "Song Name *",
       "songPlaceholder": "Enter song name",
       "artistLabel": "Artist Name (Optional)",

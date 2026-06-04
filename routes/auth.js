@@ -4,12 +4,12 @@ const router = express.Router();
 
 const USERS = {
   animation: {
-    password: 'dj2026!amir',
+    password: 'animation2026!',
     role: 'animation',
   },
   // Legacy username — same access as animation
   admin: {
-    password: 'dj2026!amir',
+    password: 'animation2026!',
     role: 'animation',
   },
   guestrelation: {

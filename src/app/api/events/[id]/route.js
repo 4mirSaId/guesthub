@@ -6,6 +6,7 @@ export async function PATCH(request, { params }) {
   try {
     await connectToDatabase();
     const { eventName, time, location, moreInfo } = await request.json();
+    const { id } = await params;
 
     const updateData = {};
     if (eventName !== undefined) updateData.eventName = eventName.trim();
@@ -14,9 +15,9 @@ export async function PATCH(request, { params }) {
     if (moreInfo !== undefined) updateData.moreInfo = moreInfo ? moreInfo.trim() : '';
 
     const updatedEvent = await SpecialEvent.findByIdAndUpdate(
-      params.id,
+      id,
       updateData,
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
 
     if (!updatedEvent) {
@@ -32,7 +33,8 @@ export async function PATCH(request, { params }) {
 export async function DELETE(_request, { params }) {
   try {
     await connectToDatabase();
-    const deletedEvent = await SpecialEvent.findByIdAndDelete(params.id);
+    const { id } = await params;
+    const deletedEvent = await SpecialEvent.findByIdAndDelete(id);
 
     if (!deletedEvent) {
       return NextResponse.json({ error: 'Event not found' }, { status: 404 });

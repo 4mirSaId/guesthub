@@ -36,5 +36,6 @@ const feedbackSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Feedback', feedbackSchema);
-module.exports.FEEDBACK_TYPES = FEEDBACK_TYPES;
+const feedbackModel = mongoose.models.Feedback || mongoose.model('Feedback', feedbackSchema);
+feedbackModel.FEEDBACK_TYPES = FEEDBACK_TYPES;
+module.exports = feedbackModel;

@@ -35,7 +35,7 @@ export default function Navbar() {
           <Link href="/" className="flex items-center space-x-2 sm:space-x-3 hover:opacity-80 transition-opacity duration-300 flex-shrink-0">
             <div className="relative h-8 w-8 sm:h-10 sm:w-10">
               <Image
-                src="/HR-logo.jpg"
+                src="/logo.png"
                 alt="HR GuestHub Logo"
                 fill
                 sizes="(max-width: 768px) 32px, 40px"
@@ -43,7 +43,7 @@ export default function Navbar() {
                 priority
               />
             </div>
-            <span className="text-lg sm:text-2xl font-bold text-white">HR GuestHub</span>
+            <span className="text-lg sm:text-2xl font-bold text-white">GuestHub</span>
           </Link>
 
           {/* Desktop Navigation */}

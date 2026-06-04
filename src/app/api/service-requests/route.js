@@ -1,6 +1,10 @@
+import { createRequire } from 'node:module';
 import { NextResponse } from 'next/server';
 import ServiceRequest from '@models/ServiceRequest';
 import { connectToDatabase } from '@/lib/mongodb';
+
+const require = createRequire(import.meta.url);
+const { notifyNewServiceRequest } = require('../../../../lib/pushNotifications');
 
 export async function GET() {
   try {
@@ -22,6 +26,10 @@ export async function POST(request) {
       type,
       message,
     }).save();
+
+    notifyNewServiceRequest(newRequest).catch((err) => {
+      console.error('Push notification error (service request):', err.message);
+    });
 
     return NextResponse.json(newRequest);
   } catch (error) {

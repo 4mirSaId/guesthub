@@ -72,7 +72,7 @@ export async function PUT(request) {
         .map((item, index) => ({
           day: String(item.day || '').trim(),
           show: String(item.show || '').trim(),
-          emoji: String(item.emoji || 'ðŸŽ­').trim(),
+          emoji: String(item.emoji || '').trim(),
           order: item.order ?? index,
         }))
         .filter((item) => item.day && item.show),
@@ -80,7 +80,7 @@ export async function PUT(request) {
         .map((item, index) => ({
           day: String(item.day || '').trim(),
           show: String(item.show || '').trim(),
-          emoji: String(item.emoji || 'ðŸŽ­').trim(),
+          emoji: String(item.emoji || '').trim(),
           order: item.order ?? index,
         }))
         .filter((item) => item.day && item.show),

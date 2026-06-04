@@ -12,7 +12,7 @@ const btnDanger =
 const btnGhost =
   'rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800 font-medium px-4 py-2 text-sm transition-colors';
 
-export default function AnimationProgramEditor({ section }) {
+export default function AnimationProgramEditor({ section, settings, onSettingsChange, onSaveSettings }) {
   const [program, setProgram] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -23,7 +23,7 @@ export default function AnimationProgramEditor({ section }) {
 
     const loadProgram = async () => {
       try {
-        const res = await fetch('/api/program');
+        const res = await fetch('http://localhost:3001/api/program');
         if (!res.ok) throw new Error('Failed to load');
         const data = await res.json();
         if (active) setProgram(data);
@@ -46,7 +46,7 @@ export default function AnimationProgramEditor({ section }) {
     setMessage('');
     try {
       const token = localStorage.getItem('animationToken');
-      const res = await fetch('/api/program', {
+      const res = await fetch('http://localhost:3001/api/program', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -98,6 +98,9 @@ export default function AnimationProgramEditor({ section }) {
         saveProgram={saveProgram}
         saving={saving}
         message={message}
+        settings={settings}
+        onSettingsChange={onSettingsChange}
+        onSaveSettings={onSaveSettings}
       />
     );
   }
@@ -163,11 +166,10 @@ function ActivitiesEditor({ program, update, saveProgram, saving, message }) {
             <div className="sm:w-32">
               <label className="block text-xs text-slate-500 mb-1 uppercase">Time</label>
               <input
-                type="text"
+                type="time"
                 value={act.time}
                 onChange={(e) => change(index, 'time', e.target.value)}
                 className={inputClass}
-                placeholder="09:30"
               />
             </div>
             <div className="flex-1">
@@ -198,8 +200,10 @@ function ActivitiesEditor({ program, update, saveProgram, saving, message }) {
   );
 }
 
-function NightShowsEditor({ program, update, saveProgram, saving, message }) {
+function NightShowsEditor({ program, update, saveProgram, saving, message, settings, onSettingsChange, onSaveSettings }) {
   const [weekTab, setWeekTab] = useState('weekA');
+  const [settingsSaving, setSettingsSaving] = useState(false);
+  const [settingsMessage, setSettingsMessage] = useState('');
   const items = program.nightShows?.[weekTab] || [];
 
   const setWeekItems = (week, next) => {
@@ -219,7 +223,7 @@ function NightShowsEditor({ program, update, saveProgram, saving, message }) {
   };
 
   const add = () => {
-    setWeekItems(weekTab, [...items, { day: 'Monday', show: 'New Show', emoji: '🎭', order: items.length }]);
+    setWeekItems(weekTab, [...items, { day: 'Monday', show: 'New Show', emoji: '', order: items.length }]);
   };
 
   const remove = (index) => {
@@ -229,10 +233,76 @@ function NightShowsEditor({ program, update, saveProgram, saving, message }) {
     );
   };
 
+  const handleSaveSettings = async () => {
+    if (onSaveSettings) {
+      setSettingsSaving(true);
+      setSettingsMessage('');
+      try {
+        await onSaveSettings();
+        setSettingsMessage('Settings saved successfully!');
+        setTimeout(() => setSettingsMessage(''), 3000);
+      } catch (error) {
+        setSettingsMessage('Failed to save settings');
+      } finally {
+        setSettingsSaving(false);
+      }
+    }
+  };
+
   return (
     <div>
       <h2 className="text-3xl font-bold text-white mb-2">Night Shows</h2>
       <p className="text-slate-400 mb-8">Manage Week A and Week B programs.</p>
+
+      {/* Current Week for Tonight's Show */}
+      {settings && onSettingsChange && (
+        <div className="p-6 rounded-xl bg-slate-900 border border-slate-800 mb-8">
+          <label className="block text-lg font-semibold mb-4 text-white">Current Week for Tonight&apos;s Show</label>
+          <div className="flex gap-6 mb-4">
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="currentWeek"
+                value="A"
+                checked={settings.currentWeek === 'A'}
+                onChange={(e) => onSettingsChange({
+                  ...settings,
+                  currentWeek: e.target.value
+                })}
+                className="mr-3"
+              />
+              <span className="text-lg text-slate-100">Week A</span>
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="currentWeek"
+                value="B"
+                checked={settings.currentWeek === 'B'}
+                onChange={(e) => onSettingsChange({
+                  ...settings,
+                  currentWeek: e.target.value
+                })}
+                className="mr-3"
+              />
+              <span className="text-lg text-slate-100">Week B</span>
+            </label>
+          </div>
+          <p className="text-sm text-slate-400 mb-4">Switch between Week A and Week B programs for the nightly entertainment schedule.</p>
+          {onSaveSettings && (
+            <button
+              onClick={handleSaveSettings}
+              disabled={settingsSaving}
+              className="px-4 py-2 rounded-xl font-semibold text-white shadow-md hover:shadow-lg transition-all duration-300 ease-in-out bg-emerald-500 hover:bg-emerald-600 disabled:opacity-60"
+            >
+              {settingsSaving ? 'Saving...' : 'Save Current Week'}
+            </button>
+          )}
+          {settingsMessage && (
+            <p className="text-sm font-semibold mt-2">{settingsMessage}</p>
+          )}
+        </div>
+      )}
 
       <div className="flex gap-3 mb-6">
         {['weekA', 'weekB'].map((week) => (
@@ -407,21 +477,19 @@ function KidsClubEditor({ program, update, saveProgram, saving, message }) {
                   <div>
                     <label className="block text-xs text-slate-500 mb-1">Start</label>
                     <input
-                      type="text"
+                      type="time"
                       value={session.startTime}
                       onChange={(e) => changeSession(dayIndex, sessionIndex, 'startTime', e.target.value)}
                       className={inputClass}
-                      placeholder="10:00"
                     />
                   </div>
                   <div>
                     <label className="block text-xs text-slate-500 mb-1">End</label>
                     <input
-                      type="text"
+                      type="time"
                       value={session.endTime}
                       onChange={(e) => changeSession(dayIndex, sessionIndex, 'endTime', e.target.value)}
                       className={inputClass}
-                      placeholder="12:00"
                     />
                   </div>
                   <div className="flex items-end">

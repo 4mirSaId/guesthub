@@ -6,11 +6,12 @@ export async function PATCH(request, { params }) {
   try {
     await connectToDatabase();
     const { status } = await request.json();
+    const { id } = await params;
 
     const updated = await ServiceRequest.findByIdAndUpdate(
-      params.id,
+      id,
       { status },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     return NextResponse.json(updated);

@@ -33,7 +33,7 @@ export default function RequestPage() {
     // Fetch initial settings
     const loadSettings = async () => {
       try {
-        const response = await fetch('/api/settings');
+        const response = await fetch('http://localhost:3001/api/settings');
         if (!response.ok) return;
         const data = await response.json();
         if (active) setSettings(data);
@@ -76,7 +76,7 @@ export default function RequestPage() {
     setMessage('');
 
     try {
-      const response = await fetch('/api/requests', {
+      const response = await fetch('http://localhost:3001/api/requests', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ export default function RequestPage() {
     setComplaintMessage('');
 
     try {
-      const response = await fetch('/api/complaints', {
+      const response = await fetch('http://localhost:3001/api/complaints', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

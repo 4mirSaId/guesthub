@@ -21,4 +21,4 @@ const songRequestSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('SongRequest', songRequestSchema);
+module.exports = mongoose.models.SongRequest || mongoose.model('SongRequest', songRequestSchema);
