@@ -90,7 +90,7 @@ export default function GuestRelationDashboard() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-        const response = await fetch('http://localhost:3001/api/auth/verify', {
+        const response = await fetch('/api/auth/verify', {
           headers: { Authorization: `Bearer ${token}` },
           signal: controller.signal,
         });
@@ -169,9 +169,9 @@ export default function GuestRelationDashboard() {
         const token = localStorage.getItem('grToken');
 
         const [complaintsRes, servicesRes, feedbackRes] = await Promise.all([
-          fetch('http://localhost:3001/api/complaints', { signal: controller.signal }),
-          fetch('http://localhost:3001/api/service-requests', { signal: controller.signal }),
-          fetch('http://localhost:3001/api/feedback', {
+          fetch('/api/complaints', { signal: controller.signal }),
+          fetch('/api/service-requests', { signal: controller.signal }),
+          fetch('/api/feedback', {
             signal: controller.signal,
             headers: { Authorization: `Bearer ${token}` },
           }),
@@ -366,7 +366,7 @@ export default function GuestRelationDashboard() {
     localStorage.removeItem('grToken');
     localStorage.removeItem('grUsername');
     try {
-      await fetch('http://localhost:3001/api/auth/logout', { method: 'POST' });
+      await fetch('/api/auth/logout', { method: 'POST' });
     } catch (error) {
       console.error('Logout error:', error);
     }

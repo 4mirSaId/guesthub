@@ -23,7 +23,7 @@ export default function Activities() {
 
     const load = async () => {
       try {
-        const res = await fetch('http://localhost:3001/api/program');
+        const res = await fetch('/api/program');
         if (!res.ok) throw new Error('Failed to load');
         const data = await res.json();
         if (active) applyProgram(data);

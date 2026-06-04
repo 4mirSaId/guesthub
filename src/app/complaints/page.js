@@ -28,7 +28,7 @@ export default function ComplaintsPage() {
     setIsSuccess(false);
 
     try {
-      const response = await fetch('http://localhost:3001/api/complaints', {
+      const response = await fetch('/api/complaints', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

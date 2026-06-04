@@ -129,7 +129,7 @@ export default function AnimationDashboard() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 4000);
 
-        const response = await fetch('http://localhost:3001/api/auth/verify', {
+        const response = await fetch('/api/auth/verify', {
           headers: { Authorization: `Bearer ${token}` },
           signal: controller.signal,
         });
@@ -202,15 +202,15 @@ export default function AnimationDashboard() {
 
         const token = localStorage.getItem('animationToken');
         const [requestsRes, settingsRes, eventsRes] = await Promise.all([
-          fetch('http://localhost:3001/api/requests', {
+          fetch('/api/requests', {
             signal: controller.signal,
             headers: { 'Authorization': `Bearer ${token}` }
           }),
-          fetch('http://localhost:3001/api/settings', {
+          fetch('/api/settings', {
             signal: controller.signal,
             headers: { 'Authorization': `Bearer ${token}` }
           }),
-          fetch('http://localhost:3001/api/events', {
+          fetch('/api/events', {
             signal: controller.signal,
             headers: { 'Authorization': `Bearer ${token}` }
           }),
@@ -351,7 +351,7 @@ export default function AnimationDashboard() {
 
   const createEvent = async (eventData) => {
     try {
-      const response = await fetch('http://localhost:3001/api/events', {
+      const response = await fetch('/api/events', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -434,7 +434,7 @@ export default function AnimationDashboard() {
     setSettingsMessage('');
 
     try {
-      const response = await fetch('http://localhost:3001/api/settings', {
+      const response = await fetch('/api/settings', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -482,7 +482,7 @@ export default function AnimationDashboard() {
     localStorage.removeItem('animationUsername');
     
     try {
-      await fetch('http://localhost:3001/api/auth/logout', {
+      await fetch('/api/auth/logout', {
         method: 'POST',
       });
     } catch (error) {

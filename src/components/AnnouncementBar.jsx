@@ -13,7 +13,7 @@ export default function AnnouncementBar() {
   useEffect(() => {
     const fetchAnnouncement = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/announcement');
+        const response = await fetch('/api/announcement');
         if (response.ok) {
           const data = await response.json();
           if (data) {

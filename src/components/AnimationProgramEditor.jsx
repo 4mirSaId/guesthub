@@ -23,7 +23,7 @@ export default function AnimationProgramEditor({ section, settings, onSettingsCh
 
     const loadProgram = async () => {
       try {
-        const res = await fetch('http://localhost:3001/api/program');
+        const res = await fetch('/api/program');
         if (!res.ok) throw new Error('Failed to load');
         const data = await res.json();
         if (active) setProgram(data);
@@ -46,7 +46,7 @@ export default function AnimationProgramEditor({ section, settings, onSettingsCh
     setMessage('');
     try {
       const token = localStorage.getItem('animationToken');
-      const res = await fetch('http://localhost:3001/api/program', {
+      const res = await fetch('/api/program', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

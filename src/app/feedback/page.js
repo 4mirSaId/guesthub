@@ -50,7 +50,7 @@ export default function FeedbackPage() {
 
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:3001/api/feedback', {
+      const res = await fetch('/api/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

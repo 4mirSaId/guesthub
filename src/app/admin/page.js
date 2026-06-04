@@ -42,7 +42,7 @@ export default function AdminPortalPage() {
       const animationToken = localStorage.getItem('animationToken');
       if (animationToken) {
         try {
-          const response = await fetch('http://localhost:3001/api/auth/verify', {
+          const response = await fetch('/api/auth/verify', {
             headers: { Authorization: `Bearer ${animationToken}` },
           });
           if (response.ok) {
@@ -61,7 +61,7 @@ export default function AdminPortalPage() {
       const grToken = localStorage.getItem('grToken');
       if (grToken) {
         try {
-          const response = await fetch('http://localhost:3001/api/auth/verify', {
+          const response = await fetch('/api/auth/verify', {
             headers: { Authorization: `Bearer ${grToken}` },
           });
           if (response.ok) {

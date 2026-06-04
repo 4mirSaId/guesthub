@@ -33,8 +33,8 @@ const TonightShow = () => {
     const load = async () => {
       try {
         const [settingsRes, programRes] = await Promise.all([
-          fetch('http://localhost:3001/api/settings'),
-          fetch('http://localhost:3001/api/program'),
+          fetch('/api/settings'),
+          fetch('/api/program'),
         ]);
 
         if (active && settingsRes.ok) {
