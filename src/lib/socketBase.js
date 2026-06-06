@@ -11,6 +11,8 @@ export function getSocketBase() {
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
       return LOCAL_SOCKET_BASE;
     }
+    // For production (Vercel, etc.), use the same domain
+    return window.location.origin;
   }
 
   return null;

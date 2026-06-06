@@ -11,6 +11,8 @@ export function getApiBase() {
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
       return LOCAL_API_BASE;
     }
+    // For production (Vercel, etc.), use the same domain
+    return window.location.origin;
   }
 
   return LOCAL_API_BASE;
