@@ -79,20 +79,20 @@ export default function FeedbackPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="guest-page py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-lg mx-auto">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+        <div className="guest-header -mx-4 -mt-12 mb-8 px-4 pb-14 pt-12 text-center sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+          <h1 className="text-3xl font-semibold text-white tracking-tight sm:text-4xl">
             {t('pages.feedback.title')}
           </h1>
-          <p className="text-slate-400 mt-3 text-sm sm:text-base">
+          <p className="mt-3 text-sm text-white/70 sm:text-base">
             {t('pages.feedback.intro')}
           </p>
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="rounded-2xl border border-slate-800 bg-slate-900 p-6 sm:p-8 shadow-xl shadow-black/30 space-y-6"
+          className="guest-form-surface relative space-y-6 p-6 sm:p-8"
         >
           <div>
             <label htmlFor="fb-type" className="block text-sm font-medium text-slate-300 mb-2">
@@ -102,7 +102,7 @@ export default function FeedbackPage() {
               id="fb-type"
               value={type}
               onChange={(e) => setType(e.target.value)}
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500"
+              className="guest-input"
             >
               {TYPES.map((item) => (
                 <option key={item.value} value={item.value}>
@@ -122,8 +122,8 @@ export default function FeedbackPage() {
                   onClick={() => setRating(n)}
                   className={`flex-1 min-w-[2.75rem] rounded-xl py-3 text-lg font-semibold transition-all duration-200 border ${
                     rating === n
-                      ? 'bg-emerald-500 border-emerald-400 text-white shadow-lg shadow-emerald-900/40'
-                      : 'bg-slate-950 border-slate-700 text-slate-400 hover:border-slate-600 hover:text-slate-200'
+                      ? 'border-[var(--gold)] bg-[var(--gold)] text-white shadow-lg'
+                      : 'border-[var(--line)] bg-transparent text-[var(--gold)] hover:border-[var(--gold)]'
                   }`}
                   aria-pressed={rating === n}
                 >
@@ -143,18 +143,18 @@ export default function FeedbackPage() {
               onChange={(e) => setComment(e.target.value)}
               rows={4}
               placeholder={t('pages.feedback.commentPlaceholder')}
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500 resize-y min-h-[120px]"
+              className="guest-input min-h-[120px] resize-y"
             />
           </div>
 
           {error && (
-            <div className="rounded-xl border border-red-900/60 bg-red-950/50 px-4 py-3 text-sm text-red-200">
+            <div className="rounded-xl border border-[var(--coral)]/40 bg-[var(--coral)]/10 px-4 py-3 text-sm text-[var(--coral-deep)]">
               {error}
             </div>
           )}
 
           {success && (
-            <div className="rounded-xl border border-emerald-900/60 bg-emerald-950/40 px-4 py-3 text-sm text-emerald-100">
+            <div className="success-note flex items-center px-4 py-3 text-sm">
               {t('pages.feedback.successMessage')}
             </div>
           )}
@@ -162,7 +162,7 @@ export default function FeedbackPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-700 disabled:text-slate-400 text-white font-semibold py-3.5 text-base shadow-lg shadow-emerald-900/30 transition-colors duration-300"
+            className="w-full rounded-[18px] bg-[var(--gold)] py-3.5 text-base font-semibold text-white shadow-lg shadow-[var(--gold)]/20 transition-colors duration-300 hover:bg-[var(--coral)] disabled:bg-slate-300 disabled:text-slate-500"
           >
             {loading ? t('pages.feedback.sending') : t('pages.feedback.submitButton')}
           </button>

@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
       <head>
         <meta charSet="utf-8" />
       </head>
-      <body className="bg-slate-950 text-slate-100">
+      <body className="bg-[var(--sand)] text-[var(--ink)]">
         <ClientProviders>
           <AppChrome>{children}</AppChrome>
         </ClientProviders>

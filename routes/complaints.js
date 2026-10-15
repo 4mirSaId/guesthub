@@ -17,16 +17,32 @@ router.get('/', async (req, res) => {
 // POST /api/complaints - Create new complaint
 router.post('/', async (req, res) => {
   try {
-    const { fullName, roomNumber, complaintText } = req.body;
+    const payload = req.body || {};
+    const fullName = payload.fullName?.trim();
+    const roomNumber = payload.roomNumber?.trim();
+    const description = payload.description?.trim() || payload.complaintText?.trim();
+    const category = payload.category?.trim() || 'other';
+    const subcategory = payload.subcategory?.trim() || 'Other';
+    const priority = payload.priority?.trim() || 'medium';
+    const images = Array.isArray(payload.images)
+      ? payload.images.filter(Boolean)
+      : (payload.images || '').split(',').map((image) => image.trim()).filter(Boolean);
 
-    if (!fullName || !fullName.trim() || !roomNumber || !roomNumber.trim() || !complaintText || !complaintText.trim()) {
-      return res.status(400).json({ error: 'Full name, room number, and complaint text are required.' });
+    if (!fullName || !roomNumber || !description) {
+      return res.status(400).json({ error: 'Full name, room number, and description are required.' });
     }
 
     const newComplaint = new Complaint({
-      fullName: fullName.trim(),
-      roomNumber: roomNumber.trim(),
-      complaintText: complaintText.trim()
+      fullName,
+      roomNumber,
+      category,
+      subcategory,
+      description,
+      complaintText: description,
+      priority,
+      images,
+      department: category === 'housekeeping' ? 'Housekeeping' : 'Reception',
+      status: 'pending',
     });
 
     const savedComplaint = await newComplaint.save();
@@ -50,19 +66,28 @@ router.post('/', async (req, res) => {
 router.patch('/:id', async (req, res) => {
   try {
     const { status } = req.body;
-    if (!['pending', 'reviewed'].includes(status)) {
+    if (!['pending', 'in-progress', 'resolved', 'closed'].includes(status)) {
       return res.status(400).json({ error: 'Invalid status' });
+    }
+
+    const existingComplaint = await Complaint.findById(req.params.id);
+    if (!existingComplaint) {
+      return res.status(404).json({ error: 'Complaint not found' });
+    }
+
+    const updateData = { status };
+    if (status === 'in-progress' && !existingComplaint.responseTime) {
+      updateData.responseTime = new Date();
+    }
+    if ((status === 'resolved' || status === 'closed') && !existingComplaint.resolutionTime) {
+      updateData.resolutionTime = new Date();
     }
 
     const updatedComplaint = await Complaint.findByIdAndUpdate(
       req.params.id,
-      { status },
+      updateData,
       { new: true }
     );
-
-    if (!updatedComplaint) {
-      return res.status(404).json({ error: 'Complaint not found' });
-    }
 
     const io = req.app.get('io');
     if (io) {

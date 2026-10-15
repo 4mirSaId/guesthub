@@ -17,7 +17,7 @@ export default function AnimationLoginPage() {
     setLoading(true);
 
     try {
-      const response = await fetch(`/api/auth/login`, {
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -44,65 +44,75 @@ export default function AnimationLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-8">
-      <div className="rounded-2xl border border-slate-800 bg-slate-900 p-12 shadow-xl shadow-black/30 w-full max-w-md">
-        <h1 className="text-4xl font-bold mb-4 text-center text-white">Animation</h1>
-        <p className="text-center text-slate-400 mb-12 text-lg">DJ and entertainment control</p>
-
-        <form onSubmit={handleLogin} className="space-y-8">
-          <div>
-            <label htmlFor="username" className="block text-lg font-medium mb-3 text-slate-300">
-              Username
-            </label>
-            <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-6 py-4 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500 text-lg"
-              placeholder="Enter username"
-              disabled={loading}
-              autoComplete="username"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="password" className="block text-lg font-medium mb-3 text-slate-300">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-6 py-4 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/80 focus:border-emerald-500 text-lg"
-              placeholder="Enter password"
-              disabled={loading}
-              autoComplete="current-password"
-            />
-          </div>
-
-          {error && (
-            <div className="rounded-xl border border-red-900/60 bg-red-950/50 px-6 py-4 text-base text-red-200">
-              {error}
+    <main className="min-h-screen bg-[var(--sand)] px-4 py-10 sm:px-6">
+      <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-5xl items-center justify-center">
+        <div className="w-full max-w-md overflow-hidden rounded-[32px] border border-[var(--line)] bg-[rgba(255,252,245,0.92)] shadow-[0_18px_40px_rgba(9,43,62,0.08)]">
+          <div className="bg-gradient-to-br from-[var(--navy-deep)] via-[var(--navy)] to-[var(--teal)] px-6 py-8 text-center text-white sm:px-8">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-white/30 bg-white/10 text-xl font-semibold backdrop-blur-sm">
+              HB
             </div>
-          )}
+            <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-white/70">Hotel GuestHub</p>
+            <h1 className="mt-3 text-4xl font-semibold text-white">Animation</h1>
+            <p className="mt-2 text-sm text-white/75">DJ and entertainment controls</p>
+          </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-xl bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-700 text-white font-semibold py-4 px-8 text-lg"
-          >
-            {loading ? 'Logging in…' : 'Login'}
-          </button>
-        </form>
+          <div className="px-5 py-6 sm:px-8 sm:py-8">
+            <form onSubmit={handleLogin} className="space-y-5">
+              <div>
+                <label htmlFor="username" className="mb-2 block text-sm font-semibold uppercase tracking-[0.18em] text-[var(--ink-soft)]">
+                  Username
+                </label>
+                <input
+                  type="text"
+                  id="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="guest-input w-full rounded-[18px] border border-[var(--line)] bg-white px-4 py-3.5 text-base text-[var(--ink)] placeholder:text-[var(--ink-soft)] focus:border-[var(--teal)] focus:outline-none focus:ring-2 focus:ring-[rgba(46,143,134,0.18)]"
+                  placeholder="Enter username"
+                  disabled={loading}
+                  autoComplete="username"
+                />
+              </div>
 
-        <p className="mt-8 text-center">
-          <Link href="/admin" className="text-slate-400 hover:text-white text-sm">
-            ← Back to staff portal
-          </Link>
-        </p>
+              <div>
+                <label htmlFor="password" className="mb-2 block text-sm font-semibold uppercase tracking-[0.18em] text-[var(--ink-soft)]">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="guest-input w-full rounded-[18px] border border-[var(--line)] bg-white px-4 py-3.5 text-base text-[var(--ink)] placeholder:text-[var(--ink-soft)] focus:border-[var(--teal)] focus:outline-none focus:ring-2 focus:ring-[rgba(46,143,134,0.18)]"
+                  placeholder="Enter password"
+                  disabled={loading}
+                  autoComplete="current-password"
+                />
+              </div>
+
+              {error && (
+                <div className="rounded-[18px] border border-[rgba(185,75,47,0.2)] bg-[rgba(217,96,63,0.08)] px-4 py-3 text-sm text-[var(--coral-deep)]">
+                  {error}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full rounded-[18px] bg-[var(--teal)] px-5 py-3.5 text-base font-semibold text-white transition hover:bg-[var(--navy)] disabled:cursor-not-allowed disabled:bg-[var(--ink-soft)]"
+              >
+                {loading ? 'Logging in…' : 'Login'}
+              </button>
+            </form>
+
+            <p className="mt-6 text-center text-sm text-[var(--ink-soft)]">
+              <Link href="/admin" className="font-medium text-[var(--navy)] transition hover:text-[var(--teal)]">
+                ← Back to staff portal
+              </Link>
+            </p>
+          </div>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }

@@ -13,22 +13,22 @@ const DEFAULT_ACTIVITIES = [
 
 const DEFAULT_NIGHT_SHOWS = {
   weekA: [
-    { day: 'Monday', show: 'Variety Show', emoji: '' },
-    { day: 'Tuesday', show: 'Karaoke Hits', emoji: '' },
-    { day: 'Wednesday', show: 'Tunisian Night', emoji: '' },
-    { day: 'Thursday', show: 'Dance Around the World', emoji: '' },
-    { day: 'Friday', show: 'Miss Hotel', emoji: '' },
-    { day: 'Saturday', show: 'Acting Show', emoji: '' },
-    { day: 'Sunday', show: 'White Party', emoji: '' },
+    { day: 'Monday', show: 'Variety Show' },
+    { day: 'Tuesday', show: 'Karaoke Hits' },
+    { day: 'Wednesday', show: 'Tunisian Night' },
+    { day: 'Thursday', show: 'Dance Around the World' },
+    { day: 'Friday', show: 'Miss Hotel' },
+    { day: 'Saturday', show: 'Acting Show' },
+    { day: 'Sunday', show: 'White Party' },
   ],
   weekB: [
-    { day: 'Monday', show: 'Mix Show', emoji: '' },
-    { day: 'Tuesday', show: 'Games and Dance', emoji: '' },
-    { day: 'Wednesday', show: 'Tunisian Beats', emoji: '' },
-    { day: 'Thursday', show: 'Comedy Show', emoji: '' },
-    { day: 'Friday', show: 'Mister Hotel', emoji: '' },
-    { day: 'Saturday', show: 'Best of Hotel', emoji: '' },
-    { day: 'Sunday', show: 'Pink Party', emoji: '' },
+    { day: 'Monday', show: 'Mix Show' },
+    { day: 'Tuesday', show: 'Games and Dance' },
+    { day: 'Wednesday', show: 'Tunisian Beats' },
+    { day: 'Thursday', show: 'Comedy Show' },
+    { day: 'Friday', show: 'Mister Hotel' },
+    { day: 'Saturday', show: 'Best of Hotel' },
+    { day: 'Sunday', show: 'Pink Party' },
   ],
 };
 

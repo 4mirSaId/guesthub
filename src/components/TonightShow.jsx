@@ -13,7 +13,7 @@ function buildDayMap(items = []) {
   items.forEach((item) => {
     const index = DAY_NAMES.indexOf(item.day);
     if (index >= 0) {
-      map[index] = { name: item.show, emoji: item.emoji || '' };
+      map[index] = { name: item.show };
     }
   });
   return map;
@@ -22,7 +22,7 @@ function buildDayMap(items = []) {
 const TonightShow = () => {
   const [weekA, setWeekA] = useState({});
   const [weekB, setWeekB] = useState({});
-  const [currentShow, setCurrentShow] = useState({ name: '', emoji: '' });
+  const [currentShow, setCurrentShow] = useState({ name: '' });
   const [currentDay, setCurrentDay] = useState('');
   const [currentWeek, setCurrentWeek] = useState('A');
   const { t, language } = useLanguage();
@@ -88,13 +88,13 @@ const TonightShow = () => {
       const now = new Date();
       const day = now.getDay();
       setCurrentDay(now.toLocaleDateString(language, { weekday: 'long' }));
-      setCurrentShow(program[day] || { name: 'No show today', emoji: '' });
+      setCurrentShow(program[day] || { name: t('pages.nightShows.noShow') });
     };
 
     update();
     const interval = setInterval(update, 60_000);
     return () => clearInterval(interval);
-  }, [program]);
+  }, [program, t]);
 
   return (
     <div className="rounded-2xl border border-slate-800 bg-slate-900/80 shadow-xl shadow-black/30 p-6 sm:p-8 w-full max-w-sm mx-auto text-center transition-all duration-500 ease-in-out hover:scale-105">

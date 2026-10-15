@@ -7,28 +7,28 @@ const Footer = () => {
   const { t } = useLanguage();
 
   return (
-    <footer className="sticky bottom-0 bg-slate-950/80 backdrop-blur-md border-t border-slate-800 shadow-sm py-6 sm:py-8 md:py-10">
+    <footer className="site-footer border-t border-[var(--line)] bg-[var(--sand-dark)]/40 py-8 text-[var(--ink)] sm:py-10">
       <div className="container mx-auto px-4 sm:px-6 md:px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <div>
-            <h3 className="text-sm sm:text-base font-semibold mb-2 text-white">Adress</h3>
-            <p className="text-xs sm:text-sm text-slate-400">City, Gouvernorat, Country</p>
+            <h3 className="mb-2 text-sm font-semibold sm:text-base">{t('footer.address')}</h3>
+            <p className="text-xs text-[var(--ink-soft)] sm:text-sm">City, Gouvernorat, Country</p>
           </div>
           <div>
-            <h3 className="text-sm sm:text-base font-semibold mb-2 text-white">Téléphone</h3>
-            <p className="text-xs sm:text-sm text-slate-400">+216 72******</p>
+            <h3 className="mb-2 text-sm font-semibold sm:text-base">{t('footer.phone')}</h3>
+            <p className="text-xs text-[var(--ink-soft)] sm:text-sm">+216 72******</p>
           </div>
           <div>
-            <h3 className="text-sm sm:text-base font-semibold mb-2 text-white">Email</h3>
-            <p className="text-xs sm:text-sm text-slate-400">mail@mail.mail</p>
+            <h3 className="mb-2 text-sm font-semibold sm:text-base">{t('footer.email')}</h3>
+            <p className="text-xs text-[var(--ink-soft)] sm:text-sm">mail@mail.mail</p>
           </div>
           <div>
-            <h3 className="text-sm sm:text-base font-semibold mb-2 text-white">Website</h3>
-            <a href="https://official-website.com" className="text-xs sm:text-sm text-emerald-400 hover:text-emerald-300 transition-colors duration-300">official-website.com</a>
+            <h3 className="mb-2 text-sm font-semibold sm:text-base">{t('footer.website')}</h3>
+            <a href="https://official-website.com" className="text-xs text-[var(--teal)] transition-colors duration-300 hover:text-[var(--navy)] sm:text-sm">official-website.com</a>
           </div>
         </div>
-        <div className="mt-4 pt-4 border-t border-slate-800 text-center">
-          <p className="text-xs sm:text-sm text-slate-500">{t('footer.copyright')}</p>
+        <div className="mt-4 border-t border-[var(--line)] pt-4 text-center">
+          <p className="text-xs text-[var(--ink-soft)] sm:text-sm">{t('footer.copyright')}</p>
         </div>
       </div>
     </footer>

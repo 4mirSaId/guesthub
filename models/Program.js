@@ -13,7 +13,6 @@ const nightShowItemSchema = new mongoose.Schema(
   {
     day: { type: String, required: true },
     show: { type: String, required: true },
-    emoji: { type: String, default: '' },
     order: { type: Number, default: 0 },
   },
   { _id: true }

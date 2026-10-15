@@ -89,7 +89,7 @@ export default function AnnouncementBar() {
 
   return (
     <div
-      className={`sticky top-0 z-[60] border-b-2 transition-all duration-300 ease-in-out ${priorityClass} ${
+      className={`relative z-40 border-b-2 transition-all duration-300 ease-in-out ${priorityClass} ${
         isClosing ? '-translate-y-full' : 'translate-y-0'
       }`}
     >

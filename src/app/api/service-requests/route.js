@@ -19,12 +19,20 @@ export async function GET() {
 export async function POST(request) {
   try {
     await connectToDatabase();
-    const { room, type, message } = await request.json();
+    const { guestName, roomNumber, room, category, service, type, description, message, preferredTime, priority, status } = await request.json();
 
     const newRequest = await new ServiceRequest({
-      room,
-      type,
-      message,
+      guestName,
+      roomNumber: roomNumber || room,
+      room: roomNumber || room,
+      category: category || 'housekeeping',
+      service: service || type || 'Custom request',
+      type: type || service || 'Custom request',
+      description: description || message || '',
+      message: description || message || '',
+      preferredTime,
+      priority: priority || 'normal',
+      status: status || 'pending',
     }).save();
 
     notifyNewServiceRequest(newRequest).catch((err) => {

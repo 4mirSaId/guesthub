@@ -1,247 +1,189 @@
 "use client";
 
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '../context/LanguageContext';
-import TonightShow from '../components/TonightShow';
-import GuestReviews from '../components/GuestReviews';
-import SpecialEvents from '../components/SpecialEvents';
 
-function Section({ title, subtitle, children, className = '' }) {
-  return (
-    <section className={`px-4 sm:px-6 md:px-8 ${className}`}>
-      <div className="max-w-6xl mx-auto">
-        {(title || subtitle) && (
-          <div className="mb-8 sm:mb-10">
-            {title && (
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight">
-                {title}
-              </h2>
-            )}
-            {subtitle && (
-              <p className="mt-2 text-sm sm:text-base text-slate-400 max-w-3xl">
-                {subtitle}
-              </p>
-            )}
-          </div>
-        )}
-        {children}
-      </div>
-    </section>
-  );
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+function timeToMinutes(value) {
+  if (!value || typeof value !== 'string') return null;
+
+  const [hours, minutes] = value.split(':').map(Number);
+  if (!Number.isInteger(hours) || !Number.isInteger(minutes)) return null;
+
+  return hours * 60 + minutes;
 }
 
-function Button({ href, children, variant = 'primary', className = '' }) {
-  const base =
-    'inline-flex items-center justify-center rounded-xl font-semibold transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/70 focus:ring-offset-0';
-  const styles = {
-    primary:
-      'bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-900/30',
-    ghost:
-      'bg-slate-900/40 hover:bg-slate-900/70 text-slate-100 border border-slate-800',
-  };
+function isToday(value) {
+  if (!value) return false;
 
-  return (
-    <Link href={href} className={`${base} ${styles[variant]} ${className}`}>
-      {children}
-    </Link>
-  );
+  const date = new Date(value);
+  const today = new Date();
+  return date.getFullYear() === today.getFullYear()
+    && date.getMonth() === today.getMonth()
+    && date.getDate() === today.getDate();
 }
 
-function Card({ title, description, icon, href, cta, children }) {
-  return (
-    <div className="group rounded-2xl border border-slate-800 bg-slate-900/70 p-6 shadow-xl shadow-black/20 transition-all duration-200 hover:bg-slate-900 hover:shadow-black/40">
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          <div className="flex items-center gap-3 mb-3">
-            {icon && (
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-slate-950 border border-slate-800 text-xl">
-                {icon}
-              </span>
-            )}
-            <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight">
-              {title}
-            </h3>
-          </div>
-          {description && (
-            <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
-              {description}
-            </p>
-          )}
-        </div>
-      </div>
+function getHomeStatus(program, settings, events) {
+  const now = new Date();
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+  const activities = (program?.activities || [])
+    .map((activity) => ({ ...activity, minutes: timeToMinutes(activity.time) }))
+    .filter((activity) => Number.isInteger(activity.minutes))
+    .sort((a, b) => a.minutes - b.minutes);
+  const activity = activities.find((item) => item.minutes >= currentMinutes) || activities[0] || null;
 
-      {children && <div className="mt-5">{children}</div>}
+  const week = settings?.currentWeek === 'B' ? program?.nightShows?.weekB : program?.nightShows?.weekA;
+  const nightShow = (week || []).find((item) => item.day === DAY_NAMES[now.getDay()]);
+  const specialEvent = (events || []).find((event) => isToday(event.createdAt));
 
-      {href && cta && (
-        <div className="mt-6">
-          <Button
-            href={href}
-            className="w-full sm:w-auto px-5 py-3 text-sm sm:text-base"
-          >
-            {cta}
-          </Button>
-        </div>
-      )}
-    </div>
-  );
+  return { activity, nightShow, specialEvent };
 }
 
-const sampleReviews = [
-  { rating: 5, text: 'Clean rooms, friendly staff, and great vibes every night.' },
-  { rating: 4, text: 'Activities are well organized. The app makes everything easy.' },
-  { rating: 5, text: 'Loved the live DJ nights. Service requests were super quick.' },
+const featureCards = [
+  {
+    href: '/activities',
+    icon: '01',
+    iconBg: 'bg-emerald-500/15 text-emerald-300',
+    titleKey: 'navbar.activities',
+    descriptionKey: 'pages.home.activitiesDesc',
+    accent: 'from-emerald-500/20 via-emerald-400/10 to-transparent',
+  },
+  {
+    href: '/night-shows',
+    icon: '02',
+    iconBg: 'bg-violet-500/15 text-violet-300',
+    titleKey: 'navbar.nightShows',
+    descriptionKey: 'pages.home.nightShowsDesc',
+    accent: 'from-violet-500/20 via-violet-400/10 to-transparent',
+  },
+  {
+    href: '/service',
+    icon: '03',
+    iconBg: 'bg-sky-500/15 text-sky-300',
+    titleKey: 'navbar.serviceRequest',
+    descriptionKey: 'pages.home.serviceRequestDesc',
+    accent: 'from-sky-500/20 via-sky-400/10 to-transparent',
+  },
+  {
+    href: '/complaints',
+    icon: '04',
+    iconBg: 'bg-rose-500/15 text-rose-300',
+    titleKey: 'navbar.complaints',
+    descriptionKey: 'pages.home.complaintsDesc',
+    accent: 'from-rose-500/20 via-rose-400/10 to-transparent',
+  },
+  {
+    href: '/feedback',
+    icon: '05',
+    iconBg: 'bg-cyan-500/15 text-cyan-300',
+    titleKey: 'pages.home.reviewsFeedback',
+    descriptionKey: 'pages.guestReviews.description',
+    accent: 'from-cyan-500/20 via-cyan-400/10 to-transparent',
+  },
 ];
-
-function Stars({ value }) {
-  const v = Math.max(0, Math.min(5, Number(value) || 0));
-  return (
-    <span className="text-amber-400 tracking-tight" aria-label={`${v} out of 5 stars`}>
-      {'★'.repeat(v)}
-      <span className="text-slate-600">{'★'.repeat(5 - v)}</span>
-    </span>
-  );
-}
 
 export default function Home() {
   const { t } = useLanguage();
-  const reviews = useMemo(() => sampleReviews, []);
+  const [status, setStatus] = useState({ activity: null, nightShow: null, specialEvent: null });
+
+  useEffect(() => {
+    let active = true;
+
+    const loadStatus = async () => {
+      try {
+        const [programResponse, settingsResponse, eventsResponse] = await Promise.all([
+          fetch('/api/program'),
+          fetch('/api/settings'),
+          fetch('/api/events'),
+        ]);
+
+        if (!programResponse.ok || !settingsResponse.ok || !eventsResponse.ok) {
+          throw new Error('Failed to load home status');
+        }
+
+        const [program, settings, events] = await Promise.all([
+          programResponse.json(),
+          settingsResponse.json(),
+          eventsResponse.json(),
+        ]);
+
+        if (active) setStatus(getHomeStatus(program, settings, events));
+      } catch {
+        if (active) setStatus({ activity: null, nightShow: null, specialEvent: null });
+      }
+    };
+
+    loadStatus();
+    const interval = setInterval(loadStatus, 60_000);
+
+    return () => {
+      active = false;
+      clearInterval(interval);
+    };
+  }, []);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
-      {/* HERO */}
-      <section className="relative overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-20"
-          style={{ backgroundImage: "url('/hotel-lobby.png')" }}
-          aria-hidden="true"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/40 via-slate-950/75 to-slate-950" aria-hidden="true" />
+    <main className="home-page min-h-screen px-4 pb-12 pt-12 sm:px-6 md:px-8 md:pt-14">
+      <div className="mx-auto max-w-6xl">
+        <header className="mb-6 sm:mb-7">
+          <h1 className="text-3xl font-semibold text-[var(--navy-deep)] sm:text-4xl">
+            {t('pages.home.appFeaturesTitle') || 'What would you like to do?'}
+          </h1>
+          <p className="mt-2 text-sm text-[var(--ink-soft)] sm:text-base">
+            {t('pages.home.appFeaturesSubtitle') || 'Pick the experience you want and keep your stay effortless.'}
+          </p>
+        </header>
 
-        <div className="relative px-4 sm:px-6 md:px-8 pt-14 sm:pt-20 pb-12 sm:pb-16">
-          <div className="max-w-6xl mx-auto">
-            <div className="max-w-3xl">
-              <p className="text-xs sm:text-sm uppercase tracking-[0.25em] text-slate-400">
-                {t('pages.home.tagline')}
-              </p>
-              <h1 className="mt-4 text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight">
-                {t('pages.home.welcome')}
-              </h1>
-              <p className="mt-5 text-sm sm:text-base lg:text-lg text-slate-300 leading-relaxed">
-                {t('pages.home.description')}
-              </p>
-
-              <div className="mt-8 flex flex-col sm:flex-row gap-3">
-                <Button href="/activities" className="px-6 py-3.5 text-sm sm:text-base">
-                  {t('pages.home.exploreBtnText')}
-                </Button>
-                <Button href="/feedback" variant="ghost" className="px-6 py-3.5 text-sm sm:text-base">
-                  {t('pages.home.feedbackBtnText')}
-                </Button>
-              </div>
-            </div>
-
-            <div className="mt-10 sm:mt-12">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                <div className="lg:col-span-5">
-                  {/* TonightShow already styled to match the dark theme */}
-                  <TonightShow />
-                </div>
-                <div className="lg:col-span-7">
-                  <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 sm:p-8 shadow-xl shadow-black/20">
-                    <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                      {t('pages.home.stayOrganized')}
-                    </h3>
-                    <p className="mt-3 text-sm sm:text-base text-slate-400">
-                      {t('pages.home.stayDescription')}
-                    </p>
-                    <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
-                      <Link className="rounded-xl border border-slate-800 bg-slate-950/70 px-4 py-3 text-sm text-slate-200 hover:border-slate-700 hover:bg-slate-950 transition-colors" href="/activities">
-                        {t('navbar.activities')}
-                      </Link>
-                      <Link className="rounded-xl border border-slate-800 bg-slate-950/70 px-4 py-3 text-sm text-slate-200 hover:border-slate-700 hover:bg-slate-950 transition-colors" href="/night-shows">
-                        {t('navbar.nightShows')}
-                      </Link>
-                      <Link className="rounded-xl border border-slate-800 bg-slate-950/70 px-4 py-3 text-sm text-slate-200 hover:border-slate-700 hover:bg-slate-950 transition-colors" href="/request">
-                        {t('navbar.songRequest')}
-                      </Link>
-                      <Link className="rounded-xl border border-slate-800 bg-slate-950/70 px-4 py-3 text-sm text-slate-200 hover:border-slate-700 hover:bg-slate-950 transition-colors" href="/service">
-                        {t('navbar.serviceRequest')}
-                      </Link>
-                    </div>
-                    <div className="mt-4 grid grid-cols-2 gap-3">
-                      <Link className="rounded-xl border border-slate-800 bg-slate-950/70 px-4 py-3 text-sm text-slate-200 hover:border-slate-700 hover:bg-slate-950 transition-colors" href="/complaints">
-                        {t('navbar.complaints')}
-                      </Link>
-                      <Link className="rounded-xl border border-slate-800 bg-slate-950/70 px-4 py-3 text-sm text-slate-200 hover:border-slate-700 hover:bg-slate-950 transition-colors" href="/feedback">
-                        {t('pages.home.reviewsFeedback')}
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <section className="mb-6 grid overflow-hidden rounded-2xl border border-[var(--line)] bg-white/55 shadow-[0_8px_18px_rgba(9,43,62,0.06)] sm:grid-cols-3" aria-label={t('pages.home.todayOverview')}>
+          <div className="border-b border-[var(--line)] px-4 py-4 sm:border-b-0 sm:border-r sm:px-5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--teal)]">{t('pages.home.currentActivity')}</p>
+            <p className="mt-2 truncate text-base font-semibold text-[var(--navy-deep)]">
+              {status.activity?.name || t('pages.home.noActivity')}
+            </p>
+            {status.activity?.time && <p className="mt-1 text-xs text-[var(--ink-soft)]">{status.activity.time}</p>}
           </div>
+          <div className="border-b border-[var(--line)] px-4 py-4 sm:border-b-0 sm:border-r sm:px-5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--coral)]">{t('pages.home.tonightShow')}</p>
+            <p className="mt-2 truncate text-base font-semibold text-[var(--navy-deep)]">
+              {status.nightShow?.show || t('pages.home.noShow')}
+            </p>
+          </div>
+          <div className="px-4 py-4 sm:px-5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--gold)]">{t('pages.home.specialEventToday')}</p>
+            <p className="mt-2 truncate text-base font-semibold text-[var(--navy-deep)]">
+              {status.specialEvent?.eventName || t('pages.home.noSpecialEvent')}
+            </p>
+            {status.specialEvent?.time && <p className="mt-1 text-xs text-[var(--ink-soft)]">{status.specialEvent.time} · {status.specialEvent.location}</p>}
+          </div>
+        </section>
+
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {featureCards.map((feature) => (
+            <Link
+              key={feature.href}
+              href={feature.href}
+              className={`action-tile group relative min-h-[178px] overflow-hidden rounded-[20px] p-6 shadow-[0_10px_20px_rgba(9,43,62,0.12)] transition-transform duration-300 hover:-translate-y-1 ${feature.accent}`}
+            >
+              <div className="relative z-10 flex h-full flex-col">
+                <div className="flex items-start justify-between gap-4">
+                  <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${feature.iconBg} text-xl`}>
+                    {feature.icon}
+                  </div>
+                  <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-white/80">
+                    {t('common.open')}
+                  </span>
+                </div>
+                <h2 className="mt-auto pt-5 text-xl font-semibold text-white">{t(feature.titleKey)}</h2>
+                <p className="mt-1 text-sm leading-relaxed text-white/80">
+                  {t(feature.descriptionKey)}
+                </p>
+              </div>
+            </Link>
+          ))}
         </div>
-      </section>
-
-      
-
-      {/* ACTIVITIES */}
-      <Section className="py-10 sm:py-14" title={t('pages.home.whatYouCanDo')}>
-        
-          <Card
-            icon="📅"
-            title={t('pages.home.dailyActivities')}
-            description={t('pages.home.activitiesDesc')}
-            href="/activities"
-            cta={t('pages.home.viewActivitiesBtn')}
-          />
-        
-      </Section>
-
-      <SpecialEvents />
-
-      {/* SONG REQUEST */}
-      <Section className="py-10 sm:py-14" title={t('pages.home.musicRequestsTitle')}>
-        <Card
-          icon="🎧"
-          title={t('pages.home.requestSongTitle')}
-          description={t('pages.home.requestSongDesc')}
-          href="/request"
-          cta={t('pages.home.requestSongCta')}
-        />
-      </Section>
-
-      {/* SERVICE REQUEST */}
-      <Section className="py-10 sm:py-14" title={t('pages.home.servicesTitle')}>
-        <Card
-          icon="🛎️"
-          title={t('pages.home.serviceRequestTitle')}
-          description={t('pages.home.serviceRequestDesc')}
-          href="/service"
-          cta={t('pages.home.serviceRequestCta')}
-        />
-      </Section>
-
-      {/* COMPLAINTS */}
-      <Section className="py-10 sm:py-14" title={t('pages.home.supportTitle')}>
-        <Card
-          icon="📝"
-          title={t('pages.home.complaintsTitle')}
-          description={t('pages.home.complaintsDesc')}
-          href="/complaints"
-          cta={t('pages.home.complaintsCta')}
-        />
-      </Section>
-
-      
-
-      {/* Existing live public reviews section (real API) */}
-      <GuestReviews />
-
-      
-
-    </div>
+      </div>
+    </main>
   );
 }

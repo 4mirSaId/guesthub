@@ -5,12 +5,20 @@ const { notifyNewServiceRequest } = require("../lib/pushNotifications");
 
 // CREATE
 router.post("/", async (req, res) => {
-  const { room, type, message } = req.body;
+  const { guestName, roomNumber, room, category, service, type, description, message, preferredTime, priority, status } = req.body;
 
   const newRequest = new ServiceRequest({
-    room,
-    type,
-    message,
+    guestName,
+    roomNumber: roomNumber || room,
+    room: roomNumber || room,
+    category: category || "housekeeping",
+    service: service || type || "Custom request",
+    type: type || service || "Custom request",
+    description: description || message || "",
+    message: description || message || "",
+    preferredTime,
+    priority: priority || "normal",
+    status: status || "pending",
   });
 
   await newRequest.save();

@@ -3,7 +3,6 @@
     "home": "Home",
     "activities": "Activities",
     "nightShows": "Night Shows",
-    "songRequest": "Song request",
     "serviceRequest": "Service request",
     "complaints": "Complaints",
     "feedback": "Feedback",
@@ -11,7 +10,11 @@
   },
   "footer": {
     "copyright": "© 2026 [hotelName] GuestHub. All rights reserved.",
-    "followUs": "Follow us on social media"
+    "followUs": "Follow us on social media",
+    "address": "Address",
+    "phone": "Phone",
+    "email": "Email",
+    "website": "Website"
   },
   "admin": {
     "dashboard": "Dashboard",
@@ -31,6 +34,9 @@
       "description": "Discover a new way to experience your stay. Access daily activities, explore tonight's shows, request services, and interact in real-time — all from one place.",
       "exploreBtnText": "Explore",
       "feedbackBtnText": "Leave feedback",
+      "appFeaturesTitle": "What would you like to do?",
+      "appFeaturesSubtitle": "Pick the experience you want and keep your stay effortless.",
+      "nightShowsDesc": "Discover tonight's entertainment and live highlights.",
       "stayOrganized": "Your stay, organized",
       "stayDescription": "Jump directly to the feature you need. Everything is built for mobile, fast, and simple.",
       "whatYouCanDo": "What you can do",
@@ -41,12 +47,14 @@
       "reviewsDesc": "See what other guests think about their stay.",
       "specialEvents": "Special Events",
       "eventsDesc": "Don't miss out on upcoming special events.",
-      "reviewsFeedback": "Reviews / Feedback"
-    ,
-      "musicRequestsTitle": "Music requests",
-      "requestSongTitle": "Request a Song",
-      "requestSongDesc": "Ask the DJ for your favorite track and keep the vibe going.",
-      "requestSongCta": "Ask for a Song",
+      "reviewsFeedback": "Reviews / Feedback",
+      "todayOverview": "Today's overview",
+      "currentActivity": "Current activity",
+      "noActivity": "No activity scheduled",
+      "tonightShow": "Tonight's show",
+      "noShow": "No show scheduled",
+      "specialEventToday": "Special event today",
+      "noSpecialEvent": "No special event today",
       "servicesTitle": "Services",
       "serviceRequestTitle": "Service Request",
       "serviceRequestDesc": "Request a service easily and get a quick response.",
@@ -61,10 +69,10 @@
       "title": "Activities",
       "description": "Explore our exciting activities"
     ,
-      "heroTitle": "Today's Activities 📅",
+      "heroTitle": "Today's Activities",
       "loading": "Loading activities…",
       "empty": "No activities scheduled yet.",
-      "kidsClubTitle": "Kids Club Schedule 🧒",
+      "kidsClubTitle": "Kids Club Schedule",
       "dayLabel": "Day",
       "sessionsLabel": "Sessions"
     },
@@ -82,6 +90,8 @@
       "title": "Guest Reviews",
       "description": "Recent feedback from our guests. Share yours anytime.",
       "leaveFeedback": "Leave feedback",
+      "viewAllReviews": "View all reviews",
+      "loading": "Loading reviews…",
       "empty": "No public reviews yet.",
       "emptyAction": "Be the first to share feedback"
     },
@@ -91,52 +101,180 @@
       "loading": "Loading events...",
       "empty": "No special events announced yet."
     },
-    "songRequest": {
-      "title": "Song Request",
-      "intro": "Please request clean and appropriate songs. During Disco Time, choose music that matches the current vibe and dance floor energy. Requests that fit the atmosphere are more likely to be played.",
-      "songLabel": "Song Name *",
-      "songPlaceholder": "Enter song name",
-      "artistLabel": "Artist Name (Optional)",
-      "artistPlaceholder": "Enter artist name",
-      "submitting": "Submitting...",
-      "submitButton": "Submit Request",
-      "songRequired": "Song name is required",
-      "requestSuccess": "Request submitted successfully!",
-      "requestFailed": "Failed to submit request",
-      "networkError": "Network error. Please try again."
-    },
     "serviceRequest": {
       "title": "Service Request",
       "intro": "Submit a service request for your room",
       "roomRequired": "Room number is required",
-      "successMessage": "Request sent successfully ✅",
+      "successMessage": "Request sent successfully",
       "failureMessage": "Failed to send request. Please try again.",
       "roomLabel": "Room Number *",
       "roomPlaceholder": "Enter your room number",
       "typeLabel": "Service Type *",
-      "typeCleaning": "🧹 Cleaning",
-      "typeMaintenance": "🔧 Maintenance",
-      "typeFoodDrink": "🍽️ Food & Drink",
-      "typeOther": "📋 Other",
+      "typeCleaning": "Cleaning",
+      "typeMaintenance": "Maintenance",
+      "typeFoodDrink": "Food & Drink",
+      "typeOther": "Other",
       "detailsLabel": "Additional Details (Optional)",
       "detailsPlaceholder": "Describe your service request in detail...",
       "sending": "Submitting...",
-      "submitButton": "Submit Request 🛎️"
+      "submitButton": "Submit Request"
     },
     "complaints": {
       "title": "Complaints",
       "intro": "We value your feedback. Please let us know how we can improve your stay.",
-      "fullNameLabel": "Full Name *",
-      "fullNamePlaceholder": "Enter your full name",
-      "roomNumberLabel": "Room Number *",
-      "roomNumberPlaceholder": "Enter your room number",
-      "complaintDetailsLabel": "Complaint Details *",
-      "complaintDetailsPlaceholder": "Please describe your complaint in detail...",
+      "heroBadge": "Hotel complaint center",
+      "heroTitle": "Report an issue with confidence",
+      "heroDescription": "Submit a professional complaint with clear categorization so our team can prioritize it quickly and resolve it faster.",
+      "featureFastTriage": "Fast triage across housekeeping, maintenance, IT, and more.",
+      "featureEscalation": "Escalation based on urgency and priority levels.",
+      "featureTracking": "Visible service tracking for every reported issue.",
+      "fullNameLabel": "Guest name",
+      "fullNamePlaceholder": "Enter guest name",
+      "roomNumberLabel": "Room number",
+      "roomNumberPlaceholder": "e.g. 305",
+      "categoryLabel": "Complaint category",
+      "issueLabel": "Issue",
+      "issuePlaceholder": "Describe the issue",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Please describe your issue...",
+      "priorityLabel": "Priority",
+      "imagesLabel": "Image links (optional)",
+      "imagesPlaceholder": "https://..., https://...",
       "submitting": "Submitting...",
-      "submitButton": "Submit Complaint",
-      "successMessage": "Thank you for your feedback! Your complaint has been submitted successfully.",
-      "failureMessage": "Failed to submit complaint. Please try again.",
-      "networkError": "Network error. Please check your connection and try again."
+      "submitButton": "Submit complaint",
+      "validationRequired": "Please complete the required fields before submitting your complaint.",
+      "submitSuccess": "Complaint submitted successfully. Our team will review it shortly.",
+      "submitErrorDefault": "Unable to submit your complaint right now.",
+      "categories": {
+        "housekeeping": "Housekeeping",
+        "maintenance": "Room Equipment & Maintenance",
+        "it": "Internet & Technology",
+        "fnb": "Food & Beverage",
+        "service": "Staff & Service",
+        "noise": "Noise",
+        "comfort": "Room Comfort",
+        "bathroom": "Bathroom",
+        "safety": "Safety & Security",
+        "parking": "Parking & Transportation",
+        "facilities": "Hotel Facilities",
+        "environment": "Environment",
+        "special": "Special Requests",
+        "other": "Other"
+      },
+      "issues": {
+        "housekeeping": {
+          "room_not_cleaned": "Room not cleaned",
+          "dirty_bathroom": "Dirty bathroom",
+          "dirty_bedsheets": "Dirty bedsheets",
+          "dirty_towels": "Dirty towels",
+          "bad_smell": "Bad smell",
+          "missing_amenities": "Missing amenities",
+          "insects_pests": "Insects / pests",
+          "trash_not_removed": "Trash not removed"
+        },
+        "maintenance": {
+          "air_conditioning_not_working": "Air conditioning not working",
+          "heating_issue": "Heating issue",
+          "water_leak": "Water leak",
+          "no_hot_water": "No hot water",
+          "low_water_pressure": "Low water pressure",
+          "broken_furniture": "Broken furniture",
+          "broken_tv": "Broken TV",
+          "broken_safe": "Broken safe",
+          "broken_minibar": "Broken minibar",
+          "power_outage": "Power outage",
+          "electrical_issue": "Electrical issue"
+        },
+        "it": {
+          "wi_fi_not_working": "Wi-Fi not working",
+          "slow_wi_fi": "Slow Wi-Fi",
+          "tv_issue": "TV issue",
+          "telephone_issue": "Telephone issue",
+          "mobile_app_issue": "Mobile App issue"
+        },
+        "fnb": {
+          "food_quality": "Food quality",
+          "wrong_order": "Wrong order",
+          "food_temperature": "Food temperature",
+          "long_waiting_time": "Long waiting time",
+          "breakfast_issue": "Breakfast issue",
+          "restaurant_cleanliness": "Restaurant cleanliness",
+          "room_service_problem": "Room service problem"
+        },
+        "service": {
+          "reception_issue": "Reception issue",
+          "housekeeping_staff": "Housekeeping staff",
+          "restaurant_staff": "Restaurant staff",
+          "concierge": "Concierge",
+          "slow_service": "Slow service",
+          "unfriendly_staff": "Unfriendly staff",
+          "poor_communication": "Poor communication"
+        },
+        "noise": {
+          "neighbor_noise": "Neighbor noise",
+          "hallway_noise": "Hallway noise",
+          "outside_traffic": "Outside traffic",
+          "construction": "Construction",
+          "loud_music": "Loud music",
+          "air_conditioning_noise": "Air conditioning noise"
+        },
+        "comfort": {
+          "bed_uncomfortable": "Bed uncomfortable",
+          "pillow_issue": "Pillow issue",
+          "room_too_hot": "Room too hot",
+          "room_too_cold": "Room too cold",
+          "humidity": "Humidity",
+          "bad_smell": "Bad smell",
+          "poor_lighting": "Poor lighting"
+        },
+        "bathroom": {
+          "toilet_issue": "Toilet issue",
+          "shower_issue": "Shower issue",
+          "sink_issue": "Sink issue",
+          "drain_blocked": "Drain blocked",
+          "no_toiletries": "No toiletries",
+          "no_towels": "No towels",
+          "mold": "Mold"
+        },
+        "safety": {
+          "lost_key_card": "Lost key card",
+          "door_lock_issue": "Door lock issue",
+          "theft": "Theft",
+          "suspicious_person": "Suspicious person",
+          "emergency": "Emergency"
+        },
+        "parking": {
+          "parking_unavailable": "Parking unavailable",
+          "shuttle_issue": "Shuttle issue",
+          "taxi_issue": "Taxi issue",
+          "valet_delay": "Valet delay"
+        },
+        "facilities": {
+          "pool": "Pool",
+          "gym": "Gym",
+          "spa": "Spa",
+          "elevator": "Elevator",
+          "laundry": "Laundry",
+          "business_center": "Business Center"
+        },
+        "environment": {
+          "smoking_smell": "Smoking smell",
+          "public_area_cleanliness": "Public area cleanliness",
+          "outdoor_maintenance": "Outdoor maintenance"
+        },
+        "special": {
+          "accessibility": "Accessibility",
+          "baby_equipment": "Baby equipment",
+          "pet_issue": "Pet issue",
+          "extra_bed": "Extra bed"
+        }
+      },
+      "priorities": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "urgent": "Urgent"
+      }
     },
     "feedback": {
       "title": "Feedback",
@@ -171,6 +309,7 @@
     "back": "Back",
     "yes": "Yes",
     "no": "No",
-    "required": "This field is required"
+    "required": "This field is required",
+    "open": "OPEN"
   }
 }

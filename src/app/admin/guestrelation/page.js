@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import io from 'socket.io-client';
 import { getSocketBase } from '@/lib/socketBase';
 import { socketClientOptions } from '@/lib/socketClientOptions';
-import { usePushNotifications } from '@/hooks/usePushNotifications';
 import AnnouncementManager from '@/components/AnnouncementManager';
 
 export default function GuestRelationDashboard() {
@@ -27,12 +26,6 @@ export default function GuestRelationDashboard() {
     feedback: 0,
   });
   const activeTabRef = useRef(activeTab);
-
-  usePushNotifications({
-    enabled: authenticated,
-    role: 'guestrelation',
-    tokenKey: 'grToken',
-  });
 
   const feedbackStats = useMemo(() => {
     const total = feedbackItems.length;
@@ -292,7 +285,7 @@ export default function GuestRelationDashboard() {
   const updateServiceRequestStatus = async (id, status) => {
     setServiceUpdating((prev) => ({ ...prev, [id]: true }));
     try {
-      const response = await fetch(`/api/service-requests/${id}`, {
+      const response = await fetch(`http://localhost:3001/api/service-requests/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status }),
@@ -310,7 +303,7 @@ export default function GuestRelationDashboard() {
 
   const updateComplaintStatus = async (id, status) => {
     try {
-      const response = await fetch(`/api/complaints/${id}`, {
+      const response = await fetch(`http://localhost:3001/api/complaints/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status }),
@@ -345,10 +338,10 @@ export default function GuestRelationDashboard() {
 
   const getServiceTypeIcon = (type) => {
     switch (type) {
-      case 'Cleaning': return '🧹';
-      case 'Maintenance': return '🔧';
-      case 'Food & Drink': return '🍽️';
-      default: return '📋';
+      case 'Cleaning': return 'CL';
+      case 'Maintenance': return 'MT';
+      case 'Food & Drink': return 'FD';
+      default: return 'SR';
     }
   };
 

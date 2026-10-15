@@ -8,27 +8,33 @@ const portals = [
   {
     href: '/admin/animation/login',
     title: 'Animation',
-    description: 'Song requests, special events, and party settings',
-    accent: 'emerald',
+    description: 'Special events, entertainment programming, and music control.',
+    accent: 'teal',
+    badge: 'LIVE SHOWS',
   },
   {
     href: '/admin/guestrelation/login',
     title: 'Guest Relations',
-    description: 'Service requests, complaints, feedback, and announcements',
-    accent: 'sky',
+    description: 'Service requests, complaints, feedback, and guest updates.',
+    accent: 'gold',
+    badge: 'GUEST CARE',
   },
 ];
 
 const accentStyles = {
-  emerald: {
-    card: 'hover:border-emerald-500/60 hover:shadow-emerald-900/20',
-    title: 'text-emerald-400',
-    button: 'bg-emerald-500 hover:bg-emerald-600 shadow-emerald-900/30',
+  teal: {
+    card: 'border-[var(--line)] hover:border-[var(--teal)]/60 hover:shadow-[0_18px_30px_rgba(46,143,134,0.12)]',
+    badge: 'bg-[rgba(46,143,134,0.14)] text-[var(--teal)] border border-[rgba(46,143,134,0.2)]',
+    title: 'text-[var(--navy-deep)]',
+    button: 'bg-[var(--teal)] hover:bg-[var(--navy)] text-white shadow-[0_12px_24px_rgba(46,143,134,0.18)]',
+    glow: 'from-[rgba(46,143,134,0.18)] via-[rgba(46,143,134,0.06)] to-transparent',
   },
-  sky: {
-    card: 'hover:border-sky-500/60 hover:shadow-sky-900/20',
-    title: 'text-sky-400',
-    button: 'bg-sky-500 hover:bg-sky-600 shadow-sky-900/30',
+  gold: {
+    card: 'border-[var(--line)] hover:border-[var(--gold)]/60 hover:shadow-[0_18px_30px_rgba(198,161,91,0.14)]',
+    badge: 'bg-[rgba(198,161,91,0.12)] text-[var(--navy-deep)] border border-[rgba(198,161,91,0.25)]',
+    title: 'text-[var(--navy-deep)]',
+    button: 'bg-[var(--gold)] hover:bg-[var(--coral)] text-[var(--navy-deep)] shadow-[0_12px_24px_rgba(198,161,91,0.18)]',
+    glow: 'from-[rgba(198,161,91,0.18)] via-[rgba(198,161,91,0.08)] to-transparent',
   },
 };
 
@@ -38,7 +44,6 @@ export default function AdminPortalPage() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      // Check for animation login
       const animationToken = localStorage.getItem('animationToken');
       if (animationToken) {
         try {
@@ -57,7 +62,6 @@ export default function AdminPortalPage() {
         }
       }
 
-      // Check for guest relation login
       const grToken = localStorage.getItem('grToken');
       if (grToken) {
         try {
@@ -76,7 +80,6 @@ export default function AdminPortalPage() {
         }
       }
 
-      // No valid auth found, show portal
       setIsChecking(false);
     };
 
@@ -85,43 +88,54 @@ export default function AdminPortalPage() {
 
   if (isChecking) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-8">
-        <div className="text-center">
-          <p className="text-slate-400">Checking authentication...</p>
+      <div className="min-h-screen bg-[var(--sand)] text-[var(--ink)] flex items-center justify-center p-8">
+        <div className="rounded-[28px] border border-[var(--line)] bg-[rgba(255,252,245,0.9)] px-8 py-6 shadow-[0_18px_40px_rgba(9,43,62,0.08)]">
+          <p className="text-[var(--ink-soft)] text-sm uppercase tracking-[0.22em]">Checking authentication...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-8">
-      <div className="w-full max-w-3xl">
-        <div className="text-center mb-14">
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">Staff Portal</h1>
-          <p className="text-slate-400 text-lg">Hotel GuestHub — choose your department to sign in</p>
+    <main className="min-h-screen bg-[var(--sand)] px-4 py-10 sm:px-6 md:px-8">
+      <div className="mx-auto max-w-5xl">
+        <div className="mb-8 text-center sm:mb-10">
+          <div className="mx-auto mb-4 inline-flex items-center rounded-full border border-[var(--line)] bg-[rgba(255,252,245,0.7)] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--navy-deep)] shadow-sm">
+            Hotel GuestHub
+          </div>
+          <h1 className="text-4xl font-semibold text-[var(--navy-deep)] sm:text-5xl">Staff Portal</h1>
+          <p className="mt-3 text-base text-[var(--ink-soft)] sm:text-lg">Choose your department to continue</p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+        <div className="grid gap-6 sm:grid-cols-2">
           {portals.map((portal) => {
             const styles = accentStyles[portal.accent];
             return (
               <Link
                 key={portal.href}
                 href={portal.href}
-                className={`group block rounded-2xl border border-slate-800 bg-slate-900 p-8 sm:p-10 shadow-xl shadow-black/30 transition-all duration-300 ${styles.card}`}
+                className={`group relative overflow-hidden rounded-[28px] border bg-[rgba(255,252,245,0.9)] p-6 shadow-[0_18px_40px_rgba(9,43,62,0.08)] transition-all duration-300 sm:p-8 ${styles.card}`}
               >
-                <h2 className={`text-2xl font-bold mb-3 ${styles.title}`}>{portal.title}</h2>
-                <p className="text-slate-400 text-base mb-8 leading-relaxed">{portal.description}</p>
-                <span
-                  className={`inline-flex items-center justify-center w-full rounded-xl text-white font-semibold py-3 px-6 shadow-lg transition-colors ${styles.button}`}
-                >
-                  Sign in
-                </span>
+                <div className={`absolute inset-x-0 top-0 h-24 bg-gradient-to-br ${styles.glow}`} />
+                <div className="relative z-10">
+                  <div className="mb-5 flex items-center justify-between gap-3">
+                    <span className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] ${styles.badge}`}>
+                      {portal.badge}
+                    </span>
+                  </div>
+
+                  <h2 className={`mb-3 text-3xl font-semibold ${styles.title}`}>{portal.title}</h2>
+                  <p className="mb-7 text-base leading-relaxed text-[var(--ink-soft)]">{portal.description}</p>
+
+                  <span className={`inline-flex w-full items-center justify-center rounded-[18px] px-5 py-3 text-base font-semibold transition-all duration-300 ${styles.button}`}>
+                    Enter dashboard
+                  </span>
+                </div>
               </Link>
             );
           })}
         </div>
       </div>
-    </div>
+    </main>
   );
 }

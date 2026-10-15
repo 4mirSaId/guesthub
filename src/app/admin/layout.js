@@ -1,3 +1,3 @@
 export default function AdminLayout({ children }) {
-  return <div className="min-h-screen bg-slate-950">{children}</div>;
+  return <div className="admin-shell min-h-screen bg-[var(--sand)] text-[var(--ink)]">{children}</div>;
 }

@@ -67,13 +67,11 @@ router.put('/', requireAnimation, async (req, res) => {
       weekA: (nightShows.weekA || []).map((item, index) => ({
         day: String(item.day || '').trim(),
         show: String(item.show || '').trim(),
-        emoji: String(item.emoji || '').trim(),
         order: item.order ?? index,
       })).filter((item) => item.day && item.show),
       weekB: (nightShows.weekB || []).map((item, index) => ({
         day: String(item.day || '').trim(),
         show: String(item.show || '').trim(),
-        emoji: String(item.emoji || '').trim(),
         order: item.order ?? index,
       })).filter((item) => item.day && item.show),
     };

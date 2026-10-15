@@ -10,21 +10,24 @@ function ShowWeek({ title, items }) {
   const { t } = useLanguage();
 
   return (
-    <section className="rounded-2xl shadow-xl shadow-black/20 border border-slate-800 bg-slate-900 p-8 transition-all duration-300 ease-in-out hover:shadow-black/40">
-      <h2 className="text-3xl font-semibold text-white mb-6">{title}</h2>
-      <div className="space-y-4">
+    <section className="schedule-card rounded-2xl border p-5 shadow-[0_10px_20px_rgba(9,43,62,0.08)] sm:p-6">
+      <div className="mb-5 flex items-center justify-between border-b border-[var(--line)] pb-4">
+        <h2 className="text-2xl font-semibold text-[var(--navy-deep)]">{title}</h2>
+        <span className="h-2.5 w-2.5 rounded-full bg-[var(--coral)]" aria-hidden="true" />
+      </div>
+      <div className="space-y-3">
         {items.length === 0 ? (
-          <p className="text-slate-500">{t('pages.nightShows.noNightShows')}</p>
+          <p className="text-[var(--ink-soft)]">{t('pages.nightShows.noNightShows')}</p>
         ) : (
           items.map((item) => (
             <div
               key={item._id || item.day}
-              className="rounded-2xl bg-slate-950 p-5 border border-slate-800 shadow-lg shadow-black/20 transition hover:border-slate-700"
+              className="rounded-xl border border-[var(--line)] bg-[var(--sand)] p-4 transition hover:border-[var(--teal)] sm:p-5"
             >
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <p className="text-sm uppercase tracking-[0.2em] text-slate-500">{item.day}</p>
-                  <p className="text-xl font-semibold text-white mt-2">{item.show}</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--teal)]">{item.day}</p>
+                  <p className="mt-2 text-xl font-semibold text-[var(--navy-deep)]">{item.show}</p>
                 </div>
               </div>
             </div>
@@ -84,17 +87,18 @@ export default function NightShows() {
   }, []);
 
   return (
-    <div className="bg-slate-950 text-slate-100 min-h-screen">
-      <div className="max-w-6xl mx-auto py-20 px-6">
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-white">{t('pages.nightShows.title')}</h1>
-          <p className="text-xl text-slate-400 mt-4">
+    <main className="schedule-page min-h-screen px-4 pb-16 pt-12 sm:px-6 md:px-8 md:pt-14">
+      <div className="mx-auto max-w-6xl">
+        <header className="mb-8 border-b border-[var(--line)] pb-6 sm:mb-10">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--coral)]">Live entertainment</p>
+          <h1 className="mt-2 text-3xl font-semibold text-[var(--navy-deep)] sm:text-4xl">{t('pages.nightShows.title')}</h1>
+          <p className="mt-3 max-w-2xl text-base text-[var(--ink-soft)]">
             {t('pages.nightShows.description')}
           </p>
-        </div>
+        </header>
 
         {loading ? (
-          <p className="text-center text-slate-400 text-xl">{t('pages.nightShows.loading')}</p>
+          <p className="rounded-xl border border-[var(--line)] bg-white/50 px-6 py-10 text-center text-[var(--ink-soft)]">{t('pages.nightShows.loading')}</p>
         ) : (
           <div className="grid gap-8 lg:grid-cols-2">
             <ShowWeek title={t('pages.nightShows.showWeekA')} items={weekA} />
@@ -102,6 +106,6 @@ export default function NightShows() {
           </div>
         )}
       </div>
-    </div>
+    </main>
   );
 }

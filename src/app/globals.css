@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 html {
@@ -5,6 +6,19 @@ html {
 }
 
 :root {
+  --navy: #0E3A52;
+  --navy-deep: #092B3E;
+  --teal: #2E8F86;
+  --teal-light: #6FC2B8;
+  --sand: #F6EFE1;
+  --sand-dark: #EADFC3;
+  --coral: #D9603F;
+  --coral-deep: #B94B2F;
+  --gold: #C6A15B;
+  --gold-light: #E4CE9C;
+  --ink: #16303D;
+  --ink-soft: #5B7280;
+  --line: #DFD5BC;
   /* Typography scales */
   --font-size-base: 1rem;
   --font-size-lg: 1.125rem;
@@ -18,7 +32,9 @@ body {
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: 'Work Sans', sans-serif;
+  background: var(--sand);
+  color: var(--ink);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
@@ -26,6 +42,12 @@ body {
   /* iOS-specific fixes */
   -webkit-user-select: none;
   user-select: none;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  letter-spacing: 0;
 }
 
 body, html {
@@ -46,8 +68,8 @@ body, html {
 }
 
 ::selection {
-  background-color: #2563eb;
-  color: #ffffff;
+  background-color: var(--gold-light);
+  color: var(--navy-deep);
 }
 
 button,
@@ -104,8 +126,176 @@ a {
 
 /* Accessible focus states */
 :focus-visible {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
+}
+
+.guest-page {
+  min-height: 100vh;
+  background: var(--sand);
+  color: var(--ink);
+}
+
+.guest-header {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--navy-deep), var(--navy));
+  color: white;
+}
+
+.guest-header::after {
+  content: '';
+  position: absolute;
+  left: -5%;
+  right: -5%;
+  bottom: -32px;
+  height: 70px;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  background: var(--sand);
+}
+
+.guest-form-surface {
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: rgba(255, 252, 245, 0.9);
+  color: var(--ink);
+  box-shadow: 0 18px 50px rgba(9, 43, 62, 0.12);
+}
+
+.guest-input {
+  border: 1px solid var(--line) !important;
+  border-radius: 18px !important;
+  background: #fffdf8 !important;
+  color: var(--ink) !important;
+}
+
+.guest-form-surface input:not([type='submit']),
+.guest-form-surface textarea,
+.guest-form-surface select {
+  border: 1px solid var(--line) !important;
+  border-radius: 18px !important;
+  background: #fffdf8 !important;
+  color: var(--ink) !important;
+}
+
+.guest-form-surface label,
+.guest-form-surface .text-slate-200,
+.guest-form-surface .text-slate-300 {
+  color: var(--ink) !important;
+}
+
+.guest-input::placeholder { color: var(--ink-soft) !important; }
+.guest-input:focus { border-color: var(--teal) !important; box-shadow: 0 0 0 3px rgba(46, 143, 134, 0.15); }
+
+.privacy-note {
+  border-radius: 18px;
+  background: var(--sand-dark);
+  color: var(--ink-soft);
+}
+
+.success-note {
+  border: 1px solid rgba(46, 143, 134, 0.3);
+  border-radius: 20px;
+  background: rgba(111, 194, 184, 0.18);
+  color: var(--navy);
+}
+
+.success-note::before {
+  content: '✓';
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  border-radius: 50%;
+  background: rgba(46, 143, 134, 0.18);
+  color: var(--teal);
+  font-weight: 700;
+}
+
+.bottom-nav {
+  background: rgba(255, 252, 245, 0.88);
+  border-color: rgba(223, 213, 188, 0.9);
+  color: var(--ink-soft);
+}
+
+.home-page,
+.schedule-page {
+  background: var(--sand) !important;
+  color: var(--ink) !important;
+}
+
+.home-top-accent {
+  height: 18px;
+  background: linear-gradient(90deg, var(--navy-deep), var(--teal));
+}
+
+.home-page .home-hero {
+  background: linear-gradient(135deg, var(--navy-deep), var(--navy)) !important;
+}
+
+.home-page .home-hero::after {
+  content: '';
+  position: absolute;
+  left: -5%;
+  right: -5%;
+  bottom: -34px;
+  height: 72px;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  background: var(--sand);
+}
+
+.home-page .action-tile {
+  color: white;
+  border: 0;
+  min-height: 180px;
+}
+
+.home-page .action-tile:nth-child(1) { background: linear-gradient(135deg, #123f56, #a55d52); }
+.home-page .action-tile:nth-child(2) { background: linear-gradient(135deg, #2b9187, #205b58); }
+.home-page .action-tile:nth-child(3) { background: linear-gradient(135deg, #d85b3b, #bd4d31); }
+.home-page .action-tile:nth-child(4) { background: linear-gradient(135deg, #c8a156, #a9823a); }
+.home-page .action-tile:nth-child(5) { background: linear-gradient(135deg, #125665, #0e4656); }
+.home-page .action-tile:nth-child(6) { background: linear-gradient(135deg, #5bb5ac, #3a9b96); }
+
+.home-page .action-tile::after {
+  content: '';
+  position: absolute;
+  right: -18px;
+  bottom: -34px;
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.home-page .action-tile > div { background: transparent !important; }
+
+.schedule-page .schedule-card {
+  border-color: var(--line) !important;
+  background: rgba(255, 252, 245, 0.8) !important;
+  color: var(--ink);
+}
+
+.auth-page {
+  min-height: 100vh;
+  background: linear-gradient(145deg, var(--navy-deep), var(--navy)) !important;
+}
+
+.auth-page .auth-card {
+  border: 1px solid var(--line) !important;
+  border-radius: 30px !important;
+  background: var(--sand) !important;
+  color: var(--ink);
+}
+
+.auth-page input { background: #fffdf8 !important; color: var(--ink) !important; border-color: var(--line) !important; border-radius: 18px !important; }
+.auth-page button { background: var(--gold) !important; border-radius: 18px !important; }
+
+@media (max-width: 767px) {
+  body { padding-bottom: 76px; }
+  .desktop-nav-links { display: none; }
 }
 
 /* Print styles */
@@ -131,4 +321,125 @@ a {
 .animate-fade-in {
   animation: fadeIn 0.8s ease-out forwards;
   opacity: 0;
+}
+
+/* Shared visual language for the guest and staff surfaces. */
+.admin-shell {
+  min-height: 100vh;
+  background: var(--sand);
+  color: var(--ink);
+}
+
+.admin-shell .bg-slate-950,
+.admin-shell .bg-slate-950\/70,
+.admin-shell .bg-slate-900,
+.admin-shell .bg-slate-900\/60,
+.admin-shell .bg-slate-900\/80 {
+  background-color: #fffdf8 !important;
+}
+
+.admin-shell .text-slate-100,
+.admin-shell .text-white,
+.admin-shell .text-slate-200,
+.admin-shell .text-slate-300 {
+  color: var(--ink) !important;
+}
+
+.admin-shell .text-slate-400,
+.admin-shell .text-slate-500,
+.admin-shell .text-slate-600 {
+  color: var(--ink-soft) !important;
+}
+
+.admin-shell .border-slate-800,
+.admin-shell .border-slate-700 {
+  border-color: var(--line) !important;
+}
+
+.admin-shell > div > .max-w-6xl,
+.admin-shell > div > .max-w-3xl {
+  max-width: 1180px;
+}
+
+.admin-shell button:not([class*='bg-red']):not([class*='bg-gray']) {
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+.admin-shell button:hover {
+  transform: translateY(-1px);
+}
+
+@media (max-width: 767px) {
+  .home-page .action-tile {
+    min-height: 178px;
+    border-radius: 28px;
+    box-shadow: 0 12px 24px rgba(9, 43, 62, 0.12);
+  }
+
+  .home-page .action-tile p {
+    color: rgba(255, 255, 255, 0.78) !important;
+  }
+
+  .guest-page {
+    padding: 2rem 1rem 4rem;
+  }
+
+  .guest-page .guest-header {
+    border-radius: 0;
+    margin: -2rem -1rem 0;
+    padding: 2.5rem 1.25rem 3.5rem;
+  }
+
+  .guest-page .guest-form-surface {
+    margin: -1.75rem 0 0;
+    position: relative;
+    border-radius: 24px;
+    padding: 1.25rem;
+  }
+
+  .guest-page .guest-form-surface form {
+    gap: 1.1rem;
+  }
+
+  .guest-page .guest-form-surface input,
+  .guest-page .guest-form-surface select,
+  .guest-page .guest-form-surface textarea {
+    min-height: 58px;
+    border-radius: 18px !important;
+    padding: 1rem 1.1rem;
+  }
+
+  .guest-page .guest-form-surface textarea {
+    min-height: 150px;
+  }
+
+  .admin-shell > div,
+  .admin-shell > main {
+    padding: 1.25rem !important;
+  }
+
+  .admin-shell h1 {
+    font-size: 2.2rem !important;
+  }
+
+  .admin-shell h2 {
+    font-size: 1.8rem !important;
+  }
+
+  .admin-shell .flex.justify-between.items-center {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .admin-shell .flex.flex-wrap.gap-3.sm\:gap-4 {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 0.75rem;
+  }
+
+  .admin-shell .flex.flex-wrap.gap-3.sm\:gap-4 button {
+    flex: 0 0 auto;
+  }
 }

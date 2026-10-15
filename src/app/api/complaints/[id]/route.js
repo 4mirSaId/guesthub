@@ -8,19 +8,28 @@ export async function PATCH(request, { params }) {
     const { status } = await request.json();
     const { id } = await params;
 
-    if (!['pending', 'reviewed'].includes(status)) {
+    if (!['pending', 'in-progress', 'resolved', 'closed'].includes(status)) {
       return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
+    }
+
+    const existingComplaint = await Complaint.findById(id);
+    if (!existingComplaint) {
+      return NextResponse.json({ error: 'Complaint not found' }, { status: 404 });
+    }
+
+    const updateData = { status };
+    if (status === 'in-progress' && !existingComplaint.responseTime) {
+      updateData.responseTime = new Date();
+    }
+    if ((status === 'resolved' || status === 'closed') && !existingComplaint.resolutionTime) {
+      updateData.resolutionTime = new Date();
     }
 
     const updatedComplaint = await Complaint.findByIdAndUpdate(
       id,
-      { status },
+      updateData,
       { returnDocument: 'after' }
     );
-
-    if (!updatedComplaint) {
-      return NextResponse.json({ error: 'Complaint not found' }, { status: 404 });
-    }
 
     return NextResponse.json(updatedComplaint);
   } catch (error) {

@@ -223,7 +223,7 @@ function NightShowsEditor({ program, update, saveProgram, saving, message, setti
   };
 
   const add = () => {
-    setWeekItems(weekTab, [...items, { day: 'Monday', show: 'New Show', emoji: '', order: items.length }]);
+    setWeekItems(weekTab, [...items, { day: 'Monday', show: 'New Show', order: items.length }]);
   };
 
   const remove = (index) => {
@@ -341,15 +341,6 @@ function NightShowsEditor({ program, update, saveProgram, saving, message, setti
                 value={item.show}
                 onChange={(e) => change(index, 'show', e.target.value)}
                 className={inputClass}
-              />
-            </div>
-            <div>
-              <label className="block text-xs text-slate-500 mb-1 uppercase">Emoji</label>
-              <input
-                type="text"
-                value={item.emoji}
-                onChange={(e) => change(index, 'emoji', e.target.value)}
-                className={`${inputClass} text-center text-2xl`}
               />
             </div>
             <div className="flex items-end">
